@@ -1,0 +1,50 @@
+/*
+  Typography tokens from two "2one Solutions" team files:
+  - "Components": Inter (body copy, field values, button labels) and
+    Atlassian Sans (links, required-field marks) — no heading scale.
+  - "Mobile App Design System": the full documented type scale — Display,
+    Heading 1-6 (Satoshi Bold), Body and Small (Inter Regular) — each with
+    real size/line-height pulled from get_design_context, not estimated.
+*/
+@theme {
+  --font-sans: Inter, system-ui, -apple-system, sans-serif;
+  --font-link: 'Atlassian Sans', Inter, system-ui, sans-serif;
+  --font-heading: Satoshi, Inter, system-ui, sans-serif;
+
+  /* Mobile App Design System scale — font/size/*, font/line-height/* */
+  --text-display: 4.75rem; /* 76px */
+  --leading-display: 6.4375rem; /* 103px */
+
+  --text-h1: 3.875rem; /* 62px */
+  --leading-h1: 5.25rem; /* 84px */
+
+  --text-h2: 3rem; /* 48px */
+  --leading-h2: 4.0625rem; /* 65px */
+
+  --text-h3: 2.5rem; /* 40px */
+  --leading-h3: 3.375rem; /* 54px */
+
+  --text-h4: 2rem; /* 32px */
+  --leading-h4: 2.6875rem; /* 43px */
+
+  --text-h5: 1.625rem; /* 26px */
+  --leading-h5: 2.1875rem; /* 35px */
+
+  --text-h6: 1.25rem; /* 20px */
+  --leading-h6: 1.6875rem; /* 27px */
+
+  /* shared: font/size/body, font/size/small */
+  --text-xs: 0.75rem; /* 12px — Small style, Message, required asterisk */
+  --leading-xs: 0.9375rem; /* 15px */
+
+  --text-sm: 0.875rem; /* 14px — text field value/placeholder, link, checkbox label */
+  --leading-sm: 1.25rem; /* 20px */
+
+  --text-base: 1rem; /* 16px — Body style, button label */
+  --leading-base: 1.1875rem; /* 19px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}

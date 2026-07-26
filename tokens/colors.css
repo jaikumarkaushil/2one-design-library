@@ -1,0 +1,59 @@
+/*
+  Color tokens pulled from the Figma file "Components" (fileKey
+  bIIZWa7XK9ajJYpI8RjwSz), team "2one Solutions" — Button, Text field,
+  Checkbox, Link, and Message component pages, via get_design_context.
+  This supersedes the earlier "Foundations (Design tokens)" file (team
+  "Claude Integration Testing"), which the user asked to stop using.
+
+  This system is grayscale (accent/neutral scale) with no brand/blue
+  color anywhere in the actual components — confirmed across every
+  component pulled. Buttons and links both use this same neutral scale;
+  danger/success are the only hue-carrying colors, reserved for
+  validation states.
+*/
+@theme {
+  /* accent/* — used by Button and Link */
+  --color-accent-50: #fafafa;
+  --color-accent-100: #f4f4f4;
+  --color-accent-200: #e4e4e4;
+  --color-accent-300: #d1d1d1;
+  --color-accent-600: #404040;
+  --color-accent-700: #262626;
+  --color-accent-800: #171717;
+  --color-accent-950: #000000;
+
+  /* neutral/* — used by Text field, Checkbox, Message */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f4f4f5;
+  --color-neutral-200: #e4e4e7;
+  --color-neutral-300: #d4d4d8;
+  --color-neutral-400: #a1a1aa;
+  --color-neutral-600: #52525b;
+  --color-neutral-700: #3f3f46;
+  --color-neutral-800: #27272a;
+  --color-neutral-950: #09090b;
+
+  /* semantic — the only hue-carrying colors in this system */
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+  --color-danger-text: #ae2e24; /* token('color.text.danger'), used for required-field asterisks */
+  --color-success-600: #15803d;
+
+  /* app-level aliases, mapped onto the tokens above */
+  --color-text: #09090b; /* neutral/950 */
+  --color-text-secondary: #52525b; /* neutral/600 */
+  --color-text-disabled: #d4d4d8; /* neutral/300 */
+  --color-border: #e4e4e7; /* neutral/200 */
+  --color-border-strong: #09090b; /* neutral/950, used on text field focus */
+  --color-bg: #ffffff;
+  --color-bg-muted: #fafafa; /* neutral/50 */
+  --color-surface: #ffffff;
+
+  --color-primary: #171717; /* accent/800 — Button appearance=primary, state=default */
+  --color-primary-hover: #404040; /* accent/600 — state=hover */
+  --color-primary-press: #262626; /* accent/700 — state=press */
+  --color-text-on-accent: #fafafa; /* accent/50 — Button label on primary */
+
+  --color-link: #000000; /* accent/950 — Link default */
+  --color-link-press: #3f3f46; /* neutral/700 — Link press */
+}

@@ -1,0 +1,21 @@
+# 2one-system
+
+> Single source of truth for the 2one design system — components, tokens, brand
+> assets, and usage context — structured for humans and AI.
+
+## Start here
+- [Agent guide](AGENTS.md): how to work in this repo
+- [Registry](registry.json): machine index of components, tokens, and known issues
+
+## Components
+- Source: components/<Name>/<Name>.tsx
+- Published as: @yokesh-2one/ui
+
+## Tokens
+- tokens/colors.css, tokens/typography.css, tokens/spacing.css (Tailwind v4 @theme)
+
+## Brand
+- brand/logo/ — logo SVG + PNG + manifest (rules: no recolor, black on light / white on dark)
+
+## Build targets
+- recipes/ — app, website, marketing, deck

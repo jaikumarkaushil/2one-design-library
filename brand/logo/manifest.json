@@ -1,0 +1,56 @@
+{
+  "name": "2one-brand-logo",
+  "version": "0.1.0",
+  "kind": "logo",
+  "title": "2one logo",
+  "description": "Brand wordmark. Use for brand identification only — not a decorative asset, not a generic image placeholder. Do not scale, recolor, rotate, or add effects beyond the Fill variants provided.",
+  "source": {
+    "tool": "figma",
+    "file": "Mobile App Design System",
+    "fileKey": "YzxnyL6a69WCOw9U8WJqBo",
+    "page": "Logo",
+    "componentSet": "198:23",
+    "extractedAt": "2026-07-26"
+  },
+  "geometry": { "width": 108, "height": 33, "aspectRatio": 3.273, "viewBox": "0 0 109 33" },
+  "rules": {
+    "allowedVariants": ["black", "white"],
+    "recolor": false,
+    "rotate": false,
+    "distort": false,
+    "effects": false,
+    "minWidthPx": 96,
+    "clearSpace": "0.5x the logo height on all sides"
+  },
+  "howToChoose": "On a light or white surface use variant 'black'. On a dark surface use variant 'white'. Never place black on dark or white on light.",
+  "variants": [
+    {
+      "id": "black",
+      "figmaName": "Fill=black",
+      "usage": "Black wordmark — use on light/white backgrounds.",
+      "svg": "logo/svg/2one-logo-black.svg",
+      "png": {
+        "256w": "logo/png/2one-logo-black-256w.png",
+        "512w": "logo/png/2one-logo-black-512w.png",
+        "1024w": "logo/png/2one-logo-black-1024w.png"
+      }
+    },
+    {
+      "id": "white",
+      "figmaName": "Fill=white",
+      "usage": "White wordmark — use on dark backgrounds.",
+      "svg": "logo/svg/2one-logo-white.svg",
+      "png": {
+        "256w": "logo/png/2one-logo-white-256w.png",
+        "512w": "logo/png/2one-logo-white-512w.png",
+        "1024w": "logo/png/2one-logo-white-1024w.png"
+      }
+    }
+  ],
+  "react": {
+    "package": "@yokesh-2one/ui",
+    "import": "import { Logo } from '@yokesh-2one/ui'",
+    "props": { "variant": ["black", "white"] },
+    "note": "No color prop by design — the brand rule forbids recoloring."
+  }
+}

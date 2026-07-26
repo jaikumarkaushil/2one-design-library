@@ -39,10 +39,19 @@ known source issues — enough to generate correct UI without guessing.
 
 ## Status
 
-Foundation + 9 components are **verified** (implemented and build-tested). Five
-components extracted from Figma are **pending** implementation (Dropdown, OTP
-field, Radio button, Bottom nav bar, Switch). See `registry.json` for per-item
-status and the list of Figma-source issues found during extraction.
+All **12 components** are implemented 1:1 with the Mobile App Design System,
+each carrying its verbatim Figma context (`component.json` + `README.md` per
+folder). Verified: type-check + Vite library build (ES/CJS + types) + install→
+import smoke test + Storybook render. See `registry.json` for per-component props
+and the list of Figma-source issues found and corrected during extraction.
+
+Browse everything locally:
+
+```bash
+npm install
+npm run storybook      # interactive catalog at http://localhost:6006
+npm run build          # library build → dist/
+```
 
 ## Source
 

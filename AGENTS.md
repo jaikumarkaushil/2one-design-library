@@ -32,9 +32,9 @@ Codex, Gemini, Copilot).
 
 ## Status of components
 
-`registry.json` marks each component `verified` (implemented and build-tested) or
-`pending` (extracted from Figma, not yet implemented). Do not assume a `pending`
-component exists in the package yet.
+All 12 components in `registry.json` are implemented 1:1 with the Mobile App
+Design System and build-verified. Link and Message are intentionally excluded
+(they live in a different Figma file, not the client's selection).
 
 ## Known Figma-source issues
 

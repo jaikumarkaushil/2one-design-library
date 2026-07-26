@@ -16,5 +16,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["index.ts", "components"]
+  "include": ["index.ts", "components"],
+  "exclude": ["**/*.stories.tsx", "components/Overview.stories.tsx", ".storybook"]
 }

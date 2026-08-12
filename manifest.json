@@ -218,7 +218,9 @@
     "graph": {
       "file": "graph.json",
       "build": "npm run graph",
-      "description": "Knowledge graph — every design element as a node, relationships (composed_of, uses, derived_from, governed_by, has_contrast, embodies) as edges. Use it for impact analysis (\"what uses this token?\") and composition-aware context."
+      "description": "Knowledge graph — every design element as a node, relationships (composed_of, uses, derived_from, governed_by, has_contrast, embodies) as edges. Use it for impact analysis (\"what uses this token?\") and composition-aware context.",
+      "impact_query": "npm run what-uses -- <element>   (e.g. `-- primary` → every component/template affected; add --json for machine output, --depends for what it uses + its rules)",
+      "visual": "run `npm run dev` and see the graph, or use the standalone knowledge-graph explorer."
     },
     "integrations": {
       "canva": {

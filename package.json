@@ -31,7 +31,8 @@
     "manifest": "node scripts/build-manifest.mjs",
     "validate": "node scripts/validate.mjs",
     "build:meta": "npm run tokens && npm run manifest && npm run graph && npm run validate",
-    "graph": "node scripts/build-graph.mjs"
+    "graph": "node scripts/build-graph.mjs",
+    "what-uses": "node scripts/what-uses.mjs"
   },
   "peerDependencies": {
     "react": ">=18",

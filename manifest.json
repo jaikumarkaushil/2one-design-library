@@ -2,7 +2,7 @@
   "name": "@yokesh-2one/design-library",
   "version": "0.1.0",
   "kind": "2one Design Language System — AI-legible design repository",
-  "updated": "2026-08-11",
+  "updated": "2026-08-12",
   "description": "2one's Design Language System: the brand foundation, design tokens, and component library that define how every 2one product, deck, and marketing asset should look, feel, and sound. It is the single, authoritative source of truth — structured to be both human-understandable and AI-legible so any AI vendor can answer brand/design questions and generate on-brand output without guessing. The system is grayscale (no brand hue), light-only, with pill buttons, Satoshi headings and Inter body; danger/success are the only colours and are used for validation only.",
   "instructions_for_ai": {
     "read_first": "manifest.json (this file), then README.md and brand/brand.json",
@@ -214,6 +214,11 @@
     "schemas": {
       "token": "schema/token.schema.json",
       "component": "schema/component.schema.json"
+    },
+    "graph": {
+      "file": "graph.json",
+      "build": "npm run graph",
+      "description": "Knowledge graph — every design element as a node, relationships (composed_of, uses, derived_from, governed_by, has_contrast, embodies) as edges. Use it for impact analysis (\"what uses this token?\") and composition-aware context."
     },
     "integrations": {
       "canva": {

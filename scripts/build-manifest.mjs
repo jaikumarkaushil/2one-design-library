@@ -101,6 +101,11 @@ const manifest = {
       schema_validation: 'npm run validate',
     },
     schemas: { token: 'schema/token.schema.json', component: 'schema/component.schema.json' },
+    graph: {
+      file: 'graph.json',
+      build: 'npm run graph',
+      description: 'Knowledge graph — every design element as a node, relationships (composed_of, uses, derived_from, governed_by, has_contrast, embodies) as edges. Use it for impact analysis ("what uses this token?") and composition-aware context.',
+    },
     integrations: {
       canva: {
         status: 'repo accessible; integration is user-built',

@@ -70,6 +70,7 @@ const NAV = [
   { grp: 'Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
   { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['charts', 'Charts', '31']] },
   { grp: 'Reference', items: [['index', 'All components', '57']] },
+  { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', '191']] },
 ]
 
 const LogoMark = () => <Logo variant="black" width={58} className="dark:hidden" />
@@ -113,7 +114,7 @@ export function Showcase() {
                 <div key={i}>
                   {g.grp && <div className="grp">{g.grp}</div>}
                   {g.items.map(([id, label, n]) => (
-                    <a key={id} href={`#${id}`} className={active === id ? 'active' : ''} onClick={() => setMenu(false)}>
+                    <a key={id} href={id.startsWith('/') ? id : `#${id}`} className={active === id ? 'active' : ''} onClick={() => setMenu(false)}>
                       <span>{label}</span>{n && <span className="n">{n}</span>}
                     </a>
                   ))}

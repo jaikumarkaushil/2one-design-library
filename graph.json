@@ -4,7 +4,7 @@
   "generated_for": "0.1.0",
   "stats": {
     "nodes": 199,
-    "edges": 550,
+    "edges": 576,
     "by_node_type": {
       "token-color": 34,
       "ramp": 21,
@@ -20,10 +20,11 @@
     },
     "by_edge_type": {
       "derived_from": 26,
-      "composed_of": 377,
+      "composed_of": 398,
       "uses": 107,
       "governed_by": 27,
       "has_contrast": 8,
+      "serves": 5,
       "embodies": 5
     }
   },
@@ -3195,6 +3196,111 @@
       "type": "composed_of"
     },
     {
+      "source": "component:alert-dialog",
+      "target": "component:button",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:button-group",
+      "target": "component:separator",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:calendar",
+      "target": "component:button",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:carousel",
+      "target": "component:button",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:command",
+      "target": "component:dialog",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:dialog",
+      "target": "component:button",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:field",
+      "target": "component:label",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:field",
+      "target": "component:separator",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:form",
+      "target": "component:label",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:input-group",
+      "target": "component:button",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:input-group",
+      "target": "component:input",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:input-group",
+      "target": "component:textarea",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:item",
+      "target": "component:separator",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:pagination",
+      "target": "component:button",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:sidebar",
+      "target": "component:button",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:sidebar",
+      "target": "component:input",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:sidebar",
+      "target": "component:separator",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:sidebar",
+      "target": "component:sheet",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:sidebar",
+      "target": "component:skeleton",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:sidebar",
+      "target": "component:tooltip",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:toggle-group",
+      "target": "component:toggle",
+      "type": "composed_of"
+    },
+    {
       "source": "block:login-01",
       "target": "component:button",
       "type": "uses"
@@ -3903,6 +4009,31 @@
       "source": "token:foreground",
       "target": "contrast:focus-ring-nontext",
       "type": "has_contrast"
+    },
+    {
+      "source": "brand:mission",
+      "target": "persona:product-leaders",
+      "type": "serves"
+    },
+    {
+      "source": "brand:mission",
+      "target": "persona:strategic-businesses",
+      "type": "serves"
+    },
+    {
+      "source": "brand:mission",
+      "target": "persona:saas-startups",
+      "type": "serves"
+    },
+    {
+      "source": "brand:mission",
+      "target": "persona:fintech",
+      "type": "serves"
+    },
+    {
+      "source": "brand:mission",
+      "target": "persona:social-accessibility",
+      "type": "serves"
     },
     {
       "source": "brand:voice",

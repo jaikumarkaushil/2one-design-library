@@ -65,6 +65,14 @@ const importedComponents = (src) => {
   for (const m of src.matchAll(/from\s+['"]@\/components\/(?:ui\/)?([a-z0-9-]+)['"]/g)) set.add(m[1])
   return set
 }
+// component → component composition (e.g. AlertDialog imports buttonVariants;
+// Sidebar imports Button/Input/Sheet/…). Same import parser, pointed at components.
+for (const [, path, name] of componentFiles) {
+  for (const c of importedComponents(R(path))) {
+    if (c !== name && nodes.has(compId(c))) addEdge(compId(name), compId(c), 'composed_of')
+  }
+}
+
 const addTemplate = (id, label, type, files) => {
   addNode(id, type, label)
   const used = new Set()
@@ -107,6 +115,8 @@ addNode('brand:mission', 'brand', 'Mission', { value: brand.mission })
 addNode('brand:voice', 'brand', 'Voice: ' + brand.voice.descriptors.join(', '))
 addNode('brand:tone', 'brand', 'Tone: ' + brand.tone.descriptors.join(', '))
 for (const p of brand.personas) addNode(`persona:${p.id}`, 'brand', p.label)
+// the mission serves the personas — richer than leaving them as leaves
+for (const p of brand.personas) addEdge('brand:mission', `persona:${p.id}`, 'serves')
 addEdge('brand:voice', 'rule:grayscale', 'embodies')
 addEdge('brand:voice', 'rule:pill-buttons', 'embodies')
 addEdge('brand:voice', 'rule:no-color-alone', 'embodies')

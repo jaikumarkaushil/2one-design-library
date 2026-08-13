@@ -4,6 +4,7 @@ import {
   LogOut, CircleAlert,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import graphData from '../graph.json'
 
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
@@ -70,7 +71,12 @@ const SEM = ['danger-500', 'danger-600', 'success-600']
 const TYPE: [string, string, string][] = [['display', 'text-display', '76 / 103'], ['h1', 'text-h1', '62 / 84'], ['h2', 'text-h2', '48 / 65'], ['h3', 'text-h3', '40 / 54'], ['h4', 'text-h4', '32 / 43'], ['h5', 'text-h5', '26 / 35'], ['h6', 'text-h6', '20 / 27'], ['base', 'text-base', '16 · body'], ['sm', 'text-sm', '14 · UI'], ['xs', 'text-xs', '12 · small']]
 const RADII = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', 'full']
 
-const ALL_COMPONENTS = ['Accordion', 'Alert', 'AlertDialog', 'AspectRatio', 'Avatar', 'Badge', 'Breadcrumb', 'Button', 'ButtonGroup', 'Calendar', 'Card', 'Carousel', 'Chart', 'Checkbox', 'Collapsible', 'Command', 'ContextMenu', 'Dialog', 'Drawer', 'DropdownMenu', 'Empty', 'Field', 'Form', 'HoverCard', 'Input', 'InputGroup', 'InputOTP', 'Item', 'Kbd', 'Label', 'Menubar', 'NativeSelect', 'NavigationMenu', 'Pagination', 'Popover', 'Progress', 'RadioGroup', 'Resizable', 'ScrollArea', 'Select', 'Separator', 'Sheet', 'Sidebar', 'Skeleton', 'Slider', 'Sonner', 'Spinner', 'Switch', 'Table', 'Tabs', 'Textarea', 'Toggle', 'ToggleGroup', 'Tooltip', 'Logo', 'AppBar', 'BottomNavItem']
+// Component index derived from the knowledge graph (single source of truth — no
+// hand-maintained list to drift). Each chip deep-links into /graph.html.
+const GRAPH_COMPONENTS = (graphData.nodes as { id: string; type: string; label: string }[])
+  .filter((n) => n.type === 'component' || n.type === 'component-2one')
+  .map((n) => ({ id: n.id, label: n.label }))
+  .sort((a, b) => a.label.localeCompare(b.label))
 
 const NAV = [
   { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', '']] },
@@ -529,9 +535,11 @@ export function Showcase() {
             {/* INDEX */}
             <section id="index" className="g-section">
               <div className="g-eyebrow">Reference</div><h2>All components</h2>
-              <p className="g-lede">Every export in the package — 54 shadcn primitives + 3 2one-only.</p>
+              <p className="g-lede">Every export in the package — 54 shadcn primitives + 3 2one-only. Click any to open it in the <a className="underline underline-offset-2" href="/graph.html">knowledge graph</a>.</p>
               <div className="g-index">
-                {ALL_COMPONENTS.map((c) => <span key={c} className="chip">{c}</span>)}
+                {GRAPH_COMPONENTS.map((c) => (
+                  <a key={c.id} className="chip" href={`/graph.html?node=${encodeURIComponent(c.id)}`} title={`${c.label} — open in the knowledge graph`}>{c.label}</a>
+                ))}
               </div>
             </section>
 

@@ -20,6 +20,7 @@ const REL: Record<string, any> = {
   composed_of: { out: 'Composed of', in: 'Used by' }, uses: { out: 'Uses', in: 'Used by' },
   derived_from: { out: 'Derived from', in: 'Source of' }, governed_by: { out: 'Governed by', in: 'Governs' },
   has_contrast: { out: 'Contrast', in: 'Contrast of' }, embodies: { out: 'Embodies', in: 'Embodied by' },
+  serves: { out: 'Serves', in: 'Served by' },
 }
 
 const root = document.documentElement
@@ -129,7 +130,10 @@ cv.addEventListener('wheel', (e) => { e.preventDefault(); const f = e.deltaY < 0
 function centerOn(n: any) { ox = -n.x * scale; oy = -n.y * scale }
 
 function select(n: any) {
-  selected = n; const panel = document.getElementById('panel')!; panel.replaceChildren()
+  selected = n
+  // sync selection to the URL so a node is shareable / deep-linkable from the catalog
+  history.replaceState(null, '', n ? '?node=' + encodeURIComponent(n.id) : location.pathname)
+  const panel = document.getElementById('panel')!; panel.replaceChildren()
   if (!n) { panel.className = 'empty'; panel.textContent = 'Click any node to see its context — what it’s composed of, what uses it, what governs it.'; return }
   panel.className = ''
   const meta = TYPES[n.type] || {}
@@ -145,6 +149,13 @@ function select(n: any) {
   if (n.path) chip(n.path)
   chip(n.deg + (n.deg === 1 ? ' connection' : ' connections'))
   panel.appendChild(m)
+  // back-link to the live catalog for components (closes the app ↔ graph loop)
+  if (n.type === 'component' || n.type === 'component-2one') {
+    const a = el('a') as HTMLAnchorElement
+    a.href = '/#index'; a.textContent = 'View in catalog ↗'
+    a.style.cssText = 'display:inline-block;margin:0 0 12px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px'
+    panel.appendChild(a)
+  }
   const groups: Record<string, any[]> = {}
   edges.forEach((e: any) => { if (e.source !== n.id && e.target !== n.id) return; const out = e.source === n.id, other = out ? e.t : e.s
     const name = (REL[e.type] || {})[out ? 'out' : 'in'] || e.type; (groups[name] = groups[name] || []).push(other) })
@@ -181,4 +192,9 @@ setT(matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light')
 tb.addEventListener('click', () => setT(theme() === 'dark' ? 'light' : 'dark'))
 
 document.getElementById('stats')!.textContent = GRAPH.stats.nodes + ' elements · ' + GRAPH.stats.edges + ' relationships'
+
+// deep-link: /graph.html?node=<id> opens focused on that node (from the catalog)
+const initId = new URLSearchParams(location.search).get('node')
+if (initId && byId.has(initId)) { const n0 = byId.get(initId); select(n0); centerOn(n0); scale = Math.max(scale, 1.2); alpha = 0.5 }
+
 resize(); loop()

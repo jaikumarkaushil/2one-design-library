@@ -43,6 +43,24 @@ then [`registry.json`](registry.json).
    by colour alone (an invalid field needs an icon/text, not just a red border);
    any new or changed colour token must pass `npm run a11y` (APCA Lc thresholds)
    layered on top of WCAG 2.x AA; don't hug the math — leave margin.
+8. **Never build a parallel system.** Don't hand-roll chrome (a custom sidebar,
+   bespoke "stage" boxes) for something the library already provides, and never
+   introduce a second token set (e.g. a `--g-*` palette) or hard-code a hex —
+   theme only through the DLS tokens.
+9. **One spacing scale, one container.** Use the 8px Tailwind scale
+   (`gap-4`/`mt-6`/`p-6`), no ad-hoc inline margins; every panel is a real `Card`
+   (don't nest Cards).
+10. **Light-only; lucide-only.** No dark palette or `data-*` dark hacks; one icon
+    library (`lucide-react`) across the whole app.
+11. **Cap width by content type.** A reading-width cap is for long-form prose
+    only; app/component layouts get a generous responsive cap (`max-w-7xl`,
+    `mx-auto`) or go fluid — cap only the prose inside. Verify at ultrawide,
+    laptop, and mobile widths.
+
+> **Building a full app or page?** Read
+> [`docs/building-with-the-dls.md`](docs/building-with-the-dls.md) first — the ten
+> consistency rules, written from real mistakes, that keep output looking like one
+> system.
 
 ## Accessibility check
 

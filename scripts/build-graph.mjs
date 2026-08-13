@@ -84,6 +84,15 @@ rule('no-color-alone', 'Never convey state by colour alone', ['token:destructive
 rule('pill-buttons', 'Buttons are pills (radius-full)', ['component:button', 'radius:full'])
 rule('logo-untouchable', 'Logo: never recolour/rotate/distort', ['component:logo'])
 rule('one-primary', 'One primary action per view', ['component:button'])
+// build-consistency rules (docs/building-with-the-dls.md) — added from real build mistakes
+rule('build-from-library', 'Build from the library — never hand-roll parallel chrome', ['component:card', 'component:sidebar', 'component:button'])
+rule('tokens-only', 'Theme only through tokens — no hard-coded hex or second palette', ['token:background', 'token:primary', 'token:muted', 'token:border'])
+rule('one-spacing-scale', 'One 8px spacing scale — no ad-hoc inline margins', ['radius:md'])
+rule('one-container', 'One container language — every panel is a real Card', ['component:card'])
+rule('light-only', 'Light-only — no dark palette or data-* hacks', ['token:background'])
+rule('lucide-only', 'Icons: lucide only — no mixed icon libraries', ['component:button'])
+rule('width-by-content', 'Cap width by content type — reading cap for prose only; app layouts get a generous responsive cap or go fluid', [])
+rule('keep-tokens-alive', 'Reading a @theme token at runtime? Keep it alive — Tailwind tree-shakes unused ramp vars; safelist ramp utilities or prefer semantic tokens', ['token:accent', 'token:destructive', 'token:success'])
 
 // ---- CONTRAST facts + has_contrast ----
 for (const p of colors.contrast.pairs) {
@@ -101,6 +110,8 @@ for (const p of brand.personas) addNode(`persona:${p.id}`, 'brand', p.label)
 addEdge('brand:voice', 'rule:grayscale', 'embodies')
 addEdge('brand:voice', 'rule:pill-buttons', 'embodies')
 addEdge('brand:voice', 'rule:no-color-alone', 'embodies')
+addEdge('brand:voice', 'rule:build-from-library', 'embodies')
+addEdge('brand:voice', 'rule:one-container', 'embodies')
 
 // ---- write ----
 const nodeArr = [...nodes.values()]

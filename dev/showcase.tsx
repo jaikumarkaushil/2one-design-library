@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   Star, Bold, Italic, Underline, Search, Bell, Home, User, Rocket, CreditCard,
-  LogOut, CircleAlert,
+  LogOut, CircleAlert, Copy, Check,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import graphData from '../graph.json'
@@ -87,6 +87,24 @@ const NAV = [
   { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', '198']] },
 ]
 
+
+function CodeBlock({ code }: { code: string }) {
+  const [done, setDone] = useState(false)
+  return (
+    <div className="relative min-w-0">
+      <pre className="overflow-x-auto rounded-md bg-muted p-3 pr-11 font-mono text-sm text-muted-foreground">{code}</pre>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label={done ? 'Copied' : 'Copy to clipboard'}
+        className="absolute right-1.5 top-1.5"
+        onClick={() => { navigator.clipboard?.writeText(code); setDone(true); setTimeout(() => setDone(false), 1200) }}
+      >
+        {done ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+      </Button>
+    </div>
+  )
+}
 
 function Block({ title, meta, className = '', children }: { title: string; meta?: string; className?: string; children: React.ReactNode }) {
   const col = className.includes('col')
@@ -176,7 +194,7 @@ export function Showcase() {
                     <CardDescription>Works today — no registry, no auth.</CardDescription>
                   </CardHeader>
                   <CardContent className="min-w-0">
-                    <pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-sm text-muted-foreground">npm install{'\n'}npm run dev</pre>
+                    <CodeBlock code={'npm install\nnpm run dev'} />
                   </CardContent>
                 </Card>
                 <Card className="min-w-0">
@@ -185,7 +203,7 @@ export function Showcase() {
                     <CardDescription>React 19 · Tailwind v4.</CardDescription>
                   </CardHeader>
                   <CardContent className="min-w-0">
-                    <pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-sm text-muted-foreground">import {`{ Button }`} from '@yokesh-2one/design-library'{'\n'}import '@yokesh-2one/design-library/styles'</pre>
+                    <CodeBlock code={"import { Button } from '@yokesh-2one/design-library'\nimport '@yokesh-2one/design-library/styles'"} />
                   </CardContent>
                 </Card>
               </div>

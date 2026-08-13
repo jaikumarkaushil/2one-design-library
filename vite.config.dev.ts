@@ -17,4 +17,15 @@ export default defineConfig({
     strictPort: true,
     fs: { allow: [fileURLToPath(new URL('.', import.meta.url))] },
   },
+  // Static build of the showcase site (catalog + knowledge graph) for Vercel.
+  build: {
+    outDir: fileURLToPath(new URL('./dist-site', import.meta.url)),
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./dev/index.html', import.meta.url)),
+        graph: fileURLToPath(new URL('./dev/graph.html', import.meta.url)),
+      },
+    },
+  },
 })

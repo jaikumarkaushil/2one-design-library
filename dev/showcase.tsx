@@ -149,8 +149,8 @@ export function Showcase() {
                 <div className="g-stat"><div className="k">1</div><div className="l">Hue-free system</div></div>
               </div>
               <div className="g-grid2">
-                <div><div className="g-scale-label">Install</div><pre className="g-code"><span className="c"># React 19 · Tailwind v4</span>{'\n'}npm install @yokesh-2one/design-library</pre></div>
-                <div><div className="g-scale-label">Use</div><pre className="g-code">{`import { Button } from '@yokesh-2one/design-library'`}{'\n'}{`import '@yokesh-2one/design-library/styles'`}</pre></div>
+                <div><div className="g-scale-label">Run it locally (works today)</div><pre className="g-code"><span className="c"># clone the repo, then:</span>{'\n'}npm install{'\n'}npm run dev   <span className="c"># → this app</span></pre></div>
+                <div><div className="g-scale-label">Use in your app</div><pre className="g-code"><span className="c">// React 19 · Tailwind v4</span>{'\n'}import {`{ Button }`} from '@yokesh-2one/design-library'{'\n'}import '@yokesh-2one/design-library/styles'{'\n'}<span className="c">// package ships via GitHub Packages —</span>{'\n'}<span className="c">// once published; install needs a read token</span></pre></div>
               </div>
             </section>
 

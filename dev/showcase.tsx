@@ -238,7 +238,8 @@ export function Showcase() {
         <Sidebar>
           <SidebarHeader>
             <div className="flex items-center gap-2.5 px-2 py-1.5">
-              <Logo variant="black" width={52} />
+              <Logo variant="black" width={52} className="dark:hidden" />
+              <Logo variant="white" width={52} className="hidden dark:block" />
               <span className="text-xs leading-tight text-muted-foreground">design language<br />system</span>
             </div>
           </SidebarHeader>
@@ -607,8 +608,9 @@ export function Showcase() {
                   </div>
                 </Block>
                 <Block title="Logo" meta="black on light / white on dark">
-                  <Logo variant="black" width={120} />
-                  <div className="rounded-lg bg-foreground p-4"><Logo variant="white" width={120} /></div>
+                  {/* fixed grounds — the mark is demoed on its intended surface, not the page theme's */}
+                  <div className="rounded-lg border bg-white p-4"><Logo variant="black" width={120} /></div>
+                  <div className="rounded-lg bg-neutral-950 p-4"><Logo variant="white" width={120} /></div>
                 </Block>
               </div>
             </section>

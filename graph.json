@@ -4,7 +4,7 @@
   "generated_for": "0.1.0",
   "stats": {
     "nodes": 199,
-    "edges": 576,
+    "edges": 577,
     "by_node_type": {
       "token-color": 34,
       "ramp": 21,
@@ -19,8 +19,8 @@
       "brand": 8
     },
     "by_edge_type": {
-      "derived_from": 26,
-      "composed_of": 398,
+      "derived_from": 25,
+      "composed_of": 400,
       "uses": 107,
       "governed_by": 27,
       "has_contrast": 8,
@@ -225,7 +225,7 @@
       "id": "token:sidebar-border",
       "type": "token-color",
       "label": "sidebar-border",
-      "hex": "#e4e4e7"
+      "hex": "#dcdce0"
     },
     {
       "id": "token:sidebar-ring",
@@ -1301,11 +1301,6 @@
       "type": "derived_from"
     },
     {
-      "source": "token:sidebar-border",
-      "target": "ramp:neutral-200",
-      "type": "derived_from"
-    },
-    {
       "source": "token:sidebar-ring",
       "target": "ramp:neutral-400",
       "type": "derived_from"
@@ -1497,6 +1492,11 @@
     },
     {
       "source": "component:badge",
+      "target": "token:destructive-foreground",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:badge",
       "target": "token:border",
       "type": "composed_of"
     },
@@ -1598,6 +1598,11 @@
     {
       "source": "component:button",
       "target": "token:destructive",
+      "type": "composed_of"
+    },
+    {
+      "source": "component:button",
+      "target": "token:destructive-foreground",
       "type": "composed_of"
     },
     {

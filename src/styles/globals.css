@@ -98,7 +98,7 @@
   --sidebar-primary-foreground: #fafafa;
   --sidebar-accent: #f4f4f5;
   --sidebar-accent-foreground: #09090b;
-  --sidebar-border: #e4e4e7;
+  --sidebar-border: #dcdce0;             /* was #e4e4e7 — Lc 10.4 (below the 15 floor) on the sidebar */
   --sidebar-ring: #a1a1aa;
 }
 
@@ -121,7 +121,7 @@
   --secondary: #27272a;                  /* neutral-800 */
   --secondary-foreground: #fafafa;
 
-  --muted: #26262a;                      /* neutral-800-ish surface */
+  --muted: #27272a;                      /* neutral-800 — unified with secondary/accent, as in light */
   --muted-foreground: #c2c2c8;           /* lightened so muted text clears APCA Lc 60 on the muted surface */
 
   --accent: #27272a;
@@ -129,14 +129,17 @@
 
   --destructive: #fecaca;                /* danger on dark: a soft red, light enough to (a) read as error
                                             TEXT on the ground (Lc 60) and (b) carry a dark label (Lc 75).
+                                            The destructive button/badge use text-destructive-foreground on a
+                                            SOLID --destructive (no /60 opacity), so this pair renders as audited.
                                             validation only — polarity flips vs light, meaning unchanged. */
   --destructive-foreground: #09090b;     /* dark label on the soft-red destructive button */
 
   --success: #4ade80;                    /* success lightened for the dark ground; validation only */
   --success-foreground: #09090b;
 
-  --border: #54545c;                     /* lifted hairline so it clears the non-text floor (Lc 15) on dark */
-  --input: #54545c;
+  --border: #606069;                     /* clears the Lc 15 non-text floor on EVERY surface it sits on —
+                                            background, card AND the lighter muted/secondary (not just bg) */
+  --input: #606069;
   --ring: #a1a1aa;                       /* neutral-400 focus ring (non-text) */
 
   /* grayscale chart ramp — light on dark, no hues */
@@ -153,7 +156,7 @@
   --sidebar-primary-foreground: #09090b;
   --sidebar-accent: #27272a;
   --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: #27272a;
+  --sidebar-border: #606069;             /* was #27272a — Lc 0 (invisible) on the sidebar ground */
   --sidebar-ring: #a1a1aa;
 }
 

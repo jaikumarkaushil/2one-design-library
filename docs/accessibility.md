@@ -64,22 +64,35 @@ themes** — the light `:root` block **and** the dark `.dark` block:
 npm run a11y      # exits 1 if ANY pair, in EITHER theme, is below its Lc threshold
 ```
 
-It checks **token contrast** (text on surface, non-text UI on surface). It **cannot**
-check the human rules above — "colour alone", real-world readability, affordance —
-those stay a manual review item on every component and screen.
+It audits the pairs the components **actually render**, on **every surface** — text
+on `background`/`card`/`popover`/`secondary`/`accent`/`sidebar`, muted text on each of
+those, error text on cards, and non-text UI (borders, rings) on each surface they sit
+on. It does **not** yet measure the rendered DOM (opacity compositing), so keep
+components token-driven — see the lesson below. It still **cannot** check the human
+rules above ("colour alone", real-world readability, affordance).
+
+> **Lesson (why this matrix is wide).** A narrow 10-pair, token-only check once passed
+> while the dark destructive button rendered **white on pale-pink at Lc 24** — because
+> `button`/`badge` hardcoded `text-white` and `dark:bg-destructive/60`, which the token
+> pair never saw. Fix: the components now use `text-destructive-foreground` on a **solid**
+> `--destructive` (no opacity), so the audited pair equals the render — and the matrix
+> covers every surface, not a hand-picked few. **Rule: a token-pair audit is only honest
+> if components render those exact pairs. Keep component colours token-driven; never
+> hardcode a foreground or bake in an opacity the audit can't see.**
 
 ### Dark theme
 
-The dark theme uses the **same thresholds** as light (the table above); APCA already
-accounts for polarity, so light-on-dark is judged on the same Lc scale. The audit
-fails if the `.dark` block is missing — a dark theme that isn't contrast-audited is a
-compliance risk. Notable dark tunings, all to clear the thresholds:
+The dark theme uses the **same thresholds** as light; APCA already accounts for
+polarity, so light-on-dark is judged on the same Lc scale. The audit fails if the
+`.dark` block is missing. Notable dark values, all chosen to clear the thresholds
+**on every surface** (not just the background):
 
 | Token (dark) | Value | Why |
 | --- | --- | --- |
-| `--muted-foreground` | `#c2c2c8` | Lightened from neutral-400 so muted text clears **Lc 60** on the muted surface. |
-| `--border` / `--input` | `#54545c` | Lifted so the hairline clears the **Lc 15** non-text floor on the dark ground. |
-| `--destructive` | `#fecaca` | **Polarity flips**: on dark, danger is a soft red so it both reads as error *text* (Lc 60) and carries a **dark** label (`--destructive-foreground: #09090b`) at Lc 75. Meaning is unchanged — validation only. |
+| `--muted`/`--secondary`/`--accent` | `#27272a` | One value (as in light) — no ad-hoc drift between near-identical greys. |
+| `--muted-foreground` | `#c2c2c8` | Lightened so muted text clears **Lc 60** on the muted surface. |
+| `--border` / `--input` / `--sidebar-border` | `#606069` | Clears the **Lc 15** non-text floor on **every** surface it sits on — `background`, `card`, and the lighter `muted`/`secondary` — not just the ground. (An earlier `#54545c` passed on the background but failed on cards at Lc 14.8.) |
+| `--destructive` | `#fecaca` | Soft red so it both reads as error *text* (Lc 60) and carries a **dark** label (`--destructive-foreground #09090b`) at Lc 75. The button/badge render `text-destructive-foreground` on solid `--destructive`, so this pair is what ships. Validation only; meaning unchanged. |
 
 ### Current status
 

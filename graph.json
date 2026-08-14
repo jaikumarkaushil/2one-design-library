@@ -1056,7 +1056,7 @@
     {
       "id": "rule:light-only",
       "type": "rule",
-      "label": "Light-only — no dark palette or data-* hacks"
+      "label": "Theme via ThemeProvider — light + audited dark, no hand-rolled palette"
     },
     {
       "id": "rule:lucide-only",

@@ -57,23 +57,37 @@ From *"There is no 'Myth of Colour Contrast Accessibility'"* (Geoffrey Crofte):
 ## What the check covers (and what it can't)
 
 `npm run a11y` ([`scripts/apca-audit.mjs`](../scripts/apca-audit.mjs)) parses the
-semantic tokens from `src/styles/globals.css` and audits the key pairs:
+semantic tokens from `src/styles/globals.css` and audits the key pairs in **both
+themes** — the light `:root` block **and** the dark `.dark` block:
 
 ```
-npm run a11y      # exits 1 if any pair is below its Lc threshold
+npm run a11y      # exits 1 if ANY pair, in EITHER theme, is below its Lc threshold
 ```
 
 It checks **token contrast** (text on surface, non-text UI on surface). It **cannot**
 check the human rules above — "colour alone", real-world readability, affordance —
 those stay a manual review item on every component and screen.
 
+### Dark theme
+
+The dark theme uses the **same thresholds** as light (the table above); APCA already
+accounts for polarity, so light-on-dark is judged on the same Lc scale. The audit
+fails if the `.dark` block is missing — a dark theme that isn't contrast-audited is a
+compliance risk. Notable dark tunings, all to clear the thresholds:
+
+| Token (dark) | Value | Why |
+| --- | --- | --- |
+| `--muted-foreground` | `#c2c2c8` | Lightened from neutral-400 so muted text clears **Lc 60** on the muted surface. |
+| `--border` / `--input` | `#54545c` | Lifted so the hairline clears the **Lc 15** non-text floor on the dark ground. |
+| `--destructive` | `#fecaca` | **Polarity flips**: on dark, danger is a soft red so it both reads as error *text* (Lc 60) and carries a **dark** label (`--destructive-foreground: #09090b`) at Lc 75. Meaning is unchanged — validation only. |
+
 ### Current status
 
-All audited pairs pass. Two were fixed to get there (2026-08-10):
+All audited pairs pass in **both** light and dark. Earlier light fixes (2026-08-10):
 
 | Token | Was | Now | Why |
 | --- | --- | --- | --- |
 | `--destructive` | `#dc2626` | `#c81e1e` | White button label was Lc −73.7 (< 75). Now −82. |
 | `--border` / `--input` | `#e4e4e7` | `#dcdce0` | Hairlines were Lc 13.4 (< the 15 non-text floor). Now 18. |
 
-Re-run `npm run a11y` after **any** change to a colour token.
+Re-run `npm run a11y` after **any** change to a colour token, in either theme.

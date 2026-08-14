@@ -40,9 +40,11 @@ An invalid field needs an **icon + text** (plus `aria-invalid` and
 `aria-describedby`), not just a red border. This is a non-negotiable brand +
 accessibility rule. Any new/changed colour token must pass `npm run a11y`.
 
-## 6. Light-only
-No dark palette, no `data-*` dark-mode hacks. The `dark:` utilities the shadcn
-components carry stay inert by design.
+## 6. Theme via the ThemeProvider — light + audited dark
+The system ships two themes (light `:root` + dark `.dark` in `globals.css`), both
+grayscale, both APCA-audited. Wrap your app in the exported `ThemeProvider` to switch
+them (it adds a `.dark` class); don't hand-roll a third palette, a brand hue, or
+`data-*` dark hacks. Any token change must pass `npm run a11y` (it audits both themes).
 
 ## 7. Icons: lucide only
 One icon library across the whole app. Don't mix `@tabler/icons-react` (or any

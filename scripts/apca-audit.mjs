@@ -35,11 +35,21 @@ function apca(txt, bg) {
   return Math.round(C * 1000) / 10
 }
 
-// ---- read the live token values from globals.css ----
+// ---- read the live token values from globals.css, per theme scope ----
+// The :root block is the light theme; the .dark block redefines the same
+// semantic vars for dark. We parse each block separately so dark values never
+// clobber light ones — BOTH themes must clear their thresholds.
 const css = readFileSync(join(root, 'src/styles/globals.css'), 'utf8')
-const tok = {}
-for (const m of css.matchAll(/(--[\w-]+):\s*(#[0-9a-fA-F]{6})/g)) tok[m[1]] = m[2].toLowerCase()
-const v = (name) => { if (!tok[name]) throw new Error(`token ${name} not found in globals.css`); return tok[name] }
+const blockBody = (selectorRe) => { const m = css.match(selectorRe); return m ? m[1] : '' }
+const parseTokens = (body) => {
+  const t = {}
+  for (const m of body.matchAll(/(--[\w-]+):\s*(#[0-9a-fA-F]{6})/g)) t[m[1]] = m[2].toLowerCase()
+  return t
+}
+const themes = {
+  light: parseTokens(blockBody(/:root\s*\{([^}]*)\}/)),
+  dark: parseTokens(blockBody(/\.dark\s*\{([^}]*)\}/)),
+}
 
 // ---- pairs to check: [textVar, bgVar, usage, requiredLc] ----
 const pairs = [
@@ -55,17 +65,25 @@ const pairs = [
   ['--ring', '--background', 'focus ring (non-text)', 15],
 ]
 
-let failed = 0
-console.log('\n  APCA audit — 2one DLS theme (light)\n')
-console.log('   Lc    req   result  pair')
-console.log('  ' + '-'.repeat(70))
-for (const [tv, bv, usage, req] of pairs) {
-  const lc = apca(v(tv), v(bv))
-  const pass = Math.abs(lc) >= req
-  if (!pass) failed++
-  const lcs = String(lc).padStart(6)
-  console.log(`  ${lcs}   ${String(req).padStart(3)}   ${pass ? ' pass ' : ' FAIL '}  ${usage}  (${tv} on ${bv})`)
+function auditTheme(label, tok) {
+  const v = (name) => { if (!tok[name]) throw new Error(`token ${name} not found in .${label === 'light' ? 'root' : label} block of globals.css`); return tok[name] }
+  let failed = 0
+  console.log(`\n  APCA audit — 2one DLS theme (${label})\n`)
+  console.log('   Lc    req   result  pair')
+  console.log('  ' + '-'.repeat(70))
+  for (const [tv, bv, usage, req] of pairs) {
+    const lc = apca(v(tv), v(bv))
+    const pass = Math.abs(lc) >= req
+    if (!pass) failed++
+    console.log(`  ${String(lc).padStart(6)}   ${String(req).padStart(3)}   ${pass ? ' pass ' : ' FAIL '}  ${usage}  (${tv} on ${bv})`)
+  }
+  return failed
 }
+
+let failed = auditTheme('light', themes.light)
+if (Object.keys(themes.dark).length) failed += auditTheme('dark', themes.dark)
+else { console.error('\n  ✗ no .dark theme block found in globals.css — dark theme must be contrast-audited\n'); process.exit(1) }
+
 console.log('')
-if (failed) { console.error(`  ✗ ${failed} pair(s) below threshold\n`); process.exit(1) }
-console.log('  ✓ all pairs meet their APCA threshold\n')
+if (failed) { console.error(`  ✗ ${failed} pair(s) below threshold across themes\n`); process.exit(1) }
+console.log('  ✓ all pairs meet their APCA threshold — light AND dark\n')

@@ -5,14 +5,15 @@ import {
   OctagonXIcon,
   TriangleAlertIcon,
 } from "lucide-react"
+import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
-// 2one is light-only, so there is no next-themes / theme switching — the toaster
-// is always light. (Dropping next-themes keeps it out of the shipped dependency set.)
+// Follows the active theme so toasts stay legible in both light and dark.
 const Toaster = ({ ...props }: ToasterProps) => {
+  const { theme = "light" } = useTheme()
   return (
     <Sonner
-      theme="light"
+      theme={theme as ToasterProps["theme"]}
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4" />,

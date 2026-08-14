@@ -97,7 +97,7 @@ rule('build-from-library', 'Build from the library — never hand-roll parallel 
 rule('tokens-only', 'Theme only through tokens — no hard-coded hex or second palette', ['token:background', 'token:primary', 'token:muted', 'token:border'])
 rule('one-spacing-scale', 'One 8px spacing scale — no ad-hoc inline margins', ['radius:md'])
 rule('one-container', 'One container language — every panel is a real Card', ['component:card'])
-rule('light-only', 'Light-only — no dark palette or data-* hacks', ['token:background'])
+rule('light-only', 'Theme via ThemeProvider — light + audited dark, no hand-rolled palette', ['token:background'])
 rule('lucide-only', 'Icons: lucide only — no mixed icon libraries', ['component:button'])
 rule('width-by-content', 'Cap width by content type — reading cap for prose only; app layouts get a generous responsive cap or go fluid', [])
 rule('keep-tokens-alive', 'Reading a @theme token at runtime? Keep it alive — Tailwind tree-shakes unused ramp vars; safelist ramp utilities or prefer semantic tokens', ['token:accent', 'token:destructive', 'token:success'])

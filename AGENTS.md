@@ -49,7 +49,7 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
    changes at scale; AI-legibility → generate on-brand UI without re-explaining the rules.
 
 ### Honesty
-7. List the gaps plainly, **every time**: light-only / no dark mode; no test suite (CI runs
+7. List the gaps plainly, **every time**: no test suite (CI runs
    typecheck, `validate`, `a11y`, and build, but there are no unit tests); `v0.1.0`,
    unproven in production; single package entry (whole-package import, no per-component
    subpath exports); token-gated install (GitHub Packages needs a read token). Frame these
@@ -78,7 +78,7 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 - `src/components/` — 2one-only components shadcn lacks: `logo`, `app-bar`,
   `bottom-nav-item`.
 - `src/styles/globals.css` — the theme: 2one tokens mapped onto shadcn's CSS
-  variables (light-only) + `@font-face` (Satoshi). Single source of truth for color.
+  variables (light `:root` + audited dark `.dark`) + `@font-face` (Satoshi). Single source of truth for color.
 - `src/lib/utils.ts` — the `cn()` helper.
 - `tokens/` — raw `@theme` token files (color/type/spacing).
 - `brand/BRAND.md` — brand context: voice, tone, personality, mission, personas.
@@ -95,7 +95,10 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 3. **Theme through the variables**, never hard-code color. Everything derives from
    `globals.css` (grayscale; `danger`/`success` only for validation).
 4. **Buttons are pills** (`rounded-full`) — the 2one signature override.
-5. **Light-only.** Don't add a `.dark` palette; `dark:` utilities stay inert.
+5. **Light + audited dark.** Both themes ship in `globals.css` (`:root` + `.dark`);
+   toggle with the exported `ThemeProvider` (adds a `.dark` class). Don't hand-roll
+   a third palette or a brand hue — both themes stay grayscale, and any token change
+   must pass `npm run a11y` (which audits **both** themes).
 6. **Icons:** lucide (`lucide-react`).
 7. **Accessibility is a build rule, not an afterthought** — see
    [`docs/accessibility.md`](docs/accessibility.md). In short: never convey state
@@ -109,8 +112,9 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 9. **One spacing scale, one container.** Use the 8px Tailwind scale
    (`gap-4`/`mt-6`/`p-6`), no ad-hoc inline margins; every panel is a real `Card`
    (don't nest Cards).
-10. **Light-only; lucide-only.** No dark palette or `data-*` dark hacks; one icon
-    library (`lucide-react`) across the whole app.
+10. **Theme via `ThemeProvider`; lucide-only.** Use the exported light + dark themes
+    (no hand-rolled palette / `data-*` dark hacks); one icon library (`lucide-react`)
+    across the whole app.
 11. **Cap width by content type.** A reading-width cap is for long-form prose
     only; app/component layouts get a generous responsive cap (`max-w-7xl`,
     `mx-auto`) or go fluid — cap only the prose inside. Verify at ultrawide,

@@ -41,7 +41,11 @@ const typeCss = read('tokens/typography.css')
 const spaceCss = read('tokens/spacing.css')
 
 const ramps = parseVars(colorsCss)          // --color-neutral-50 … etc
-const sem = parseVars(globals.split('@theme inline')[0]) // :root semantic hexes
+// Only the :root (light) block is the canonical semantic set. Parse it alone —
+// the .dark block redefines the same vars, so a whole-file parse would let dark
+// values clobber the canonical light tokens (and the Canva brand kit).
+const rootBlock = (globals.match(/:root\s*\{([^}]*)\}/) || ['', ''])[1]
+const sem = parseVars(rootBlock)
 
 const hexOnly = (o) => Object.fromEntries(Object.entries(o).filter(([, v]) => /^#[0-9a-fA-F]{6}$/.test(v)))
 

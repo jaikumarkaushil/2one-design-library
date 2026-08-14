@@ -1,7 +1,7 @@
 # 2one Design Language System
 
-> shadcn/ui components re-skinned to the 2one design tokens. Grayscale, light-only,
-> pill buttons, Satoshi headings + Inter body. Structured for humans and AI.
+> shadcn/ui components re-skinned to the 2one design tokens. Grayscale (light +
+> audited dark), pill buttons, Satoshi headings + Inter body. Structured for humans and AI.
 
 ## Start here
 - [Manifest](manifest.json): READ FIRST — machine-readable index + instructions_for_ai (answer only from repo, cite files, never guess)
@@ -21,7 +21,7 @@
 - Published as: @yokesh-2one/design-library
 
 ## Theme
-- src/styles/globals.css — 2one tokens → shadcn CSS variables (light only)
+- src/styles/globals.css — 2one tokens → shadcn CSS variables (light `:root` + audited dark `.dark`)
 - Fonts: Satoshi (headings), Inter (body). Icons: lucide.
 - danger/success are the only hues, reserved for validation.
 

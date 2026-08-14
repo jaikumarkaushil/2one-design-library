@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import {
   Star, Bold, Italic, Underline, Search, Bell, Home, User, Rocket, CreditCard,
-  LogOut, CircleAlert, Copy, Check,
+  LogOut, CircleAlert, Copy, Check, Sun, Moon,
 } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { toast } from 'sonner'
 import graphData from '../graph.json'
 
@@ -121,6 +122,26 @@ function Block({ title, meta, className = '', children }: { title: string; meta?
   )
 }
 const Cap = ({ children }: { children: React.ReactNode }) => <span className="text-xs text-muted-foreground">{children}</span>
+
+// Light/dark toggle — verifies the whole system in both themes (dogfoods ThemeProvider).
+function ThemeToggle({ className = '' }: { className?: string }) {
+  const { resolvedTheme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+  const isDark = mounted && resolvedTheme === 'dark'
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className={className}
+      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+    >
+      {isDark ? <Sun /> : <Moon />}
+      {isDark ? 'Light' : 'Dark'}
+    </Button>
+  )
+}
 
 /* ---------- Theming playground: APCA ported from scripts/apca-audit.mjs ---------- */
 function sRGBtoY(hex: string) {
@@ -247,6 +268,7 @@ export function Showcase() {
             <span className="font-mono text-xs text-muted-foreground">
               <b className="font-semibold text-foreground">@yokesh-2one/design-library</b> · shadcn · 2one-themed
             </span>
+            <ThemeToggle className="ml-auto" />
           </header>
           <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">
 
@@ -254,7 +276,7 @@ export function Showcase() {
             <section id="overview" className="g-section g-hero">
               <div className="g-eyebrow">2one · design language system</div>
               <h1>The 2one system, <span className="thin">built on shadcn/ui.</span></h1>
-              <p>Every component on this page is the real <span className="mono">@yokesh-2one/design-library</span> — the shadcn/ui set re-skinned to the 2one tokens. Grayscale, light-only, pill buttons, Satoshi headings, Inter body.</p>
+              <p>Every component on this page is the real <span className="mono">@yokesh-2one/design-library</span> — the shadcn/ui set re-skinned to the 2one tokens. Grayscale, light + dark, pill buttons, Satoshi headings, Inter body.</p>
               <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 {([['57', 'Components'], ['54', 'shadcn primitives'], ['3', '2one-only'], ['1', 'Hue-free system']] as const).map(([k, l]) => (
                   <Card key={l}>
@@ -516,7 +538,7 @@ export function Showcase() {
                 <Block title="Accordion" className="col">
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="1"><AccordionTrigger>Is it themed to 2one?</AccordionTrigger><AccordionContent>Yes — every token maps to the 2one system.</AccordionContent></AccordionItem>
-                    <AccordionItem value="2"><AccordionTrigger>Light only?</AccordionTrigger><AccordionContent>Yes, no dark palette is defined.</AccordionContent></AccordionItem>
+                    <AccordionItem value="2"><AccordionTrigger>Light and dark?</AccordionTrigger><AccordionContent>Yes — both themes ship and both pass the APCA audit. Toggle with the ThemeProvider.</AccordionContent></AccordionItem>
                   </Accordion>
                 </Block>
                 <Block title="Table" className="col">
@@ -646,7 +668,7 @@ export function Showcase() {
               </div>
             </section>
 
-            <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">@yokesh-2one/design-library · shadcn/ui re-skinned to the 2one tokens · light-only · rendered live from the real components.</footer>
+            <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">@yokesh-2one/design-library · shadcn/ui re-skinned to the 2one tokens · light + audited dark · rendered live from the real components.</footer>
           </div>
         </SidebarInset>
       </SidebarProvider>

@@ -79,7 +79,46 @@ can't see interpolated `bg-${x}` names) so the vars are emitted. Corollary: pref
 the **semantic** tokens (`--primary`, `--muted`…) which are always live; only the raw
 `--color-*` ramps get shaken out.
 
-## 12. Verify the render, not just the build
-Compiling is not "done." Look at the page at **multiple widths** (ultrawide,
-laptop, mobile) — check for horizontal overflow and wasted gutters — run
-`npm run a11y` after any token change, and remove dead CSS as you go.
+## 12. Scan every folder you render (Tailwind keeps only what it sees)
+Tailwind generates a class only if its **content scanner** finds that literal class
+in a scanned file — two failure modes hit this repo. (a) `@theme` vars get tree-shaken
+when no utility references them (rule 11). (b) A class written in a folder the config
+never `@source`s is never generated **at all**: the dev sampler scanned `src/components`
+and `dev` but not `src/blocks`, so the area chart's `h-[250px]` (an arbitrary class
+living only in a block) was dropped and the chart collapsed to **0px height**. Scan
+every folder whose classes you render. Canary: an **arbitrary value** (`h-[250px]`,
+`w-[37ch]`) used in exactly one place — if it "does nothing", it was never generated.
+
+## 13. Multi-theme: dark is not "invert and ship"
+With more than one theme, **every** surface×text and non-text pair changes — re-audit
+all of them in **both** themes (`npm run a11y` parses `:root` and `.dark` separately;
+both must pass). Keep token **relationships** consistent across themes (if
+`muted`/`secondary`/`accent` are one value in light, keep them unified in dark). And
+keep component colours **token-driven**: a component that hardcodes `text-white` or
+bakes in `dark:bg-destructive/60` diverges from the audited token, so the audit passes
+green while the button is unreadable. Full detail + the dark palette rationale:
+[`docs/accessibility.md`](accessibility.md).
+
+## 14. Fixed colour vs theme token — brand marks are the exception to rule 2
+Rule 2 says theme through tokens, never hard-code. The **exception** is an asset with an
+*intrinsic* colour shown on a *specific* ground — a brand mark. The 2one logo is
+black-on-light / white-on-dark. Demo it on **fixed** tiles (`bg-white`, `bg-neutral-950`),
+never a theme-relative surface — putting the white logo on `bg-foreground` made it
+invisible in dark (foreground flips to near-white). In-app marks must be **theme-adaptive**:
+swap by `.dark` (`dark:hidden` / `hidden dark:block`) or paint with `currentColor`. A
+black logo on the dark sidebar simply vanishes.
+
+## 15. Keep the claims in sync with the capabilities
+When you ship (or remove) a capability, fix **every** place that asserts the old state in
+the same change. Shipping dark mode meant updating the "light-only" wording in
+`globals.css`, `registry.json`, `AGENTS.md`, the manifest, `.cursorrules`, and the
+copilot instructions — a repo that contradicts itself teaches the next reader (and every
+AI) the wrong thing. Generated files (`manifest.json`, `graph.json`) regenerate from
+source; prose files are updated by hand.
+
+## 16. Verify the render, not just the build — in every theme
+Compiling and a green audit are **not** "done." **Look** at the page — at multiple widths
+(ultrawide/laptop/mobile) **and in both themes** — spot-checking dialogs, inputs, cards,
+tables, a chart, and brand marks. The APCA audit passed while the dark destructive button
+was unreadable and the logo was invisible; only looking caught them. Run `npm run a11y`
+after any token change, and remove dead CSS as you go.

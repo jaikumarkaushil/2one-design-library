@@ -101,6 +101,9 @@ rule('light-only', 'Theme via ThemeProvider — light + audited dark, no hand-ro
 rule('lucide-only', 'Icons: lucide only — no mixed icon libraries', ['component:button'])
 rule('width-by-content', 'Cap width by content type — reading cap for prose only; app layouts get a generous responsive cap or go fluid', [])
 rule('keep-tokens-alive', 'Reading a @theme token at runtime? Keep it alive — Tailwind tree-shakes unused ramp vars; safelist ramp utilities or prefer semantic tokens', ['token:accent', 'token:destructive', 'token:success'])
+rule('scan-what-you-render', 'Tailwind only keeps classes it can SEE — @source every folder you render; an arbitrary value (h-[250px]) used once is the canary', ['component:chart', 'component:card'])
+rule('fixed-vs-theme-color', 'Brand marks need a FIXED ground, not a theme token — the logo on bg-foreground vanishes in dark; make in-app marks theme-adaptive (.dark / currentColor)', ['component:logo'])
+rule('multi-theme-audit', 'Dark is not invert-and-ship — audit every rendered pair in BOTH themes and keep component colours token-driven so the audit matches the render', ['token:destructive', 'token:border', 'token:muted'])
 
 // ---- CONTRAST facts + has_contrast ----
 for (const p of colors.contrast.pairs) {

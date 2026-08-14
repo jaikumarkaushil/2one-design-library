@@ -121,9 +121,10 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
     laptop, and mobile widths.
 
 > **Building a full app or page?** Read
-> [`docs/building-with-the-dls.md`](docs/building-with-the-dls.md) first — the ten
+> [`docs/building-with-the-dls.md`](docs/building-with-the-dls.md) first — the
 > consistency rules, written from real mistakes, that keep output looking like one
-> system.
+> system. Includes theming/dark-mode, Tailwind content-scanning, and
+> fixed-vs-theme-colour (brand marks) gotchas found while building the showcase.
 
 ## Accessibility check
 

@@ -22,7 +22,9 @@ const manifest = {
   name: pkg.name,
   version: pkg.version,
   kind: '2one Design Language System — AI-legible design repository',
-  updated: new Date().toISOString().slice(0, 10),
+  // Provenance is the package version (deterministic) — not a wall-clock date,
+  // so regenerating on any day is a no-op and `npm run check:meta` stays honest.
+  generated_for: pkg.version,
 
   description:
     "2one's Design Language System: the brand foundation, design tokens, and component library that define how every 2one product, deck, and marketing asset should look, feel, and sound. It is the single, authoritative source of truth — structured to be both human-understandable and AI-legible so any AI vendor can answer brand/design questions and generate on-brand output without guessing. The system is grayscale (no brand hue), light-only, with pill buttons, Satoshi headings and Inter body; danger/success are the only colours and are used for validation only.",
@@ -39,6 +41,7 @@ const manifest = {
       'On first contact, summarise to the user what the DLS contains and how to use it, using only this manifest + README.',
       'For any 2one-facing copy, match the brand voice in brand/brand.json (voice, tone, vocabulary).',
       'Colour rules are non-negotiable: grayscale only; danger/success for validation only; never convey state by colour alone (pair with an icon/text). See tokens/colors.json → rules.',
+      'When BUILDING any UI, follow docs/building-with-the-dls.md — the consistency rules distilled from real build mistakes: (1) build FROM the library, never hand-roll parallel chrome; (2) one token system — no hard-coded hex or second palette; (3) one 8px spacing scale — no ad-hoc inline margins; (4) one container language — every panel a real Card, never nested; (5) light-only; (6) lucide icons only; (7) never signal state by colour alone; (8) cap width by content type — a reading cap is for prose only, app layouts get a generous responsive cap (max-w-7xl) or go fluid; (9) reading a @theme token at runtime (swatch/palette view) requires a live var — Tailwind tree-shakes unused ramp vars, so safelist the ramp utilities or prefer semantic tokens; (10) verify the render at ultrawide/laptop/mobile, not just the build.',
     ],
     how_to_use: {
       'what is in here': 'Read this manifest\'s index + README.md.',

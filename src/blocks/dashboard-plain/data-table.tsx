@@ -19,19 +19,19 @@ import {
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import {
-  IconChevronDown,
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-  IconCircleCheckFilled,
-  IconDotsVertical,
-  IconGripVertical,
-  IconLayoutColumns,
-  IconLoader,
-  IconPlus,
-  IconTrendingUp,
-} from "@tabler/icons-react"
+  ChevronDown as IconChevronDown,
+  ChevronLeft as IconChevronLeft,
+  ChevronRight as IconChevronRight,
+  ChevronsLeft as IconChevronsLeft,
+  ChevronsRight as IconChevronsRight,
+  CircleCheck as IconCircleCheckFilled,
+  EllipsisVertical as IconDotsVertical,
+  GripVertical as IconGripVertical,
+  Columns3 as IconLayoutColumns,
+  Loader as IconLoader,
+  Plus as IconPlus,
+  TrendingUp as IconTrendingUp,
+} from "lucide-react"
 import {
   columnFilteringFeature,
   columnVisibilityFeature,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
-  Star, Bold, Italic, Underline, Search, Mail, Bell, Home, User, Settings, Plus,
-  ChevronRight, Rocket, CreditCard, LogOut, Check,
+  Star, Bold, Italic, Underline, Search, Bell, Home, User, Rocket, CreditCard,
+  LogOut, CircleAlert,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -38,6 +38,11 @@ import { Spinner } from '@/components/ui/spinner'
 import { Toaster } from '@/components/ui/sonner'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
+import {
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader,
+  SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem,
+  SidebarProvider, SidebarTrigger,
+} from '@/components/ui/sidebar'
 
 import { Logo } from '@/components/logo'
 import { AppBar } from '@/components/app-bar'
@@ -56,41 +61,45 @@ import { ChartRadarDefault } from '@/blocks/charts/chart-radar-default'
 import { ChartRadialStacked } from '@/blocks/charts/chart-radial-stacked'
 
 /* ---------- foundation data (from tokens/*.css) ---------- */
-const NEUTRAL: [string, string][] = [['50', '#fafafa'], ['100', '#f4f4f5'], ['200', '#e4e4e7'], ['300', '#d4d4d8'], ['400', '#a1a1aa'], ['600', '#52525b'], ['700', '#3f3f46'], ['800', '#27272a'], ['950', '#09090b']]
-const ACCENT: [string, string][] = [['50', '#fafafa'], ['100', '#f4f4f4'], ['200', '#e4e4e4'], ['300', '#d1d1d1'], ['600', '#404040'], ['700', '#262626'], ['800', '#171717'], ['950', '#000000']]
-const SEM: [string, string][] = [['danger-500', '#ef4444'], ['danger-600', '#dc2626'], ['success-600', '#15803d']]
+// Foundation swatches derive colour + label from the live @theme tokens
+// (--color-<ramp>-<step> in tokens/colors.css), so this section can never
+// drift from the real theme — change a token and the swatch follows.
+const NEUTRAL = ['50', '100', '200', '300', '400', '600', '700', '800', '950']
+const ACCENT = ['50', '100', '200', '300', '600', '700', '800', '950']
+const SEM = ['danger-500', 'danger-600', 'success-600']
 const TYPE: [string, string, string][] = [['display', 'text-display', '76 / 103'], ['h1', 'text-h1', '62 / 84'], ['h2', 'text-h2', '48 / 65'], ['h3', 'text-h3', '40 / 54'], ['h4', 'text-h4', '32 / 43'], ['h5', 'text-h5', '26 / 35'], ['h6', 'text-h6', '20 / 27'], ['base', 'text-base', '16 · body'], ['sm', 'text-sm', '14 · UI'], ['xs', 'text-xs', '12 · small']]
 const RADII = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', 'full']
 
 const ALL_COMPONENTS = ['Accordion', 'Alert', 'AlertDialog', 'AspectRatio', 'Avatar', 'Badge', 'Breadcrumb', 'Button', 'ButtonGroup', 'Calendar', 'Card', 'Carousel', 'Chart', 'Checkbox', 'Collapsible', 'Command', 'ContextMenu', 'Dialog', 'Drawer', 'DropdownMenu', 'Empty', 'Field', 'Form', 'HoverCard', 'Input', 'InputGroup', 'InputOTP', 'Item', 'Kbd', 'Label', 'Menubar', 'NativeSelect', 'NavigationMenu', 'Pagination', 'Popover', 'Progress', 'RadioGroup', 'Resizable', 'ScrollArea', 'Select', 'Separator', 'Sheet', 'Sidebar', 'Skeleton', 'Slider', 'Sonner', 'Spinner', 'Switch', 'Table', 'Tabs', 'Textarea', 'Toggle', 'ToggleGroup', 'Tooltip', 'Logo', 'AppBar', 'BottomNavItem']
 
 const NAV = [
-  { grp: '', items: [['overview', 'Overview', '']] },
+  { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', '']] },
   { grp: 'Foundations', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
   { grp: 'Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
   { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['charts', 'Charts', '31']] },
   { grp: 'Reference', items: [['index', 'All components', '57']] },
-  { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', '191']] },
+  { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', '198']] },
 ]
 
-const LogoMark = () => <Logo variant="black" width={58} className="dark:hidden" />
 
 function Block({ title, meta, className = '', children }: { title: string; meta?: string; className?: string; children: React.ReactNode }) {
+  const col = className.includes('col')
   return (
-    <div className="g-block">
-      <div className="g-block-head"><h3>{title}</h3>{meta && <span className="meta">{meta}</span>}</div>
-      <div className={`g-stage ${className}`}>{children}</div>
-    </div>
+    <Card className="min-w-0 gap-4">
+      <CardHeader>
+        <CardTitle className="text-base">{title}</CardTitle>
+        {meta && <CardDescription>{meta}</CardDescription>}
+      </CardHeader>
+      <CardContent className={`flex min-w-0 flex-wrap gap-4 [&>*]:min-w-0 [&>*]:max-w-full ${col ? 'flex-col items-start' : 'items-center'}`}>
+        {children}
+      </CardContent>
+    </Card>
   )
 }
-const Cap = ({ children }: { children: React.ReactNode }) => <span className="g-cap">{children}</span>
+const Cap = ({ children }: { children: React.ReactNode }) => <span className="text-xs text-muted-foreground">{children}</span>
 
 export function Showcase() {
-  const [chrome, setChrome] = useState<'light' | 'dark'>('light')
-  const [menu, setMenu] = useState(false)
   const [active, setActive] = useState('overview')
-
-  useEffect(() => { document.documentElement.setAttribute('data-chrome', chrome) }, [chrome])
 
   useEffect(() => {
     const secs = Array.from(document.querySelectorAll('.g-section[id]'))
@@ -101,56 +110,150 @@ export function Showcase() {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="guide" data-chrome={chrome}>
-        <div className="g-shell">
-          {/* sidebar */}
-          <aside className={`g-side ${menu ? 'open' : ''}`}>
-            <div className="g-brand">
-              <span style={{ filter: chrome === 'dark' ? 'invert(1)' : 'none' }}><Logo variant="black" width={60} /></span>
-              <span className="sub">design language<br />system</span>
+      <SidebarProvider>
+        {/* App shell — the library's own Sidebar, not bespoke chrome */}
+        <Sidebar>
+          <SidebarHeader>
+            <div className="flex items-center gap-2.5 px-2 py-1.5">
+              <Logo variant="black" width={52} />
+              <span className="text-xs leading-tight text-muted-foreground">design language<br />system</span>
             </div>
-            <nav className="g-nav">
-              {NAV.map((g, i) => (
-                <div key={i}>
-                  {g.grp && <div className="grp">{g.grp}</div>}
+          </SidebarHeader>
+          <SidebarContent>
+            {NAV.map((g, i) => (
+              <SidebarGroup key={i}>
+                {g.grp && <SidebarGroupLabel>{g.grp}</SidebarGroupLabel>}
+                <SidebarMenu>
                   {g.items.map(([id, label, n]) => (
-                    <a key={id} href={id.startsWith('/') ? id : `#${id}`} className={active === id ? 'active' : ''} onClick={() => setMenu(false)}>
-                      <span>{label}</span>{n && <span className="n">{n}</span>}
-                    </a>
+                    <SidebarMenuItem key={id}>
+                      <SidebarMenuButton asChild isActive={active === id}>
+                        <a href={id.startsWith('/') ? id : `#${id}`}>{label}</a>
+                      </SidebarMenuButton>
+                      {n && <SidebarMenuBadge>{n}</SidebarMenuBadge>}
+                    </SidebarMenuItem>
                   ))}
-                </div>
-              ))}
-            </nav>
-          </aside>
-          <div className={`g-scrim ${menu ? 'open' : ''}`} onClick={() => setMenu(false)} />
+                </SidebarMenu>
+              </SidebarGroup>
+            ))}
+          </SidebarContent>
+        </Sidebar>
 
-          {/* main */}
-          <main className="g-main">
-            <div className="g-top">
-              <div className="g-repo">
-                <button className="g-toggle g-menu-btn" onClick={() => setMenu(true)}>☰</button>
-                <span><b>@yokesh-2one/design-library</b></span>
-                <span className="g-dot" /><span>shadcn · 2one-themed</span>
-              </div>
-              <button className="g-toggle" onClick={() => setChrome((c) => (c === 'dark' ? 'light' : 'dark'))}>
-                {chrome === 'dark' ? '☾ Dark' : '☀ Light'}
-              </button>
-            </div>
+        <SidebarInset className="min-w-0">
+          <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
+            <SidebarTrigger />
+            <Separator orientation="vertical" className="mr-1 !h-5" />
+            <span className="font-mono text-xs text-muted-foreground">
+              <b className="font-semibold text-foreground">@yokesh-2one/design-library</b> · shadcn · 2one-themed
+            </span>
+          </header>
+          <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">
 
             {/* OVERVIEW */}
             <section id="overview" className="g-section g-hero">
               <div className="g-eyebrow">2one · design language system</div>
               <h1>The 2one system, <span className="thin">built on shadcn/ui.</span></h1>
               <p>Every component on this page is the real <span className="mono">@yokesh-2one/design-library</span> — the shadcn/ui set re-skinned to the 2one tokens. Grayscale, light-only, pill buttons, Satoshi headings, Inter body.</p>
-              <div className="g-stats">
-                <div className="g-stat"><div className="k">57</div><div className="l">Components</div></div>
-                <div className="g-stat"><div className="k">54</div><div className="l">shadcn primitives</div></div>
-                <div className="g-stat"><div className="k">3</div><div className="l">2one-only</div></div>
-                <div className="g-stat"><div className="k">1</div><div className="l">Hue-free system</div></div>
+              <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+                {([['57', 'Components'], ['54', 'shadcn primitives'], ['3', '2one-only'], ['1', 'Hue-free system']] as const).map(([k, l]) => (
+                  <Card key={l}>
+                    <CardHeader>
+                      <CardDescription>{l}</CardDescription>
+                      <CardTitle className="text-3xl font-semibold tabular-nums">{k}</CardTitle>
+                    </CardHeader>
+                  </Card>
+                ))}
               </div>
-              <div className="g-grid2">
-                <div><div className="g-scale-label">Run it locally (works today)</div><pre className="g-code"><span className="c"># clone the repo, then:</span>{'\n'}npm install{'\n'}npm run dev   <span className="c"># → this app</span></pre></div>
-                <div><div className="g-scale-label">Use in your app</div><pre className="g-code"><span className="c">// React 19 · Tailwind v4</span>{'\n'}import {`{ Button }`} from '@yokesh-2one/design-library'{'\n'}import '@yokesh-2one/design-library/styles'{'\n'}<span className="c">// package ships via GitHub Packages —</span>{'\n'}<span className="c">// once published; install needs a read token</span></pre></div>
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <Card className="min-w-0">
+                  <CardHeader>
+                    <CardTitle className="text-base">Run it locally</CardTitle>
+                    <CardDescription>Works today — no registry, no auth.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="min-w-0">
+                    <pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-sm text-muted-foreground">npm install{'\n'}npm run dev</pre>
+                  </CardContent>
+                </Card>
+                <Card className="min-w-0">
+                  <CardHeader>
+                    <CardTitle className="text-base">Use in your app</CardTitle>
+                    <CardDescription>React 19 · Tailwind v4.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="min-w-0">
+                    <pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-sm text-muted-foreground">import {`{ Button }`} from '@yokesh-2one/design-library'{'\n'}import '@yokesh-2one/design-library/styles'</pre>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
+            {/* HOW TO USE — composed from the 2one library (Card / Badge / Button), token-driven, grayscale */}
+            <section id="use" className="g-section">
+              <div className="g-eyebrow">Start here</div><h2>How to use — build with AI</h2>
+              <p className="g-lede">Built to be read by AI. Point your assistant — Claude Code, Cursor, Copilot, Gemini — at the repo and say what you want. It builds from the real 2one components, colours and rules. No code required.</p>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">1</Badge> Point your AI at the library</CardTitle>
+                    <CardDescription>One instruction sets the ground truth — read the manifest, then build only from here.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid gap-3">
+                    <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">Read manifest.json first, then build only from this library — don’t invent colours, fonts or components.</p>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="mr-1 text-xs text-muted-foreground">It reads</span>
+                      <Badge variant="secondary">manifest.json</Badge>
+                      <Badge variant="secondary">brand/brand.json</Badge>
+                      <Badge variant="secondary">registry.json</Badge>
+                    </div>
+                    <Button asChild variant="outline" size="sm" className="w-fit">
+                      <a href="https://github.com/yokesh-2one/2one-design-library" target="_blank" rel="noreferrer">Open the repo</a>
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">2</Badge> Ask for what you want</CardTitle>
+                    <CardDescription>Plain English. It composes real components, on brand.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid gap-3">
+                    <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">Build a login screen with email, password and a Continue button.</p>
+                    <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">Write a pricing page. Use our voice from brand/brand.json and the real tokens.</p>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="mr-1 text-xs text-muted-foreground">Recipes</span>
+                      <Badge variant="secondary">build-an-app</Badge>
+                      <Badge variant="secondary">build-a-website</Badge>
+                      <Badge variant="secondary">build-marketing</Badge>
+                      <Badge variant="secondary">build-a-deck</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">3</Badge> Make it your colour</CardTitle>
+                    <CardDescription>Grayscale by design — one variable carries the brand: the primary.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid gap-3">
+                    <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">In src/styles/globals.css set --primary to #0057FF and --primary-foreground to a contrasting label. Keep danger and success. Then run npm run a11y.</p>
+                    <p className="text-sm text-muted-foreground">Everything updates at once. <span className="font-medium text-foreground">npm run a11y</span> proves it stays readable — and fails if it doesn’t.</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">4</Badge> Stay on brand</CardTitle>
+                    <CardDescription>The system holds the line so you don’t have to.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid gap-3">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="mr-1 text-xs text-muted-foreground">Truth lives in</span>
+                      <Badge variant="secondary">brand/brand.json</Badge>
+                      <Badge variant="secondary">tokens/*.json</Badge>
+                      <Badge variant="secondary">src/components/ui</Badge>
+                    </div>
+                    <p className="rounded-md border border-border p-3 text-sm"><span className="font-medium">One hard rule:</span> never signal state by colour alone — an error needs an icon or text, not just red.</p>
+                  </CardContent>
+                </Card>
               </div>
             </section>
 
@@ -158,6 +261,11 @@ export function Showcase() {
             <section id="color" className="g-section">
               <div className="g-eyebrow">Foundations</div><h2>Colour</h2>
               <p className="g-lede">Grayscale by design — no brand hue. <b>danger</b> and <b>success</b> are the only colours, reserved for validation.</p>
+              {/* Safelist: Tailwind v4 tree-shakes @theme vars no utility references.
+                  The swatches read var(--color-<ramp>-<step>) at runtime, so we force
+                  those vars into :root by naming every ramp utility here (literal names
+                  only — Tailwind can't see interpolated class names). Kept hidden. */}
+              <div className="hidden bg-neutral-50 bg-neutral-100 bg-neutral-200 bg-neutral-300 bg-neutral-400 bg-neutral-600 bg-neutral-700 bg-neutral-800 bg-neutral-950 bg-accent-50 bg-accent-100 bg-accent-200 bg-accent-300 bg-accent-600 bg-accent-700 bg-accent-800 bg-accent-950 bg-danger-500 bg-danger-600 bg-success-600" aria-hidden />
               <div className="g-scale-label">neutral</div>
               <Swatches items={NEUTRAL} prefix="neutral-" />
               <div className="g-scale-label">accent</div>
@@ -170,7 +278,7 @@ export function Showcase() {
             <section id="type" className="g-section">
               <div className="g-eyebrow">Foundations</div><h2>Typography</h2>
               <p className="g-lede"><b>Satoshi</b> for the heading scale, <b>Inter</b> for body &amp; UI. The scale below renders from the real tokens.</p>
-              <div style={{ marginTop: 16 }}>
+              <div className="mt-4">
                 {TYPE.map(([k, cls, spec]) => (
                   <div className="g-type-row" key={k}>
                     <div className="spec">--text-{k}<br />{spec}</div>
@@ -184,8 +292,8 @@ export function Showcase() {
             <section id="radius" className="g-section">
               <div className="g-eyebrow">Foundations</div><h2>Radius</h2>
               <p className="g-lede">From hairline chips to fully-round pills. Buttons use <span className="mono">full</span> — the 2one signature.</p>
-              <div className="g-radii" style={{ marginTop: 14 }}>
-                {RADII.map((r) => <div className="g-rd" key={r} style={{ borderRadius: r === 'full' ? 22 : `var(--radius-${r})` }}>{r}</div>)}
+              <div className="g-radii">
+                {RADII.map((r) => <div className="g-rd" key={r} style={{ borderRadius: `var(--radius-${r})` }}>{r}</div>)}
               </div>
             </section>
 
@@ -203,7 +311,7 @@ export function Showcase() {
                 <Button size="sm">Small</Button>
                 <Button size="lg"><Rocket /> Large</Button>
               </Block>
-              <div className="g-grid2" style={{ marginTop: 18 }}>
+              <div className="g-grid2">
                 <Block title="ButtonGroup">
                   <ButtonGroup>
                     <Button variant="outline">Day</Button>
@@ -228,7 +336,11 @@ export function Showcase() {
               <div className="g-grid2">
                 <Block title="Input · Label" className="col">
                   <div className="grid w-full max-w-sm gap-1.5"><Label htmlFor="em">Email</Label><Input id="em" placeholder="you@example.com" /></div>
-                  <div className="grid w-full max-w-sm gap-1.5"><Label htmlFor="pw">Password</Label><Input id="pw" type="password" aria-invalid defaultValue="123" /></div>
+                  <div className="grid w-full max-w-sm gap-1.5">
+                    <Label htmlFor="pw">Password</Label>
+                    <Input id="pw" type="password" aria-invalid defaultValue="123" aria-describedby="pw-err" />
+                    <p id="pw-err" className="flex items-center gap-1.5 text-sm text-destructive"><CircleAlert className="size-4" /> Must be at least 8 characters.</p>
+                  </div>
                 </Block>
                 <Block title="Textarea" className="col">
                   <Textarea placeholder="Write a message…" className="w-full" />
@@ -284,13 +396,11 @@ export function Showcase() {
             <section id="data" className="g-section">
               <div className="g-eyebrow">Components</div><h2>Data display</h2>
               <div className="g-grid2">
-                <Block title="Card" className="col">
-                  <Card className="w-full">
-                    <CardHeader><CardTitle>Upgrade to Pro</CardTitle><CardDescription>Unlock every component.</CardDescription></CardHeader>
-                    <CardContent className="text-sm text-muted-foreground">Grayscale, token-driven, ready to ship.</CardContent>
-                    <CardFooter><Button>Continue</Button></CardFooter>
-                  </Card>
-                </Block>
+                <Card>
+                  <CardHeader><CardTitle>Upgrade to Pro</CardTitle><CardDescription>Unlock every component.</CardDescription></CardHeader>
+                  <CardContent className="text-sm text-muted-foreground">Grayscale, token-driven, ready to ship.</CardContent>
+                  <CardFooter><Button>Continue</Button></CardFooter>
+                </Card>
                 <Block title="Tabs" className="col">
                   <Tabs defaultValue="a" className="w-full"><TabsList><TabsTrigger value="a">Overview</TabsTrigger><TabsTrigger value="b">Details</TabsTrigger></TabsList><TabsContent value="a" className="text-sm text-muted-foreground pt-2">Overview panel.</TabsContent><TabsContent value="b" className="text-sm text-muted-foreground pt-2">Details panel.</TabsContent></Tabs>
                 </Block>
@@ -342,7 +452,9 @@ export function Showcase() {
                   <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbLink href="#">Home</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbLink href="#">Components</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbPage>Button</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>
                 </Block>
                 <Block title="Pagination" className="col">
-                  <Pagination><PaginationContent><PaginationItem><PaginationPrevious href="#" /></PaginationItem><PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem><PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem><PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem><PaginationItem><PaginationNext href="#" /></PaginationItem></PaginationContent></Pagination>
+                  <div className="w-full overflow-x-auto">
+                    <Pagination><PaginationContent><PaginationItem><PaginationPrevious href="#" /></PaginationItem><PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem><PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem><PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem><PaginationItem><PaginationNext href="#" /></PaginationItem></PaginationContent></Pagination>
+                  </div>
                 </Block>
               </div>
             </section>
@@ -365,7 +477,7 @@ export function Showcase() {
                 </Block>
                 <Block title="Logo" meta="black on light / white on dark">
                   <Logo variant="black" width={120} />
-                  <div className="rounded-lg p-4" style={{ background: '#09090b' }}><Logo variant="white" width={120} /></div>
+                  <div className="rounded-lg bg-foreground p-4"><Logo variant="white" width={120} /></div>
                 </Block>
               </div>
             </section>
@@ -374,20 +486,25 @@ export function Showcase() {
             <section id="blocks" className="g-section">
               <div className="g-eyebrow">Templates</div><h2>Blocks</h2>
               <p className="g-lede">Pre-composed, auto-themed forms built from the 2one components — ready to drop into an app.</p>
-              <div className="g-grid2" style={{ marginTop: 16 }}>
+              <div className="g-grid2">
                 <Block title="login-03" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login03 /></div></Block>
                 <Block title="login-01" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login01 /></div></Block>
                 <Block title="signup-01" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Signup01 /></div></Block>
               </div>
-              <div className="g-block" style={{ marginTop: 18 }}>
-                <div className="g-block-head"><h3>dashboard-plain</h3><span className="meta">block · content only, no menu</span></div>
-                <div style={{ border: '1px solid var(--g-line)', borderRadius: 14, overflow: 'auto', height: 600, background: '#fff', boxShadow: 'var(--g-shadow)' }}>
-                  <DashboardPlain />
-                </div>
-              </div>
+              <Card className="mt-6 gap-4">
+                <CardHeader>
+                  <CardTitle className="text-base">dashboard-plain</CardTitle>
+                  <CardDescription>block · content only, no navigation</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[600px] overflow-auto rounded-lg border">
+                    <DashboardPlain />
+                  </div>
+                </CardContent>
+              </Card>
               <div className="g-scale-label">All blocks</div>
               <div className="g-index">
-                {['login-01', 'login-02', 'login-03', 'login-04', 'login-05', 'signup-01', 'signup-02', 'signup-03', 'dashboard-plain'].map((b) => <a key={b} href="#blocks">{b}</a>)}
+                {['login-01', 'login-02', 'login-03', 'login-04', 'login-05', 'signup-01', 'signup-02', 'signup-03', 'dashboard-plain'].map((b) => <span key={b} className="chip">{b}</span>)}
               </div>
             </section>
 
@@ -395,7 +512,7 @@ export function Showcase() {
             <section id="charts" className="g-section">
               <div className="g-eyebrow">Templates · data viz</div><h2>Charts</h2>
               <p className="g-lede">31 chart templates across every type — grayscale by default (the <code>--chart-1…5</code> tokens map to the neutral ramp, no hues). One of each type shown; the full set lives in <code>src/blocks/charts/</code>.</p>
-              <div className="g-grid2" style={{ marginTop: 18 }}>
+              <div className="g-grid2">
                 <ChartArea />
                 <ChartBarMultiple />
                 <ChartLineMultiple />
@@ -405,7 +522,7 @@ export function Showcase() {
               </div>
               <div className="g-scale-label">All 31 charts</div>
               <div className="g-index">
-                {['area-default','area-linear','area-stacked','area-legend','area-interactive','bar-default','bar-horizontal','bar-multiple','bar-stacked','bar-label','bar-interactive','line-default','line-multiple','line-dots','line-label','line-interactive','pie-simple','pie-label','pie-donut','pie-donut-text','pie-interactive','radar-default','radar-dots','radar-multiple','radar-legend','radial-simple','radial-label','radial-grid','radial-stacked','tooltip-default','tooltip-advanced'].map((c) => <a key={c} href="#charts">chart-{c}</a>)}
+                {['area-default','area-linear','area-stacked','area-legend','area-interactive','bar-default','bar-horizontal','bar-multiple','bar-stacked','bar-label','bar-interactive','line-default','line-multiple','line-dots','line-label','line-interactive','pie-simple','pie-label','pie-donut','pie-donut-text','pie-interactive','radar-default','radar-dots','radar-multiple','radar-legend','radial-simple','radial-label','radial-grid','radial-stacked','tooltip-default','tooltip-advanced'].map((c) => <span key={c} className="chip">chart-{c}</span>)}
               </div>
             </section>
 
@@ -413,15 +530,15 @@ export function Showcase() {
             <section id="index" className="g-section">
               <div className="g-eyebrow">Reference</div><h2>All components</h2>
               <p className="g-lede">Every export in the package — 54 shadcn primitives + 3 2one-only.</p>
-              <div className="g-index" style={{ marginTop: 16 }}>
-                {ALL_COMPONENTS.map((c) => <a key={c} href="#overview">{c}</a>)}
+              <div className="g-index">
+                {ALL_COMPONENTS.map((c) => <span key={c} className="chip">{c}</span>)}
               </div>
             </section>
 
-            <footer className="g-foot">@yokesh-2one/design-library · shadcn/ui re-skinned to the 2one tokens · light-only · rendered live from the real components.</footer>
-          </main>
-        </div>
-      </div>
+            <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">@yokesh-2one/design-library · shadcn/ui re-skinned to the 2one tokens · light-only · rendered live from the real components.</footer>
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
       <Toaster />
     </TooltipProvider>
   )
@@ -436,11 +553,21 @@ function OtpDemo() {
   )
 }
 
-function Swatches({ items, prefix }: { items: [string, string][]; prefix: string }) {
+function Swatches({ items, prefix }: { items: string[]; prefix: string }) {
+  const [hex, setHex] = useState<Record<string, string>>({})
+  useEffect(() => {
+    const cs = getComputedStyle(document.documentElement)
+    const next: Record<string, string> = {}
+    items.forEach((k) => { next[k] = cs.getPropertyValue(`--color-${prefix}${k}`).trim() })
+    setHex(next)
+  }, [items, prefix])
   return (
     <div className="g-swatches">
-      {items.map(([k, v]) => (
-        <div className="g-sw" key={k}><div className="chip" style={{ background: v }} /><div className="m"><div>{prefix}{k}</div><div className="hx">{v}</div></div></div>
+      {items.map((k) => (
+        <div className="g-sw" key={k}>
+          <div className="chip" style={{ background: `var(--color-${prefix}${k})` }} />
+          <div className="m"><div>{prefix}{k}</div><div className="hx">{hex[k]}</div></div>
+        </div>
       ))}
     </div>
   )

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import {
   Star, Bold, Italic, Underline, Search, Bell, Home, User, Rocket, CreditCard,
-  LogOut, CircleAlert,
+  LogOut, CircleAlert, Copy, Check, Sun, Moon,
 } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { toast } from 'sonner'
+import graphData from '../graph.json'
 
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
@@ -70,10 +72,15 @@ const SEM = ['danger-500', 'danger-600', 'success-600']
 const TYPE: [string, string, string][] = [['display', 'text-display', '76 / 103'], ['h1', 'text-h1', '62 / 84'], ['h2', 'text-h2', '48 / 65'], ['h3', 'text-h3', '40 / 54'], ['h4', 'text-h4', '32 / 43'], ['h5', 'text-h5', '26 / 35'], ['h6', 'text-h6', '20 / 27'], ['base', 'text-base', '16 · body'], ['sm', 'text-sm', '14 · UI'], ['xs', 'text-xs', '12 · small']]
 const RADII = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', 'full']
 
-const ALL_COMPONENTS = ['Accordion', 'Alert', 'AlertDialog', 'AspectRatio', 'Avatar', 'Badge', 'Breadcrumb', 'Button', 'ButtonGroup', 'Calendar', 'Card', 'Carousel', 'Chart', 'Checkbox', 'Collapsible', 'Command', 'ContextMenu', 'Dialog', 'Drawer', 'DropdownMenu', 'Empty', 'Field', 'Form', 'HoverCard', 'Input', 'InputGroup', 'InputOTP', 'Item', 'Kbd', 'Label', 'Menubar', 'NativeSelect', 'NavigationMenu', 'Pagination', 'Popover', 'Progress', 'RadioGroup', 'Resizable', 'ScrollArea', 'Select', 'Separator', 'Sheet', 'Sidebar', 'Skeleton', 'Slider', 'Sonner', 'Spinner', 'Switch', 'Table', 'Tabs', 'Textarea', 'Toggle', 'ToggleGroup', 'Tooltip', 'Logo', 'AppBar', 'BottomNavItem']
+// Component index derived from the knowledge graph (single source of truth — no
+// hand-maintained list to drift). Each chip deep-links into /graph.html.
+const GRAPH_COMPONENTS = (graphData.nodes as { id: string; type: string; label: string }[])
+  .filter((n) => n.type === 'component' || n.type === 'component-2one')
+  .map((n) => ({ id: n.id, label: n.label }))
+  .sort((a, b) => a.label.localeCompare(b.label))
 
 const NAV = [
-  { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', '']] },
+  { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', ''], ['playground', 'Theming', '']] },
   { grp: 'Foundations', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
   { grp: 'Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
   { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['charts', 'Charts', '31']] },
@@ -81,6 +88,24 @@ const NAV = [
   { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', '198']] },
 ]
 
+
+function CodeBlock({ code }: { code: string }) {
+  const [done, setDone] = useState(false)
+  return (
+    <div className="relative min-w-0">
+      <pre className="overflow-x-auto rounded-md bg-muted p-3 pr-11 font-mono text-sm text-muted-foreground">{code}</pre>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label={done ? 'Copied' : 'Copy to clipboard'}
+        className="absolute right-1.5 top-1.5"
+        onClick={() => { navigator.clipboard?.writeText(code); setDone(true); setTimeout(() => setDone(false), 1200) }}
+      >
+        {done ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+      </Button>
+    </div>
+  )
+}
 
 function Block({ title, meta, className = '', children }: { title: string; meta?: string; className?: string; children: React.ReactNode }) {
   const col = className.includes('col')
@@ -97,6 +122,104 @@ function Block({ title, meta, className = '', children }: { title: string; meta?
   )
 }
 const Cap = ({ children }: { children: React.ReactNode }) => <span className="text-xs text-muted-foreground">{children}</span>
+
+// Light/dark toggle — verifies the whole system in both themes (dogfoods ThemeProvider).
+function ThemeToggle({ className = '' }: { className?: string }) {
+  const { resolvedTheme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+  const isDark = mounted && resolvedTheme === 'dark'
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className={className}
+      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+    >
+      {isDark ? <Sun /> : <Moon />}
+      {isDark ? 'Light' : 'Dark'}
+    </Button>
+  )
+}
+
+/* ---------- Theming playground: APCA ported from scripts/apca-audit.mjs ---------- */
+function sRGBtoY(hex: string) {
+  const h = hex.replace('#', ''); const R = parseInt(h.slice(0, 2), 16), G = parseInt(h.slice(2, 4), 16), B = parseInt(h.slice(4, 6), 16)
+  const f = (v: number) => Math.pow(v / 255, 2.4); return 0.2126729 * f(R) + 0.7151522 * f(G) + 0.0721750 * f(B)
+}
+function apca(txt: string, bg: string) {
+  let t = sRGBtoY(txt), b = sRGBtoY(bg)
+  const bT = 0.022, bC = 1.414, dY = 0.0005, s = 1.14, lB = 0.027, lW = 0.027, lC = 0.1, nBG = 0.56, nT = 0.57, rT = 0.62, rB = 0.65
+  t = t > bT ? t : t + Math.pow(bT - t, bC); b = b > bT ? b : b + Math.pow(bT - b, bC)
+  if (Math.abs(b - t) < dY) return 0
+  let C: number
+  if (b > t) { const S = (Math.pow(b, nBG) - Math.pow(t, nT)) * s; C = S < lC ? 0 : S - lB }
+  else { const S = (Math.pow(b, rB) - Math.pow(t, rT)) * s; C = S > -lC ? 0 : S + lW }
+  return Math.round(C * 1000) / 10
+}
+// auto-pick the label colour with the strongest contrast — the "contrasting label" guidance
+const bestFg = (bg: string) => (Math.abs(apca('#ffffff', bg)) >= Math.abs(apca('#09090b', bg)) ? '#ffffff' : '#09090b')
+const PRESETS = ['#09090b', '#0057ff', '#15803d', '#7c3aed', '#db2777', '#ea580c']
+const THEME_VARS = ['--primary', '--primary-foreground', '--sidebar-primary', '--sidebar-primary-foreground', '--ring']
+
+function ThemingPlayground() {
+  const [color, setColor] = useState('#09090b')
+  useEffect(() => {
+    const cur = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim()
+    if (/^#[0-9a-f]{6}$/i.test(cur)) setColor(cur)
+  }, [])
+  const apply = (c: string) => {
+    setColor(c)
+    const f = bestFg(c), r = document.documentElement.style
+    r.setProperty('--primary', c); r.setProperty('--primary-foreground', f)
+    r.setProperty('--sidebar-primary', c); r.setProperty('--sidebar-primary-foreground', f); r.setProperty('--ring', c)
+  }
+  const reset = () => {
+    const r = document.documentElement.style
+    THEME_VARS.forEach((p) => r.removeProperty(p))
+    setColor(getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#09090b')
+  }
+  const fg = bestFg(color)
+  const lc = Math.abs(apca(fg, color))
+  const pass = lc >= 75
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Brand colour</CardTitle>
+        <CardDescription>Set <span className="mono">--primary</span> and the whole system recolors — buttons, links, focus, nav.</CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <input type="color" aria-label="Pick brand colour" value={color} onChange={(e) => apply(e.target.value)}
+            className="size-10 cursor-pointer rounded-md border bg-background p-0.5" />
+          <span className="mono text-sm">{color}</span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {PRESETS.map((p) => (
+              <button key={p} aria-label={`Use ${p}`} onClick={() => apply(p)}
+                className="size-6 rounded-full border" style={{ background: p }} />
+            ))}
+          </div>
+          <Button variant="outline" size="sm" onClick={reset} className="ml-auto">Reset</Button>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          {pass
+            ? <Badge variant="secondary" className="gap-1.5"><Check className="size-3.5" /> APCA Lc {lc.toFixed(1)} · pass</Badge>
+            : <Badge variant="destructive" className="gap-1.5"><CircleAlert className="size-3.5" /> APCA Lc {lc.toFixed(1)} · fail</Badge>}
+          <span className="text-muted-foreground">{pass ? 'label clears the Lc 75 threshold for button text.' : 'label is unreadable on this colour — pick a darker/lighter hue.'}</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 rounded-md border p-4">
+          <Button>Primary</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="outline">Outline</Button>
+          <Badge>Badge</Badge>
+          <a href="#playground" className="text-primary underline underline-offset-2 text-sm">A themed link</a>
+          <Input placeholder="Focus me" className="w-40" />
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
 
 export function Showcase() {
   const [active, setActive] = useState('overview')
@@ -115,7 +238,8 @@ export function Showcase() {
         <Sidebar>
           <SidebarHeader>
             <div className="flex items-center gap-2.5 px-2 py-1.5">
-              <Logo variant="black" width={52} />
+              <Logo variant="black" width={52} className="dark:hidden" />
+              <Logo variant="white" width={52} className="hidden dark:block" />
               <span className="text-xs leading-tight text-muted-foreground">design language<br />system</span>
             </div>
           </SidebarHeader>
@@ -145,6 +269,7 @@ export function Showcase() {
             <span className="font-mono text-xs text-muted-foreground">
               <b className="font-semibold text-foreground">@yokesh-2one/design-library</b> · shadcn · 2one-themed
             </span>
+            <ThemeToggle className="ml-auto" />
           </header>
           <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">
 
@@ -152,7 +277,7 @@ export function Showcase() {
             <section id="overview" className="g-section g-hero">
               <div className="g-eyebrow">2one · design language system</div>
               <h1>The 2one system, <span className="thin">built on shadcn/ui.</span></h1>
-              <p>Every component on this page is the real <span className="mono">@yokesh-2one/design-library</span> — the shadcn/ui set re-skinned to the 2one tokens. Grayscale, light-only, pill buttons, Satoshi headings, Inter body.</p>
+              <p>Every component on this page is the real <span className="mono">@yokesh-2one/design-library</span> — the shadcn/ui set re-skinned to the 2one tokens. Grayscale, light + dark, pill buttons, Satoshi headings, Inter body.</p>
               <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 {([['57', 'Components'], ['54', 'shadcn primitives'], ['3', '2one-only'], ['1', 'Hue-free system']] as const).map(([k, l]) => (
                   <Card key={l}>
@@ -170,7 +295,7 @@ export function Showcase() {
                     <CardDescription>Works today — no registry, no auth.</CardDescription>
                   </CardHeader>
                   <CardContent className="min-w-0">
-                    <pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-sm text-muted-foreground">npm install{'\n'}npm run dev</pre>
+                    <CodeBlock code={'npm install\nnpm run dev'} />
                   </CardContent>
                 </Card>
                 <Card className="min-w-0">
@@ -179,7 +304,7 @@ export function Showcase() {
                     <CardDescription>React 19 · Tailwind v4.</CardDescription>
                   </CardHeader>
                   <CardContent className="min-w-0">
-                    <pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-sm text-muted-foreground">import {`{ Button }`} from '@yokesh-2one/design-library'{'\n'}import '@yokesh-2one/design-library/styles'</pre>
+                    <CodeBlock code={"import { Button } from '@yokesh-2one/design-library'\nimport '@yokesh-2one/design-library/styles'"} />
                   </CardContent>
                 </Card>
               </div>
@@ -255,6 +380,13 @@ export function Showcase() {
                   </CardContent>
                 </Card>
               </div>
+            </section>
+
+            {/* THEMING PLAYGROUND */}
+            <section id="playground" className="g-section">
+              <div className="g-eyebrow">Live</div><h2>Theming playground</h2>
+              <p className="g-lede">Try your company colour. One variable carries the brand, so the whole system recolors at once — and the APCA check runs live so you never ship an unreadable button. This is exactly the change an AI makes when you say “make it our colour”.</p>
+              <div className="mt-6"><ThemingPlayground /></div>
             </section>
 
             {/* COLOUR */}
@@ -407,7 +539,7 @@ export function Showcase() {
                 <Block title="Accordion" className="col">
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="1"><AccordionTrigger>Is it themed to 2one?</AccordionTrigger><AccordionContent>Yes — every token maps to the 2one system.</AccordionContent></AccordionItem>
-                    <AccordionItem value="2"><AccordionTrigger>Light only?</AccordionTrigger><AccordionContent>Yes, no dark palette is defined.</AccordionContent></AccordionItem>
+                    <AccordionItem value="2"><AccordionTrigger>Light and dark?</AccordionTrigger><AccordionContent>Yes — both themes ship and both pass the APCA audit. Toggle with the ThemeProvider.</AccordionContent></AccordionItem>
                   </Accordion>
                 </Block>
                 <Block title="Table" className="col">
@@ -476,8 +608,9 @@ export function Showcase() {
                   </div>
                 </Block>
                 <Block title="Logo" meta="black on light / white on dark">
-                  <Logo variant="black" width={120} />
-                  <div className="rounded-lg bg-foreground p-4"><Logo variant="white" width={120} /></div>
+                  {/* fixed grounds — the mark is demoed on its intended surface, not the page theme's */}
+                  <div className="rounded-lg border bg-white p-4"><Logo variant="black" width={120} /></div>
+                  <div className="rounded-lg bg-neutral-950 p-4"><Logo variant="white" width={120} /></div>
                 </Block>
               </div>
             </section>
@@ -529,13 +662,15 @@ export function Showcase() {
             {/* INDEX */}
             <section id="index" className="g-section">
               <div className="g-eyebrow">Reference</div><h2>All components</h2>
-              <p className="g-lede">Every export in the package — 54 shadcn primitives + 3 2one-only.</p>
+              <p className="g-lede">Every export in the package — 54 shadcn primitives + 3 2one-only. Click any to open it in the <a className="underline underline-offset-2" href="/graph.html">knowledge graph</a>.</p>
               <div className="g-index">
-                {ALL_COMPONENTS.map((c) => <span key={c} className="chip">{c}</span>)}
+                {GRAPH_COMPONENTS.map((c) => (
+                  <a key={c.id} className="chip" href={`/graph.html?node=${encodeURIComponent(c.id)}`} title={`${c.label} — open in the knowledge graph`}>{c.label}</a>
+                ))}
               </div>
             </section>
 
-            <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">@yokesh-2one/design-library · shadcn/ui re-skinned to the 2one tokens · light-only · rendered live from the real components.</footer>
+            <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">@yokesh-2one/design-library · shadcn/ui re-skinned to the 2one tokens · light + audited dark · rendered live from the real components.</footer>
           </div>
         </SidebarInset>
       </SidebarProvider>

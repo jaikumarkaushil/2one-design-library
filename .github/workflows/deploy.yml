@@ -1,0 +1,43 @@
+# Deploys the showcase site (catalog + knowledge graph) to Vercel on push to main.
+#
+# This is GATED on the VERCEL_TOKEN secret: with no secret set it no-ops (green),
+# so it never blocks CI. Vercel's Git integration already auto-deploys via
+# vercel.json; enable this CI path by adding three repo secrets:
+#   VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+name: Deploy (Vercel)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Vercel not configured — skipping (Git integration still deploys)
+        if: env.VERCEL_TOKEN == ''
+        run: echo "No VERCEL_TOKEN secret set. Skipping CI deploy."
+
+      - uses: actions/setup-node@v4
+        if: env.VERCEL_TOKEN != ''
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        if: env.VERCEL_TOKEN != ''
+        run: npm ci
+
+      - name: Build & deploy (production)
+        if: env.VERCEL_TOKEN != ''
+        run: |
+          npm i -g vercel@latest
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel build --prod --token="$VERCEL_TOKEN"
+          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"

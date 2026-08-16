@@ -26,6 +26,7 @@
   ],
   "scripts": {
     "dev": "vite --config vite.config.dev.ts",
+    "build:site": "vite build --config vite.config.dev.ts",
     "build": "vite build && tsc --emitDeclarationOnly -p tsconfig.json && tsc-alias -p tsconfig.json && node scripts/copy-styles.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "storybook": "storybook dev -p 6006",
@@ -76,6 +77,7 @@
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^1.31.0",
+    "next-themes": "^0.4.6",
     "radix-ui": "^1.6.7",
     "react-day-picker": "^10.0.1",
     "react-hook-form": "^7.85.0",

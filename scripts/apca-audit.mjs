@@ -35,37 +35,79 @@ function apca(txt, bg) {
   return Math.round(C * 1000) / 10
 }
 
-// ---- read the live token values from globals.css ----
+// ---- read the live token values from globals.css, per theme scope ----
+// The :root block is the light theme; the .dark block redefines the same
+// semantic vars for dark. We parse each block separately so dark values never
+// clobber light ones — BOTH themes must clear their thresholds.
 const css = readFileSync(join(root, 'src/styles/globals.css'), 'utf8')
-const tok = {}
-for (const m of css.matchAll(/(--[\w-]+):\s*(#[0-9a-fA-F]{6})/g)) tok[m[1]] = m[2].toLowerCase()
-const v = (name) => { if (!tok[name]) throw new Error(`token ${name} not found in globals.css`); return tok[name] }
+const blockBody = (selectorRe) => { const m = css.match(selectorRe); return m ? m[1] : '' }
+const parseTokens = (body) => {
+  const t = {}
+  for (const m of body.matchAll(/(--[\w-]+):\s*(#[0-9a-fA-F]{6})/g)) t[m[1]] = m[2].toLowerCase()
+  return t
+}
+const themes = {
+  light: parseTokens(blockBody(/:root\s*\{([^}]*)\}/)),
+  dark: parseTokens(blockBody(/\.dark\s*\{([^}]*)\}/)),
+}
 
 // ---- pairs to check: [textVar, bgVar, usage, requiredLc] ----
+// Audit the pairs the COMPONENTS ACTUALLY RENDER, on every surface — not a
+// handful of idealised token pairs. A token-only check passed while the dark
+// destructive button rendered white-on-pale-pink (Lc 24); this matrix covers
+// text on each surface, muted text on each surface, error text on cards, and
+// non-text (borders/rings) on each surface they sit on.
 const pairs = [
-  ['--foreground', '--background', 'body + headings on page', 75],
-  ['--muted-foreground', '--background', 'secondary text / labels', 60],
-  ['--muted-foreground', '--muted', 'muted text on muted surface', 60],
+  // primary text on each surface it lands on
+  ['--foreground', '--background', 'body text on page', 75],
+  ['--card-foreground', '--card', 'text on a Card', 75],
+  ['--popover-foreground', '--popover', 'text in a menu / popover', 75],
   ['--primary-foreground', '--primary', 'primary button label', 75],
   ['--secondary-foreground', '--secondary', 'secondary button label', 75],
-  ['--destructive-foreground', '--destructive', 'destructive button label', 75],
-  ['--destructive', '--background', 'error text / label', 60],
-  ['--success', '--background', 'success text / label', 60],
-  ['--border', '--background', 'border / input hairline (non-text)', 15],
-  ['--ring', '--background', 'focus ring (non-text)', 15],
+  ['--accent-foreground', '--accent', 'hover / active menu item', 60],
+  // secondary (muted) text on each surface it lands on
+  ['--muted-foreground', '--background', 'secondary text on page', 60],
+  ['--muted-foreground', '--card', 'CardDescription / muted text on a Card', 60],
+  ['--muted-foreground', '--popover', 'muted text in a menu', 60],
+  ['--muted-foreground', '--muted', 'muted text on a muted fill', 60],
+  // validation — components render text-destructive-foreground on SOLID --destructive
+  ['--destructive-foreground', '--destructive', 'destructive button / badge label', 75],
+  ['--destructive', '--background', 'error text on page', 60],
+  ['--destructive', '--card', 'error text on a Card (Alert)', 60],
+  ['--success', '--background', 'success text on page', 60],
+  ['--success', '--card', 'success text on a Card', 60],
+  // non-text UI (borders, rings) on each surface they sit on
+  ['--border', '--background', 'border / input hairline on page', 15],
+  ['--border', '--card', 'card & table hairlines on a Card', 15],
+  ['--ring', '--background', 'focus ring on page', 15],
+  ['--ring', '--card', 'focus ring on a Card / input', 15],
+  // sidebar surface
+  ['--sidebar-foreground', '--sidebar', 'sidebar text', 75],
+  ['--muted-foreground', '--sidebar', 'sidebar label / muted text', 60],
+  ['--sidebar-accent-foreground', '--sidebar-accent', 'active nav item', 60],
+  ['--sidebar-primary-foreground', '--sidebar-primary', 'sidebar primary label', 75],
+  ['--sidebar-border', '--sidebar', 'sidebar border', 15],
 ]
 
-let failed = 0
-console.log('\n  APCA audit — 2one DLS theme (light)\n')
-console.log('   Lc    req   result  pair')
-console.log('  ' + '-'.repeat(70))
-for (const [tv, bv, usage, req] of pairs) {
-  const lc = apca(v(tv), v(bv))
-  const pass = Math.abs(lc) >= req
-  if (!pass) failed++
-  const lcs = String(lc).padStart(6)
-  console.log(`  ${lcs}   ${String(req).padStart(3)}   ${pass ? ' pass ' : ' FAIL '}  ${usage}  (${tv} on ${bv})`)
+function auditTheme(label, tok) {
+  const v = (name) => { if (!tok[name]) throw new Error(`token ${name} not found in .${label === 'light' ? 'root' : label} block of globals.css`); return tok[name] }
+  let failed = 0
+  console.log(`\n  APCA audit — 2one DLS theme (${label})\n`)
+  console.log('   Lc    req   result  pair')
+  console.log('  ' + '-'.repeat(70))
+  for (const [tv, bv, usage, req] of pairs) {
+    const lc = apca(v(tv), v(bv))
+    const pass = Math.abs(lc) >= req
+    if (!pass) failed++
+    console.log(`  ${String(lc).padStart(6)}   ${String(req).padStart(3)}   ${pass ? ' pass ' : ' FAIL '}  ${usage}  (${tv} on ${bv})`)
+  }
+  return failed
 }
+
+let failed = auditTheme('light', themes.light)
+if (Object.keys(themes.dark).length) failed += auditTheme('dark', themes.dark)
+else { console.error('\n  ✗ no .dark theme block found in globals.css — dark theme must be contrast-audited\n'); process.exit(1) }
+
 console.log('')
-if (failed) { console.error(`  ✗ ${failed} pair(s) below threshold\n`); process.exit(1) }
-console.log('  ✓ all pairs meet their APCA threshold\n')
+if (failed) { console.error(`  ✗ ${failed} pair(s) below threshold across themes\n`); process.exit(1) }
+console.log('  ✓ all pairs meet their APCA threshold — light AND dark\n')

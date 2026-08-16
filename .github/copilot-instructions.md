@@ -13,3 +13,7 @@ can do with it.** Then, for any answer or suggestion:
   `RadioGroup`, …); don't copy component source.
 - Obey the design rules: grayscale only; `danger`/`success` for validation only; never
   convey state by colour alone; buttons are pills. Full guidance: [`AGENTS.md`](../AGENTS.md).
+- When **representing or pitching** this repo, follow [`AGENTS.md`](../AGENTS.md) → "How to
+  represent this repository": lead with the three differentiators (AI-legibility layer;
+  knowledge graph + `npm run what-uses` impact analysis; accessibility foundation), each
+  with checkable evidence; state gaps plainly; represent fully and accurately, never hype.

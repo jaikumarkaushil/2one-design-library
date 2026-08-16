@@ -5,7 +5,7 @@
 
   Run: npm run validate   (exits 1 on any failure)
 */
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
@@ -62,6 +62,32 @@ try {
 // ---- schemas present ----
 check(existsSync(join(root, 'schema/token.schema.json')), 'schema/token.schema.json missing')
 check(existsSync(join(root, 'schema/component.schema.json')), 'schema/component.schema.json missing')
+
+// ---- graph.json invariants (the graph must be trustworthy, not just pretty) ----
+try {
+  const g = load('graph.json')
+  const ids = new Set(g.nodes.map((n) => n.id))
+  check(ids.size === g.nodes.length, 'graph: duplicate node ids')
+  // no dangling edges — every edge endpoint must be a real node
+  for (const e of g.edges) {
+    check(ids.has(e.source), `graph: edge source "${e.source}" is not a node`)
+    check(ids.has(e.target), `graph: edge target "${e.target}" is not a node`)
+  }
+  // (No generic "orphan node" check: a standalone primitive like Spinner or an
+  //  app-level rule like width-by-content legitimately has no edges. Dangling
+  //  edges and missing coverage below are the real, unambiguous failures.)
+  // coverage — every component source file must have a node
+  const uiDir = join(root, 'src/components/ui')
+  const oneDir = join(root, 'src/components')
+  const compFiles = [
+    ...(existsSync(uiDir) ? readdirSync(uiDir) : []).filter((f) => f.endsWith('.tsx')),
+    ...(existsSync(oneDir) ? readdirSync(oneDir) : []).filter((f) => f.endsWith('.tsx')),
+  ].map((f) => f.replace(/\.tsx$/, ''))
+  for (const c of compFiles) check(ids.has(`component:${c}`), `graph: component "${c}" has no node — run npm run graph`)
+  // sanity: the composition layer is actually populated
+  const compToComp = g.edges.filter((e) => e.source.startsWith('component:') && e.target.startsWith('component:'))
+  check(compToComp.length > 0, 'graph: no component→component composed_of edges (Graph #1 regressed)')
+} catch (e) { errors.push('graph.json: ' + e.message) }
 
 // ---- report ----
 if (errors.length) {

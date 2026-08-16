@@ -2,6 +2,9 @@
    2one Design Language System: shadcn/ui components re-skinned to 2one tokens.
    Import styles once at your app root: '@yokesh-2one/design-library/styles' */
 
+// theming — light + audited dark (grayscale; no brand hue)
+export * from './theme-provider'
+
 // shadcn primitives (2one-themed)
 export * from './components/ui/accordion'
 export * from './components/ui/alert-dialog'

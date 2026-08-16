@@ -1,7 +1,7 @@
 {
   "name": "@yokesh-2one/design-library",
   "title": "2one Design Language System",
-  "description": "shadcn/ui components re-skinned to the 2one design tokens. Grayscale, light-only, pill buttons, Satoshi headings + Inter body.",
+  "description": "shadcn/ui components re-skinned to the 2one design tokens. Grayscale (light + audited dark), pill buttons, Satoshi headings + Inter body.",
   "basedOn": {
     "source": "shadcn/ui",
     "license": "MIT",
@@ -17,8 +17,8 @@
     "tailwind": "v4 — consumer runs Tailwind and @source's the package dist"
   },
   "theme": {
-    "mode": "light-only",
-    "note": "No .dark palette is defined; the dark: utilities in shadcn components stay inert.",
+    "mode": "light + dark",
+    "note": "Both a light (:root) and an audited dark (.dark) palette are defined; toggle via the exported ThemeProvider (adds a .dark class), which activates the shadcn dark: utilities. Same grayscale system in both — no brand/accent hue. Both themes pass the APCA audit (npm run a11y).",
     "hues": "grayscale; danger + success are the only hues, reserved for validation",
     "fonts": { "heading": "Satoshi", "body": "Inter", "link": "Inter" },
     "tokenMap": {

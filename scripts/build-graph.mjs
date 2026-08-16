@@ -65,6 +65,14 @@ const importedComponents = (src) => {
   for (const m of src.matchAll(/from\s+['"]@\/components\/(?:ui\/)?([a-z0-9-]+)['"]/g)) set.add(m[1])
   return set
 }
+// component → component composition (e.g. AlertDialog imports buttonVariants;
+// Sidebar imports Button/Input/Sheet/…). Same import parser, pointed at components.
+for (const [, path, name] of componentFiles) {
+  for (const c of importedComponents(R(path))) {
+    if (c !== name && nodes.has(compId(c))) addEdge(compId(name), compId(c), 'composed_of')
+  }
+}
+
 const addTemplate = (id, label, type, files) => {
   addNode(id, type, label)
   const used = new Set()
@@ -89,10 +97,13 @@ rule('build-from-library', 'Build from the library — never hand-roll parallel 
 rule('tokens-only', 'Theme only through tokens — no hard-coded hex or second palette', ['token:background', 'token:primary', 'token:muted', 'token:border'])
 rule('one-spacing-scale', 'One 8px spacing scale — no ad-hoc inline margins', ['radius:md'])
 rule('one-container', 'One container language — every panel is a real Card', ['component:card'])
-rule('light-only', 'Light-only — no dark palette or data-* hacks', ['token:background'])
+rule('light-only', 'Theme via ThemeProvider — light + audited dark, no hand-rolled palette', ['token:background'])
 rule('lucide-only', 'Icons: lucide only — no mixed icon libraries', ['component:button'])
 rule('width-by-content', 'Cap width by content type — reading cap for prose only; app layouts get a generous responsive cap or go fluid', [])
 rule('keep-tokens-alive', 'Reading a @theme token at runtime? Keep it alive — Tailwind tree-shakes unused ramp vars; safelist ramp utilities or prefer semantic tokens', ['token:accent', 'token:destructive', 'token:success'])
+rule('scan-what-you-render', 'Tailwind only keeps classes it can SEE — @source every folder you render; an arbitrary value (h-[250px]) used once is the canary', ['component:chart', 'component:card'])
+rule('fixed-vs-theme-color', 'Brand marks need a FIXED ground, not a theme token — the logo on bg-foreground vanishes in dark; make in-app marks theme-adaptive (.dark / currentColor)', ['component:logo'])
+rule('multi-theme-audit', 'Dark is not invert-and-ship — audit every rendered pair in BOTH themes and keep component colours token-driven so the audit matches the render', ['token:destructive', 'token:border', 'token:muted'])
 
 // ---- CONTRAST facts + has_contrast ----
 for (const p of colors.contrast.pairs) {
@@ -107,6 +118,8 @@ addNode('brand:mission', 'brand', 'Mission', { value: brand.mission })
 addNode('brand:voice', 'brand', 'Voice: ' + brand.voice.descriptors.join(', '))
 addNode('brand:tone', 'brand', 'Tone: ' + brand.tone.descriptors.join(', '))
 for (const p of brand.personas) addNode(`persona:${p.id}`, 'brand', p.label)
+// the mission serves the personas — richer than leaving them as leaves
+for (const p of brand.personas) addEdge('brand:mission', `persona:${p.id}`, 'serves')
 addEdge('brand:voice', 'rule:grayscale', 'embodies')
 addEdge('brand:voice', 'rule:pill-buttons', 'embodies')
 addEdge('brand:voice', 'rule:no-color-alone', 'embodies')

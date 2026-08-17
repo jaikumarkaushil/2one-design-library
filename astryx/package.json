@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "a11y": "node scripts/apca-audit.mjs",
+    "a11y": "npm run theme:build && node scripts/apca-audit.mjs",
     "theme:build": "astryx theme build src/2oneTheme.ts --out dist/theme-2one.css",
     "dev": "vite",
     "graph": "node scripts/build-graph.mjs",

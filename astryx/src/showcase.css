@@ -13,11 +13,13 @@
 .g-lede { color: var(--color-text-secondary); max-width: 62ch; font-size: 15px; line-height: 1.6; margin: 0; }
 .g-hero { padding: 48px 0 32px; border-top: 0; }
 
-.g-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(430px, 1fr)); gap: 24px; margin-top: 24px; }
+.g-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(430px, 1fr)); gap: 24px; margin-top: 24px; align-items: start; }
 .g-card { border: 1px solid var(--color-border); border-radius: var(--radius-container, 12px); background: var(--color-background-card); overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
 .g-card-h { font-family: var(--font-family-heading); font-weight: 600; font-size: 14.5px; padding: 13px 18px; border-bottom: 1px solid var(--color-border); color: var(--color-text-primary); }
-/* wide demos wrap instead of clipping (mirrors shadcn's flex-wrap Card content) */
-.g-card-b { padding: 26px 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 14px; min-height: 108px; flex: 1; min-width: 0; overflow-x: auto; }
+/* Demos vary a lot in size (Astryx blocks are auto-generated: a single Button vs
+   a whole AppShell). Fix a consistent demo viewport so the grid stays tidy like
+   the shadcn showcase — wide content wraps/scrolls, tall content scrolls. */
+.g-card-b { padding: 22px 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 14px; height: 220px; min-width: 0; overflow: auto; }
 .g-card-b > * { max-width: 100%; }
 
 /* hero stat tiles (mirrors the shadcn overview stats) */

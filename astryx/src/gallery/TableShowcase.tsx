@@ -29,13 +29,6 @@ const users: User[] = [
     role: 'Designer',
     age: 25,
   },
-  {
-    id: '3',
-    name: 'Charlie Brown',
-    email: 'charlie@example.com',
-    role: 'PM',
-    age: 35,
-  },
 ];
 
 const columns: TableColumn<User>[] = [
@@ -47,7 +40,7 @@ const columns: TableColumn<User>[] = [
 
 export default function TableShowcase() {
   return (
-    <Card width={600}>
+    <Card width={480}>
       <Table data={users} columns={columns} idKey="id" hasHover />
     </Card>
   );

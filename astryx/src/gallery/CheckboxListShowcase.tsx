@@ -13,21 +13,9 @@ export default function CheckboxListShowcase() {
       value={value}
       onChange={setValue}
       hasDividers>
-      <CheckboxListItem
-        label="Email"
-        value="email"
-        description="Weekly digest every Monday"
-      />
-      <CheckboxListItem
-        label="Push notification"
-        value="push"
-        description="Instant alerts on your device"
-      />
-      <CheckboxListItem
-        label="SMS"
-        value="sms"
-        description="Standard messaging rates apply"
-      />
+      <CheckboxListItem label="Email" value="email" />
+      <CheckboxListItem label="Push notification" value="push" />
+      <CheckboxListItem label="SMS" value="sms" />
     </CheckboxList>
   );
 }

@@ -4,18 +4,8 @@
 
 import {CodeBlock} from '@astryxdesign/core/CodeBlock';
 
-const code = `import {useState, useEffect} from 'react';
-
-export function useUser(id: string) {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    fetch(\`/api/users/\${id}\`)
-      .then(res => res.json())
-      .then(setUser);
-  }, [id]);
-
-  return user;
+const code = `export function greet(name: string) {
+  return \`Hello, \${name}!\`;
 }`;
 
 export default function CodeBlockShowcase() {

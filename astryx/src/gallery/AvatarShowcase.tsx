@@ -11,23 +11,14 @@ export default function AvatarShowcase() {
       <Avatar
         src="/template-assets/DATA-Ana-Thomas.png"
         name="Ana Thomas"
-        size="xl"
+        size="lg"
         status={<AvatarStatusDot variant="success" label="Online" />}
       />
-      <Avatar
-        src="/template-assets/DATA-Drew-Young.png"
-        name="Drew Young"
-        size="xl"
-      />
-      <Avatar
-        src="/template-assets/DATA-Jihoo-Song.png"
-        name="Jihoo Song"
-        size="xl"
-      />
+      <Avatar src="/template-assets/DATA-Drew-Young.png" name="Drew Young" size="lg" />
       <Avatar
         src="/template-assets/DATA-Nam-Tran.png"
         name="Nam Tran"
-        size="xl"
+        size="lg"
         status={<AvatarStatusDot variant="error" label="Busy" />}
       />
     </Stack>

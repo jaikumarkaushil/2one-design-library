@@ -21,25 +21,11 @@ export default function ItemShowcase() {
         onClick={() => {}}
       />
       <Item
-        startContent={<Icon icon={BellIcon} size="sm" />}
-        label="Build completed successfully"
-        description="Pipeline #4521 — all 42 tests passed"
-        endContent={<Text color="secondary">5h ago</Text>}
-        descriptionLines={1}
-        onClick={() => {}}
-      />
-      <Item
         startContent={<Icon icon={DocumentIcon} size="sm" />}
         label="design-spec.pdf"
         description="Modified 2 hours ago"
         endContent={<Text color="secondary">2.4 MB</Text>}
         isSelected
-        onClick={() => {}}
-      />
-      <Item
-        startContent={<Icon icon={UserIcon} size="sm" />}
-        label="Compact menu item"
-        density="compact"
         onClick={() => {}}
       />
     </Stack>

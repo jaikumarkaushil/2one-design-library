@@ -10,9 +10,6 @@ export default function FormLayoutShowcase() {
   const [first, setFirst] = useState('Priya');
   const [last, setLast] = useState('Sharma');
   const [email, setEmail] = useState('priya.sharma@example.com');
-  const [city, setCity] = useState('San Francisco');
-  const [state, setState] = useState('CA');
-  const [zip, setZip] = useState('94105');
 
   return (
     <FormLayout>
@@ -21,11 +18,6 @@ export default function FormLayoutShowcase() {
         <TextInput label="Last Name" value={last} onChange={setLast} />
       </FormLayout>
       <TextInput label="Email" value={email} onChange={setEmail} />
-      <FormLayout direction="horizontal">
-        <TextInput label="City" value={city} onChange={setCity} />
-        <TextInput label="State" value={state} onChange={setState} />
-        <TextInput label="ZIP" value={zip} onChange={setZip} />
-      </FormLayout>
     </FormLayout>
   );
 }

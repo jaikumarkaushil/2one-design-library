@@ -8,7 +8,7 @@ import {Text, Heading} from '@astryxdesign/core/Text';
 
 export default function CenterShowcase() {
   return (
-    <Center axis="both" width="100%" height={240}>
+    <Center axis="both" width="100%" height={130}>
       <Stack direction="vertical" gap={2} hAlign="center">
         <Heading level={4}>Centered content</Heading>
         <Text type="body" color="secondary">

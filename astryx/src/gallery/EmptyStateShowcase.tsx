@@ -12,7 +12,7 @@ export default function EmptyStateShowcase() {
     <EmptyState
       icon={<Icon icon={MagnifyingGlassIcon} size="lg" />}
       title="No results found"
-      description="Try adjusting your search or filters to find what you need."
+      description="Try adjusting your search or filters."
       actions={<Button label="Clear filters" variant="secondary" />}
     />
   );

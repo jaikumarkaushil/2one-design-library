@@ -9,23 +9,14 @@ import {VStack} from '@astryxdesign/core/Layout';
 
 export default function CollapsibleShowcase() {
   return (
-    <Card width={400}>
+    <Card width={360}>
       <CollapsibleGroup type="single" defaultValue="notifications">
-        <VStack gap={6}>
+        <VStack gap={4}>
           <Collapsible trigger="General settings" value="general">
-            <Text type="body" color="secondary">
-              Configure your display name, language, and time zone preferences.
-            </Text>
+            <Text type="body" color="secondary">Display name, language and time zone.</Text>
           </Collapsible>
           <Collapsible trigger="Notifications" value="notifications">
-            <Text type="body" color="secondary">
-              Choose which email and push notifications you want to receive.
-            </Text>
-          </Collapsible>
-          <Collapsible trigger="Privacy" value="privacy">
-            <Text type="body" color="secondary">
-              Manage your data sharing preferences and account visibility.
-            </Text>
+            <Text type="body" color="secondary">Choose which notifications you receive.</Text>
           </Collapsible>
         </VStack>
       </CollapsibleGroup>

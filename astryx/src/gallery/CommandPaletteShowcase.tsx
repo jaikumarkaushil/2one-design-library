@@ -14,8 +14,6 @@ export default function CommandPaletteShowcase() {
         {id: 'home', label: 'Home'},
         {id: 'settings', label: 'Settings'},
         {id: 'profile', label: 'Profile'},
-        {id: 'dashboard', label: 'Dashboard'},
-        {id: 'help', label: 'Help'},
       ]),
     [],
   );

@@ -122,3 +122,23 @@ Compiling and a green audit are **not** "done." **Look** at the page — at mult
 tables, a chart, and brand marks. The APCA audit passed while the dark destructive button
 was unreadable and the logo was invisible; only looking caught them. Run `npm run a11y`
 after any token change, and remove dead CSS as you go.
+
+## 17. "Match X" means diff against X — feature by feature, not an abstract notion
+When told to make one screen consistent with another, **enumerate the reference's concrete
+elements and check each one is present and behaves the same** — the brand logo, the stat
+tiles / counts, the group labels, the card behaviour. Building to a vague idea of "a
+sidebar + sections + cards" shipped an Astryx catalog missing the logo, missing the
+component-count stat tiles, with empty group labels, and with demos clipped in cards.
+Three compounding causes, each its own rule:
+- **Verify against the reference, never a self-authored checklist.** A passing self-check
+  ("81 cards render, no serif, grayscale") is false confidence if you never diffed against
+  the target. This is the same failure mode as §16 — checking your own output, not reality.
+- **Check the component's API before using it.** `<SideNavHeading>Text</SideNavHeading>`
+  rendered blank because the prop is `heading`, not children — then confirm the rendered
+  text isn't empty. (Astryx: `npx @astryxdesign/cli component <Name>`; shadcn: read the source.)
+- **Measure content fit** (`scrollWidth` vs `clientWidth`) for any demo/preview container.
+  Wide content (a horizontal Stack, a table, a form) clips in a narrow centred cell —
+  left-align and let it scroll, or size the container to fit.
+- **No screenshot is a red flag, not a pass.** If you can't see the page, substitute
+  rigorous layout measurements (overflow, presence of every reference element) **and** ask
+  the user to look — don't declare "done" on text/DOM checks alone.

@@ -5,7 +5,16 @@ import { Button } from '@astryxdesign/core/Button'
 import { Badge } from '@astryxdesign/core/Badge'
 import { CATEGORIES } from './catalog'
 import { TemplateView } from './TemplateView'
+import { Logo2one } from './Logo2one'
 import './showcase.css'
+
+const TOTAL_COMPONENTS = CATEGORIES.reduce((n, c) => n + c.items.length, 0)
+const STATS: [string, string][] = [
+  ['Components', String(TOTAL_COMPONENTS)],
+  ['Categories', String(CATEGORIES.length)],
+  ['Page templates', '38'],
+  ['Themes', 'Light + Dark'],
+]
 
 export function App() {
   const [dark, setDark] = useState(false)
@@ -32,9 +41,9 @@ export function App() {
   }, [])
 
   const sideNav = (
-    <SideNav header={<SideNavHeading>2one × Astryx</SideNavHeading>}>
+    <SideNav header={<SideNavHeading heading="2one × Astryx" subheading="design library" icon={<Logo2one width={38} />} />}>
       <SideNavItem label="Overview" isSelected={active === 'overview'} onClick={() => go('overview')} />
-      <SideNavHeading>Components</SideNavHeading>
+      <SideNavHeading heading="Components" />
       {CATEGORIES.map((c) => (
         <SideNavItem
           key={c.id}
@@ -44,14 +53,14 @@ export function App() {
           endContent={<Badge label={String(c.items.length)} variant="neutral" />}
         />
       ))}
-      <SideNavHeading>Templates</SideNavHeading>
+      <SideNavHeading heading="Templates" />
       <SideNavItem
         label="Page templates"
         isSelected={active === 'templates'}
         onClick={() => go('templates')}
         endContent={<Badge label="38" variant="neutral" />}
       />
-      <SideNavHeading>Explore</SideNavHeading>
+      <SideNavHeading heading="Explore" />
       <SideNavItem label="Knowledge graph" href="./graph.html" />
     </SideNav>
   )
@@ -69,7 +78,15 @@ export function App() {
         <section id="overview" className="g-section g-hero">
           <div className="g-eyebrow">2one · Astryx design library</div>
           <h1 className="g-h1">The 2one system, on Astryx.</h1>
-          <p className="g-lede">Meta Astryx re-skinned to the 2one brand — grayscale, Satoshi headings + Inter body, danger/success reserved for validation. 81 components and 38 page templates, APCA-audited in light and dark.</p>
+          <p className="g-lede">Meta Astryx re-skinned to the 2one brand — grayscale, Satoshi headings + Inter body, danger/success reserved for validation, APCA-audited in light and dark.</p>
+          <div className="g-stats">
+            {STATS.map(([label, value]) => (
+              <div className="g-stat" key={label}>
+                <div className="g-stat-n">{value}</div>
+                <div className="g-stat-l">{label}</div>
+              </div>
+            ))}
+          </div>
         </section>
 
         {CATEGORIES.map((c) => (

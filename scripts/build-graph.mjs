@@ -82,6 +82,7 @@ const addTemplate = (id, label, type, files) => {
 for (const f of ls('src/blocks', (f) => f.endsWith('.tsx'))) addTemplate(`block:${baseName(f)}`, baseName(f), 'template-block', ['src/blocks/' + f])
 if (existsSync(join(root, 'src/blocks/dashboard-plain')))
   addTemplate('block:dashboard-plain', 'dashboard-plain', 'template-block', ls('src/blocks/dashboard-plain', (f) => f.endsWith('.tsx')).map((f) => 'src/blocks/dashboard-plain/' + f))
+for (const f of ls('src/blocks/marketing', (f) => f.endsWith('.tsx'))) addTemplate(`block:marketing-${baseName(f)}`, `marketing/${baseName(f)}`, 'template-block', ['src/blocks/marketing/' + f])
 for (const f of ls('src/blocks/charts', (f) => f.endsWith('.tsx'))) addTemplate(`chart:${baseName(f)}`, baseName(f), 'template-chart', ['src/blocks/charts/' + f])
 
 // ---- RULE nodes + governed_by ----

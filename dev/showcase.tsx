@@ -61,6 +61,16 @@ import { ChartLineMultiple } from '@/blocks/charts/chart-line-multiple'
 import { ChartPieDonutText } from '@/blocks/charts/chart-pie-donut-text'
 import { ChartRadarDefault } from '@/blocks/charts/chart-radar-default'
 import { ChartRadialStacked } from '@/blocks/charts/chart-radial-stacked'
+import { MarketingHero } from '@/blocks/marketing/hero'
+import { MarketingLogoCloud } from '@/blocks/marketing/logo-cloud'
+import { MarketingFeatureGrid } from '@/blocks/marketing/feature-grid'
+import { MarketingStats } from '@/blocks/marketing/stats'
+import { MarketingTestimonial } from '@/blocks/marketing/testimonial'
+import { MarketingPricing } from '@/blocks/marketing/pricing'
+import { MarketingFaq } from '@/blocks/marketing/faq'
+import { MarketingCtaBanner } from '@/blocks/marketing/cta-banner'
+import { MarketingFooter } from '@/blocks/marketing/footer'
+import { MarketingPage } from '@/blocks/marketing/page'
 
 /* ---------- foundation data (from tokens/*.css) ---------- */
 // Foundation swatches derive colour + label from the live @theme tokens
@@ -83,7 +93,7 @@ const NAV = [
   { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', ''], ['playground', 'Theming', '']] },
   { grp: 'Foundations', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
   { grp: 'Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
-  { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['charts', 'Charts', '31']] },
+  { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['marketing', 'Marketing', '10'], ['charts', 'Charts', '31']] },
   { grp: 'Reference', items: [['index', 'All components', '57']] },
   { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', '198']] },
 ]
@@ -638,6 +648,34 @@ export function Showcase() {
               <div className="g-scale-label">All blocks</div>
               <div className="g-index">
                 {['login-01', 'login-02', 'login-03', 'login-04', 'login-05', 'signup-01', 'signup-02', 'signup-03', 'dashboard-plain'].map((b) => <span key={b} className="chip">{b}</span>)}
+              </div>
+            </section>
+
+            {/* MARKETING */}
+            <section id="marketing" className="g-section">
+              <div className="g-eyebrow">Templates</div><h2>Marketing</h2>
+              <p className="g-lede">Landing-page sections, built entirely from the library — grayscale, light + dark. Each is a full-bleed section; <code>marketing/page.tsx</code> composes them into a complete page.</p>
+              <div className="mt-6 flex flex-col gap-6">
+                {([
+                  ['hero', <MarketingHero />],
+                  ['logo-cloud', <MarketingLogoCloud />],
+                  ['feature-grid', <MarketingFeatureGrid />],
+                  ['stats', <MarketingStats />],
+                  ['testimonial', <MarketingTestimonial />],
+                  ['pricing', <MarketingPricing />],
+                  ['faq', <MarketingFaq />],
+                  ['cta-banner', <MarketingCtaBanner />],
+                  ['footer', <MarketingFooter />],
+                ] as [string, React.ReactNode][]).map(([id, node]) => (
+                  <div key={id}>
+                    <div className="g-scale-label">{id}</div>
+                    <div className="overflow-hidden rounded-lg border">{node}</div>
+                  </div>
+                ))}
+                <div>
+                  <div className="g-scale-label">page — full landing page (composed)</div>
+                  <div className="h-[720px] overflow-auto rounded-lg border"><MarketingPage /></div>
+                </div>
               </div>
             </section>
 

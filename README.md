@@ -4,7 +4,7 @@
 
 **One place for every piece 2one builds with — buttons, forms, layouts, colour, type, and brand — so people and AI can build products that look and feel like 2one, fast.**
 
-Grayscale · light-only · pill buttons · Satoshi headings + Inter body
+Grayscale · light + audited dark · pill buttons · Satoshi headings + Inter body
 54 [shadcn/ui](https://ui.shadcn.com) components re-skinned to the 2one tokens · 3 mobile/brand components of our own
 
 </div>
@@ -67,7 +67,7 @@ So this is a single source of truth, written to be read by **both humans and AI 
 | --- | --- | --- |
 | **shadcn/ui components** (re-skinned to 2one) | 54 | Button, Input, Select, Checkbox, Radio Group, Switch, Dialog, Sheet, Popover, Dropdown Menu, Tooltip, Tabs, Table, Card, Accordion, Badge, Avatar, Calendar, Chart, Command, Sidebar… |
 | **2one-only components** | 3 | `Logo`, `AppBar`, `BottomNavItem` (mobile/brand pieces shadcn has no equivalent for) |
-| **Templates (blocks)** | 8 | `login-01`…`login-05`, `signup-01`, `signup-02`, `dashboard-plain` |
+| **Templates (blocks)** | 9 | `login-01`…`login-05`, `signup-01`…`signup-03`, `dashboard-plain` |
 | **Design tokens** | 3 files | colour ramps, type scale, spacing & radius |
 | **Brand** | — | logo (SVG + PNG), usage rules, brand voice & personas |
 
@@ -218,7 +218,7 @@ The whole look is driven by **CSS variables** defined in [`src/styles/globals.cs
 
 **To re-theme:** edit the values in `globals.css` (or the ramps in `tokens/`) — every component updates at once. Don't hard-code colours in components; use the variables.
 
-**Light-only by design.** No `.dark` palette is defined, so the `dark:` utilities the shadcn components carry never activate. (If dark mode is ever wanted, it's a matter of adding a derived `.dark { … }` block — deliberately not done today.)
+**Two themes: light + dark.** Both are grayscale and both are APCA-audited. `globals.css` defines the light palette on `:root` and the dark palette on `.dark`. Switch them with the exported `ThemeProvider` (it toggles the `.dark` class) — don't hand-roll a third palette or a brand hue. `npm run a11y` audits **both** themes and fails below threshold, so any token change must clear it twice.
 
 ### The token files
 
@@ -272,7 +272,7 @@ Pre-assembled screens in [`src/blocks/`](src/blocks), ready to copy into an app 
 | Block | What it is |
 | --- | --- |
 | `login-01` … `login-05` | Five sign-in screen variations |
-| `signup-01`, `signup-02` | Two sign-up forms |
+| `signup-01` … `signup-03` | Three sign-up forms |
 | `dashboard-plain` | A dashboard **without** any sidebar/menu — stat cards + area chart + data table |
 
 > Blocks are **templates, not package exports** — you copy the files into your project and edit them, rather than `import`-ing them from the package. They've been stripped of shadcn's placeholder branding (no "Acme Inc").
@@ -387,7 +387,7 @@ A few constraints that make output read as "2one" rather than generic shadcn:
 - **Pill buttons.** Buttons use `--radius-full`. This is the signature — enforced in `globals.css` so it survives CLI regenerations.
 - **One primary per view.** Highest-weight action used once; pair a `secondary` with it for lesser actions.
 - **Logo is sacred.** Never recolour, rotate, distort, or add effects. Black on light, white on dark, min width 96px.
-- **Light-only.** Don't introduce dark-mode styling ad hoc.
+- **Two audited themes.** Light and dark both ship. Theme through `ThemeProvider` and the tokens — never a third palette or an ad-hoc `dark:` hack.
 
 ---
 
@@ -400,7 +400,7 @@ The published `.d.ts` must have relative imports, not `@/`. This is handled by `
 Every `npx shadcn add` regenerates `button.tsx` with `rounded-md`. The pill is re-applied via an **unlayered** rule in `globals.css` (`[data-slot="button"] { border-radius: var(--radius-full) }`), which wins over the utility — so the button stays a pill without editing the component. Nothing to do.
 
 **`shadcn add` re-injects a blue `.dark { … }` block.**
-The CLI appends a sidebar dark palette (with a blue accent) to `globals.css` on some adds. It's non-2one and, since we're light-only, dead. **Delete it after running the CLI.**
+The CLI appends its own sidebar dark palette (with a blue accent) to `globals.css` on some adds. It is **not** the 2one dark theme — it introduces a brand hue and will fight the audited palette. **Delete it after running the CLI**, and re-run `npm run a11y` to confirm both themes still pass.
 
 **Importing the package barrel drags in heavy deps.**
 `import { X } from '@yokesh-2one/design-library'` pulls the whole graph (including `Chart` → `recharts`). All required deps are declared, but if you see an unresolved transitive dep, install it. (A future improvement is subpath exports so consumers pull only what they use.)
@@ -419,7 +419,7 @@ It's **built on** shadcn/ui, then re-skinned to the 2one tokens and extended wit
 No — the components ship as Tailwind classes. Your app must run **Tailwind v4** and scan the package (the `@source` line above).
 
 **Does it support dark mode?**
-Not today — it's intentionally light-only. Adding it is a contained change (a derived dark palette).
+Yes. Light and dark ship together, both grayscale and both APCA-audited. Wrap your app in the exported `ThemeProvider` to switch between them.
 
 **Where's the visual reference?**
 Run `npm run dev` for the live showcase, or open Storybook with `npm run storybook`.
@@ -433,7 +433,7 @@ Run `npm run dev` for the live showcase, or open Storybook with `npm run storybo
 - **Fonts:** [Satoshi](https://www.fontshare.com/fonts/satoshi) (Fontshare) + [Inter](https://rsms.me/inter/) (self-hosted via `@fontsource-variable/inter`).
 - **Tokens, brand & 2one-only components:** © 2one Solutions.
 
-> No open-source `LICENSE` file is included — this is a **private** 2one repository. Treat the 2one tokens, brand, and original components as proprietary; the underlying shadcn/Radix/font projects retain their own licenses.
+> **Licensing — read before redistributing.** This repository currently ships an MIT [`LICENSE`](LICENSE) file, and `package.json` declares `"license": "MIT"`. **The final licensing terms for the 2one tokens, brand assets, and original components are still being decided** — the 2one logo and brand are trademarks of 2one Solutions regardless of the code license. If you are evaluating this repo, treat the brand assets as 2one's property and check with 2one before redistributing or rebranding. The underlying shadcn/Radix/lucide/font projects retain their own licenses.
 
 ---
 

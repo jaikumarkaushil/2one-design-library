@@ -43,7 +43,78 @@
         "personality",
         "archetype",
         "personas"
-      ]
+      ],
+      "logo": {
+        "rules": "brand/logo/manifest.json",
+        "component": "src/components/logo.tsx (React consumers only)",
+        "critical": "The wordmark is an ASSET, never type. Do NOT typeset \"2one\" as text in any output — embed the SVG below. Black on light surfaces, white on dark. Never recolour, rotate, distort, or add effects. Minimum width 96px; clear space 0.5x the logo height.",
+        "svg": {
+          "black": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/svg/2one-logo-black.svg",
+          "white": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/svg/2one-logo-white.svg"
+        },
+        "png": {
+          "black-1024w": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/png/2one-logo-black-1024w.png",
+          "black-256w": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/png/2one-logo-black-256w.png",
+          "black-512w": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/png/2one-logo-black-512w.png",
+          "white-1024w": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/png/2one-logo-white-1024w.png",
+          "white-256w": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/png/2one-logo-white-256w.png",
+          "white-512w": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/png/2one-logo-white-512w.png"
+        }
+      }
+    },
+    "assets": {
+      "note": "Every non-code asset the repo serves, with a fetchable URL. Standalone output (HTML artifact, deck, social image) must embed these rather than substituting text or a system font — that is the most common way generated output silently goes off-brand.",
+      "logo": [
+        {
+          "id": "logo-black",
+          "type": "image/svg+xml",
+          "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/svg/2one-logo-black.svg",
+          "usage": "Wordmark for light surfaces. Embed inline; never retype as text."
+        },
+        {
+          "id": "logo-white",
+          "type": "image/svg+xml",
+          "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/svg/2one-logo-white.svg",
+          "usage": "Wordmark for dark surfaces. Embed inline; never retype as text."
+        }
+      ],
+      "fonts": [
+        {
+          "id": "Satoshi-Black",
+          "type": "font/woff2",
+          "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/src/styles/fonts/Satoshi-Black.woff2",
+          "usage": "Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used."
+        },
+        {
+          "id": "Satoshi-Bold",
+          "type": "font/woff2",
+          "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/src/styles/fonts/Satoshi-Bold.woff2",
+          "usage": "Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used."
+        },
+        {
+          "id": "Satoshi-Light",
+          "type": "font/woff2",
+          "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/src/styles/fonts/Satoshi-Light.woff2",
+          "usage": "Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used."
+        },
+        {
+          "id": "Satoshi-Medium",
+          "type": "font/woff2",
+          "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/src/styles/fonts/Satoshi-Medium.woff2",
+          "usage": "Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used."
+        },
+        {
+          "id": "Satoshi-Regular",
+          "type": "font/woff2",
+          "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/src/styles/fonts/Satoshi-Regular.woff2",
+          "usage": "Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used."
+        }
+      ],
+      "body_font": {
+        "family": "Inter",
+        "source": "@fontsource-variable/inter (npm) or https://rsms.me/inter/",
+        "usage": "Body and UI text."
+      }
     },
     "tokens": {
       "tier": 2,

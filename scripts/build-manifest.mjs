@@ -10,6 +10,11 @@ import { dirname, join } from 'node:path'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
 const ls = (rel, filter = () => true) => existsSync(join(root, rel)) ? readdirSync(join(root, rel)).filter(filter).sort() : []
+
+// Base for fetchable raw files. Assets (logo, fonts) are only usable by an agent
+// that never clones the repo if it gets an absolute URL, so every asset entry in
+// the manifest is emitted fully qualified rather than as a repo-relative path.
+const RAW = 'https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/'
 const base = (f) => f.replace(/\.[^.]+$/, '')
 
 const ui = ls('src/components/ui', (f) => f.endsWith('.tsx')).map(base)
@@ -63,6 +68,42 @@ const manifest = {
       structured: 'brand/brand.json',
       prose: 'brand/BRAND.md',
       contains: ['mission', 'vision', 'tagline', 'voice', 'tone', 'personality', 'archetype', 'personas'],
+      logo: {
+        rules: 'brand/logo/manifest.json',
+        component: 'src/components/logo.tsx (React consumers only)',
+        critical:
+          'The wordmark is an ASSET, never type. Do NOT typeset "2one" as text in any output — embed the SVG below. Black on light surfaces, white on dark. Never recolour, rotate, distort, or add effects. Minimum width 96px; clear space 0.5x the logo height.',
+        svg: {
+          black: `${RAW}brand/logo/svg/2one-logo-black.svg`,
+          white: `${RAW}brand/logo/svg/2one-logo-white.svg`,
+        },
+        png: Object.fromEntries(
+          ls('brand/logo/png', (f) => f.endsWith('.png')).map((f) => [
+            f.replace('2one-logo-', '').replace('.png', ''),
+            `${RAW}brand/logo/png/${f}`,
+          ])
+        ),
+      },
+    },
+    assets: {
+      note: 'Every non-code asset the repo serves, with a fetchable URL. Standalone output (HTML artifact, deck, social image) must embed these rather than substituting text or a system font — that is the most common way generated output silently goes off-brand.',
+      logo: [...['black', 'white'].map((v) => ({
+        id: `logo-${v}`,
+        type: 'image/svg+xml',
+        url: `${RAW}brand/logo/svg/2one-logo-${v}.svg`,
+        usage: `Wordmark for ${v === 'black' ? 'light' : 'dark'} surfaces. Embed inline; never retype as text.`,
+      }))],
+      fonts: ls('src/styles/fonts', (f) => f.endsWith('.woff2')).map((f) => ({
+        id: f.replace('.woff2', ''),
+        type: 'font/woff2',
+        url: `${RAW}src/styles/fonts/${f}`,
+        usage: 'Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used.',
+      })),
+      body_font: {
+        family: 'Inter',
+        source: '@fontsource-variable/inter (npm) or https://rsms.me/inter/',
+        usage: 'Body and UI text.',
+      },
     },
     tokens: {
       tier: 2,

@@ -23,6 +23,27 @@ Live rendered showcase (no install, see every component): https://origin.2one.so
 - https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/registry.json
   Component set, theme map, naming conventions, 2one overrides
 
+## Brand assets — embed these, never re-create them
+
+The wordmark is an **asset, not type**. Typesetting "2one" as text is the single
+most common way generated output goes off-brand — it looks close and is wrong.
+
+- https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/svg/2one-logo-black.svg
+  Black wordmark — light surfaces
+- https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/svg/2one-logo-white.svg
+  White wordmark — dark surfaces
+
+Fetch the SVG and inline it. Never recolour, rotate, distort, or add effects;
+min width 96px; clear space 0.5× the logo height. Full rules:
+`brand/logo/manifest.json`. PNG raster versions (256/512/1024w) are listed in
+`manifest.json` → `index.assets`. In a React project use the `Logo` component
+instead — it encodes these rules and has no colour prop by design.
+
+**Satoshi** (headings) is self-hosted and on no CDN — the `.woff2` files are
+listed in `manifest.json` → `index.assets.fonts`. Standalone output must embed
+one or explicitly say which fallback it used. **Inter** (body) is on Google
+Fonts / `@fontsource-variable/inter`.
+
 ## Exact values — never invent these
 
 - tokens/colors.json — ramps, semantic tokens, **WCAG + APCA contrast data**
@@ -43,7 +64,9 @@ verified in CI (`npm run check:meta`), so they never drift from the code.
 
 | You want to produce | Read |
 | --- | --- |
+| Anything carrying the 2one mark | **Brand assets above** — fetch and inline the SVG |
 | A React/Tailwind screen | `registry.json`, `src/components/ui/<name>.tsx`, a block in `src/blocks/` |
+| Standalone HTML / a deck / a social image | `manifest.json` → `index.assets` for the logo + fonts, then `tokens/*.json` for literal values |
 | On-brand copy | `brand/brand.json` (voice, tone, vocabulary, writing rules) |
 | Exact colour / type / spacing | `tokens/*.json` — pull literal values, never approximate |
 | Impact of changing a token | `graph.json`, or `npm run what-uses -- <token>` in a clone |

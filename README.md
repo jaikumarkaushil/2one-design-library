@@ -338,7 +338,6 @@ It lands in `src/components/ui/`, already picking up the 2one theme. See [Troubl
 ├── dev/                     local showcase app (npm run dev)
 ├── manifest.json            READ FIRST — machine index + instructions_for_ai
 ├── components.json          shadcn CLI config
-├── registry.json            machine index (theme map, conventions, overrides)
 ├── AGENTS.md · llms.txt     AI entry points
 └── vite.config.ts · vite.config.dev.ts · tsconfig.json
 ```
@@ -391,7 +390,7 @@ This repo is written to be machine-read. Point any AI vendor at these, in order:
 2. [`tokens/*.json`](tokens) — canonical colours (with WCAG + APCA **contrast data**), type, spacing. Pull exact values from here; never invent look-alikes.
 3. [`brand/brand.json`](brand/brand.json) — mission, voice, tone, personas (structured), so generated copy is on-brand.
 4. [`guide-app/knowledge-base.md`](guide-app/knowledge-base.md) — local Q&A source (works offline); [`VERSIONLOG.md`](guide-app/VERSIONLOG.md) — what's available vs. planned.
-5. [`AGENTS.md`](AGENTS.md) · [`registry.json`](registry.json) · [`llms.txt`](llms.txt) — rules, theme map, pointer.
+5. [`AGENTS.md`](AGENTS.md) · [`llms.txt`](llms.txt) — rules and pointer. The theme map, conventions and overrides live in `manifest.json` → `system`.
 
 The machine-readable data is **generated, not hand-kept** (no drift): `npm run tokens`, `npm run manifest`, validated by `npm run validate`. The contract for agents: **answer only from the repo, cite the file, use shadcn names, obey the tokens, match the brand voice — never guess a brand fact.**
 

@@ -226,6 +226,31 @@ The whole look is driven by **CSS variables** defined in [`src/styles/globals.cs
 - [`tokens/typography.css`](tokens/typography.css) — the type scale: `--text-display` down to `--text-xs`, with real sizes & line-heights, plus font families.
 - [`tokens/spacing.css`](tokens/spacing.css) — spacing steps and the radius scale (`--radius-xs` 2px → `--radius-full` 999px).
 
+### Taking the tokens outside the web stack
+
+[`tokens/tokens.dtcg.json`](tokens/tokens.dtcg.json) is the same set in **W3C DTCG**
+format — the neutral interchange format design tools understand. Use it to carry
+2one into Figma, or to drive a non-Tailwind UI framework from the same source.
+
+| Group | Contents |
+| --- | --- |
+| `color` | primitive ramps (theme-independent) |
+| `light` / `dark` | semantic sets — apply one at a time |
+| `font` | families, weights, sizes, line-heights |
+| `text` | **composite typography tokens** → become real Figma text styles |
+| `dimension` | spacing + radius, normalised to px |
+
+Semantic tokens **alias** their ramp step (`{color.neutral.950}`) rather than
+duplicating the hex, so the relationship survives into Figma as a variable
+reference. 25 of 34 light tokens alias cleanly; the rest are values that sit off
+the ramps and are emitted as literals — `npm run tokens` lists them.
+
+**Into Figma:** Tokens Studio → Import → paste/point at the file → push as
+variables. **Into another platform:** feed it to Style Dictionary.
+
+> Generated — never hand-edit. `npm run tokens` rebuilds it from the CSS, and CI's
+> `check:meta` fails if the committed copy is stale.
+
 These generate Tailwind utilities too: `bg-neutral-700`, `text-h1`, `rounded-2xl`, etc.
 
 ---

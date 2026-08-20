@@ -28,6 +28,10 @@ Live rendered showcase (no install, see every component): https://origin.2one.so
 - tokens/colors.json — ramps, semantic tokens, **WCAG + APCA contrast data**
 - tokens/typography.json — font families + full type scale (px + line-height)
 - tokens/spacing.json — spacing steps + radius scale
+- tokens/tokens.dtcg.json — the same tokens in **W3C DTCG** format, for design
+  tooling: `color` (primitive ramps), `light` / `dark` (semantic sets), `font`,
+  `text` (composite text styles), `dimension`. Import into Figma via Tokens
+  Studio, or feed Style Dictionary for any other platform target.
 - graph.json — knowledge graph: every token/component/block as a node, with
   `composed_of` / `uses` / `derived_from` / `governed_by` edges. Use it to answer
   "what uses this token" and "what rules govern this element".
@@ -73,11 +77,10 @@ State these plainly rather than improvising around them:
 - **No landing-page blocks.** `src/blocks/` covers auth and one dashboard only —
   no hero, nav, pricing, feature grid, testimonial, or footer. Building a marketing
   page means composing primitives, not adapting a template.
-- **No Figma library.** The components are React source. There is no Figma file,
-  no Figma components, and no Figma variables published from these tokens.
-- **No design-tool export.** Tokens ship as Tailwind `@theme` CSS and a custom JSON
-  shape — not DTCG/W3C design-token format, so Figma Tokens Studio and similar
-  tools cannot import them as-is.
+- **No Figma library.** The components are React source. There is no Figma file
+  and no Figma components. The *tokens* can now be imported (see
+  `tokens/tokens.dtcg.json`), but nothing generates Figma **components** from
+  this repo — that still has to be built or re-themed in Figma.
 - **No icon set of its own.** Icons come from `lucide-react`.
 - **No running preview from the URL.** Code written from this repo compiles only
   after the package is installed (see the token requirement above) or inside a clone.

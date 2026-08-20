@@ -61,6 +61,11 @@
         "spacing": {
           "json": "tokens/spacing.json",
           "css": "tokens/spacing.css"
+        },
+        "dtcg": {
+          "json": "tokens/tokens.dtcg.json",
+          "format": "W3C Design Tokens Community Group",
+          "purpose": "Neutral interchange format for design tooling and non-web platforms. Groups: color (primitive ramps), light/dark (semantic sets, apply one at a time), font, text (composite typography → Figma text styles), dimension (px). Semantic tokens alias their ramp step. Import via Tokens Studio (Figma) or Style Dictionary (other platforms)."
         }
       },
       "theme": "src/styles/globals.css (2one tokens → shadcn CSS variables; light :root + audited dark .dark, toggled via the exported ThemeProvider)"

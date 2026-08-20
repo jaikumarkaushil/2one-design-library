@@ -235,7 +235,7 @@
         "export": "integrations/canva/brand-kit.json",
         "guide": "integrations/canva/README.md",
         "raw_url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/integrations/canva/brand-kit.json",
-        "note": "Fetching raw URLs requires the repo to be public or a PAT with repo scope."
+        "note": "The repo is public, so these raw URLs are fetchable with no auth. (If it is ever made private, external fetches would need a GitHub token with repo scope.)"
       }
     }
   },

@@ -58,8 +58,8 @@ verified in CI (`npm run check:meta`), so they never drift from the code.
   `RadioGroup` (not RadioButton), `InputOTP` (not OtpField)
 - Blocks (templates, copy-paste not import): `src/blocks/` — `login-01`…`login-05`,
   `signup-01`…`signup-03`, `dashboard-plain`, plus 31 chart examples
-- Published as `@yokesh-2one/design-library` on **GitHub Packages** — installing
-  requires a token with `read:packages` even though the repo is public
+- Published as `@yokesh-2one/design-library` on the **public npm registry** —
+  `npm install @yokesh-2one/design-library react react-dom`, no token required
 
 ## Theme
 

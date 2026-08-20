@@ -96,20 +96,12 @@ That opens the showcase — every component, the foundations (colour, type, radi
 
 ### 1. Install the package
 
-> **Note:** the package is published to **GitHub Packages**. GitHub Packages requires a personal access token to install **even when the repo is public** — there's no anonymous install. Point the scope at the registry with an `.npmrc` next to your `package.json`:
-
-```ini
-@yokesh-2one:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
-
-`GITHUB_TOKEN` needs the `read:packages` scope. Then:
-
 ```bash
 npm install @yokesh-2one/design-library react react-dom
 ```
 
-*(If you're just evaluating and don't want to deal with tokens, use the clone-and-run path above instead.)*
+No token, no registry configuration, no `.npmrc` — it installs anonymously from
+the public npm registry like any other package.
 
 ### 2. Wire up the theme + Tailwind
 
@@ -382,7 +374,8 @@ The build does four things:
 
 Output: `dist/index.js` · `dist/index.cjs` · `dist/index.d.ts` · `dist/styles.css` · `dist/fonts/*` · `dist/tokens/*`.
 
-Publishing targets **GitHub Packages** (`publishConfig.registry` in `package.json`):
+Publishing goes to the **public npm registry** (`publishConfig.access: "public"`),
+so consumers install anonymously:
 
 ```bash
 npm publish

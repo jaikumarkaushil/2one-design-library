@@ -12,6 +12,9 @@
       "200": {
         "$value": "#e4e4e7"
       },
+      "250": {
+        "$value": "#dcdce0"
+      },
       "300": {
         "$value": "#d4d4d8"
       },
@@ -63,6 +66,9 @@
       },
       "600": {
         "$value": "#dc2626"
+      },
+      "700": {
+        "$value": "#c81e1e"
       },
       "text": {
         "$value": "#ae2e24"
@@ -119,7 +125,7 @@
       "$value": "{color.neutral.950}"
     },
     "destructive": {
-      "$value": "#c81e1e"
+      "$value": "{color.danger.700}"
     },
     "destructive-foreground": {
       "$value": "#ffffff"
@@ -131,10 +137,10 @@
       "$value": "#ffffff"
     },
     "border": {
-      "$value": "#dcdce0"
+      "$value": "{color.neutral.250}"
     },
     "input": {
-      "$value": "#dcdce0"
+      "$value": "{color.neutral.250}"
     },
     "ring": {
       "$value": "{color.neutral.400}"
@@ -173,7 +179,7 @@
       "$value": "{color.neutral.950}"
     },
     "sidebar-border": {
-      "$value": "#dcdce0"
+      "$value": "{color.neutral.250}"
     },
     "sidebar-ring": {
       "$value": "{color.neutral.400}"

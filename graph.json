@@ -234,6 +234,54 @@
       "hex": "#a1a1aa"
     },
     {
+      "id": "ramp:accent-50",
+      "type": "ramp",
+      "label": "accent-50",
+      "hex": "#fafafa"
+    },
+    {
+      "id": "ramp:accent-100",
+      "type": "ramp",
+      "label": "accent-100",
+      "hex": "#f4f4f4"
+    },
+    {
+      "id": "ramp:accent-200",
+      "type": "ramp",
+      "label": "accent-200",
+      "hex": "#e4e4e4"
+    },
+    {
+      "id": "ramp:accent-300",
+      "type": "ramp",
+      "label": "accent-300",
+      "hex": "#d1d1d1"
+    },
+    {
+      "id": "ramp:accent-600",
+      "type": "ramp",
+      "label": "accent-600",
+      "hex": "#404040"
+    },
+    {
+      "id": "ramp:accent-700",
+      "type": "ramp",
+      "label": "accent-700",
+      "hex": "#262626"
+    },
+    {
+      "id": "ramp:accent-800",
+      "type": "ramp",
+      "label": "accent-800",
+      "hex": "#171717"
+    },
+    {
+      "id": "ramp:accent-950",
+      "type": "ramp",
+      "label": "accent-950",
+      "hex": "#000000"
+    },
+    {
       "id": "ramp:neutral-50",
       "type": "ramp",
       "label": "neutral-50",
@@ -292,54 +340,6 @@
       "type": "ramp",
       "label": "neutral-950",
       "hex": "#09090b"
-    },
-    {
-      "id": "ramp:accent-50",
-      "type": "ramp",
-      "label": "accent-50",
-      "hex": "#fafafa"
-    },
-    {
-      "id": "ramp:accent-100",
-      "type": "ramp",
-      "label": "accent-100",
-      "hex": "#f4f4f4"
-    },
-    {
-      "id": "ramp:accent-200",
-      "type": "ramp",
-      "label": "accent-200",
-      "hex": "#e4e4e4"
-    },
-    {
-      "id": "ramp:accent-300",
-      "type": "ramp",
-      "label": "accent-300",
-      "hex": "#d1d1d1"
-    },
-    {
-      "id": "ramp:accent-600",
-      "type": "ramp",
-      "label": "accent-600",
-      "hex": "#404040"
-    },
-    {
-      "id": "ramp:accent-700",
-      "type": "ramp",
-      "label": "accent-700",
-      "hex": "#262626"
-    },
-    {
-      "id": "ramp:accent-800",
-      "type": "ramp",
-      "label": "accent-800",
-      "hex": "#171717"
-    },
-    {
-      "id": "ramp:accent-950",
-      "type": "ramp",
-      "label": "accent-950",
-      "hex": "#000000"
     },
     {
       "id": "ramp:danger-500",
@@ -1229,7 +1229,7 @@
     },
     {
       "source": "token:primary-foreground",
-      "target": "ramp:accent-50",
+      "target": "ramp:neutral-50",
       "type": "derived_from"
     },
     {
@@ -1314,7 +1314,7 @@
     },
     {
       "source": "token:sidebar",
-      "target": "ramp:accent-50",
+      "target": "ramp:neutral-50",
       "type": "derived_from"
     },
     {
@@ -1329,7 +1329,7 @@
     },
     {
       "source": "token:sidebar-primary-foreground",
-      "target": "ramp:accent-50",
+      "target": "ramp:neutral-50",
       "type": "derived_from"
     },
     {

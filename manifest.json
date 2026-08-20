@@ -98,19 +98,19 @@
       }
     },
     "assets": {
-      "note": "Every non-code asset the repo serves, with a fetchable URL. Standalone output (HTML artifact, deck, social image) must embed these rather than substituting text or a system font — that is the most common way generated output silently goes off-brand.",
+      "note": "Every non-code asset this repo serves, with a fetchable URL. Standalone output (HTML artifact, deck, social image) must embed these rather than substituting text or a system font — that is the most common way generated output silently goes off-brand.",
       "logo": [
         {
           "id": "logo-black",
           "type": "image/svg+xml",
           "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/svg/2one-logo-black.svg",
-          "usage": "Wordmark for light surfaces. Embed inline; never retype as text."
+          "usage": "Wordmark, black variant. Embed inline; never retype as text."
         },
         {
           "id": "logo-white",
           "type": "image/svg+xml",
           "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/logo/svg/2one-logo-white.svg",
-          "usage": "Wordmark for dark surfaces. Embed inline; never retype as text."
+          "usage": "Wordmark, white variant. Embed inline; never retype as text."
         }
       ],
       "fonts": [
@@ -118,45 +118,43 @@
           "id": "Satoshi-Black",
           "type": "font/woff2",
           "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/src/styles/fonts/Satoshi-Black.woff2",
-          "usage": "Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used."
+          "usage": "Self-hosted heading font, on no CDN. Standalone output must embed this or declare the fallback it used."
         },
         {
           "id": "Satoshi-Bold",
           "type": "font/woff2",
           "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/src/styles/fonts/Satoshi-Bold.woff2",
-          "usage": "Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used."
+          "usage": "Self-hosted heading font, on no CDN. Standalone output must embed this or declare the fallback it used."
         },
         {
           "id": "Satoshi-Light",
           "type": "font/woff2",
           "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/src/styles/fonts/Satoshi-Light.woff2",
-          "usage": "Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used."
+          "usage": "Self-hosted heading font, on no CDN. Standalone output must embed this or declare the fallback it used."
         },
         {
           "id": "Satoshi-Medium",
           "type": "font/woff2",
           "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/src/styles/fonts/Satoshi-Medium.woff2",
-          "usage": "Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used."
+          "usage": "Self-hosted heading font, on no CDN. Standalone output must embed this or declare the fallback it used."
         },
         {
           "id": "Satoshi-Regular",
           "type": "font/woff2",
           "url": "https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/src/styles/fonts/Satoshi-Regular.woff2",
-          "usage": "Satoshi — headings. Self-hosted, on no CDN. Standalone output must embed this or declare the fallback it used."
+          "usage": "Self-hosted heading font, on no CDN. Standalone output must embed this or declare the fallback it used."
         }
       ],
       "body_font": {
         "family": "Inter",
-        "source": "@fontsource-variable/inter (npm) or https://rsms.me/inter/",
         "usage": "Body and UI text."
       },
       "icons": {
         "library": "lucide",
         "package": "lucide-react@^1.31.0",
         "react": "import { Rocket } from 'lucide-react'  —  <Button><Rocket /> Launch</Button>",
-        "non_react": "https://unpkg.com/lucide-static@latest/icons/<name>.svg (same glyphs as SVG files)",
         "browse": "https://lucide.dev/icons",
-        "rule": "lucide ONLY. Never mix in heroicons, tabler, font-awesome, or hand-drawn SVG icons — a second icon set is one of the most visible \"AI-generated\" tells. Icons inherit currentColor and default to size-4 inside a Button."
+        "rule": "lucide ONLY. Never mix in a second icon set — it is one of the most visible \"AI-generated\" tells. Icons inherit currentColor and default to size-4 inside a Button."
       },
       "absent": {
         "note": "These asset categories do NOT exist in this repo. Say so rather than generating a substitute — an invented illustration or stock photo is off-brand by definition.",
@@ -194,12 +192,12 @@
           "purpose": "Neutral interchange format for design tooling and non-web platforms. Groups: color (primitive ramps), light/dark (semantic sets, apply one at a time), font, text (composite typography → Figma text styles), dimension (px). Semantic tokens alias their ramp step. Import via Tokens Studio (Figma) or Style Dictionary (other platforms)."
         }
       },
-      "theme": "src/styles/globals.css (2one tokens → shadcn CSS variables; light :root + audited dark .dark, toggled via the exported ThemeProvider)"
+      "theme": "src/styles/globals.css"
     },
     "components": {
       "tier": 2,
       "count": 57,
-      "naming": "shadcn/ui",
+      "naming": "shadcn (Input, Select, RadioGroup, InputOTP, DropdownMenu, …) — not the pre-2026 custom names",
       "path": "src/components/ui/",
       "formats_available": [
         "tsx"
@@ -211,7 +209,7 @@
         "ios",
         "android"
       ],
-      "shadcn_primitives": [
+      "primitives": [
         "accordion",
         "alert-dialog",
         "alert",
@@ -267,7 +265,7 @@
         "toggle",
         "tooltip"
       ],
-      "two_one_only": [
+      "own": [
         "app-bar",
         "bottom-nav-item",
         "logo"
@@ -292,7 +290,6 @@
       "charts": {
         "path": "src/blocks/charts/",
         "count": 31,
-        "grayscale": true,
         "items": [
           "chart-area-default",
           "chart-area-interactive",
@@ -327,7 +324,7 @@
           "chart-tooltip-default"
         ]
       },
-      "recipes": "recipes/ (app, website, marketing, deck)"
+      "recipes": "recipes/"
     },
     "guide_app": {
       "path": "guide-app/",
@@ -342,18 +339,19 @@
       "types": "npm run typecheck",
       "token_generation": "npm run tokens",
       "manifest_generation": "npm run manifest",
-      "schema_validation": "npm run validate"
+      "schema_validation": "npm run validate",
+      "output_audit": "npm run check:usage (audits code written WITH the system)"
     },
     "schemas": {
       "token": "schema/token.schema.json",
-      "component": "schema/component.schema.json"
+      "component": "schema/component.schema.json",
+      "config": "schema/config.schema.json"
     },
     "graph": {
       "file": "graph.json",
       "build": "npm run graph",
       "description": "Knowledge graph — every design element as a node, relationships (composed_of, uses, derived_from, governed_by, has_contrast, embodies) as edges. Use it for impact analysis (\"what uses this token?\") and composition-aware context.",
-      "impact_query": "npm run what-uses -- <element>   (e.g. `-- primary` → every component/template affected; add --json for machine output, --depends for what it uses + its rules)",
-      "visual": "run `npm run dev` and see the graph, or use the standalone knowledge-graph explorer."
+      "impact_query": "npm run what-uses -- <element>   (add --json for machine output, --depends for what it uses + its rules)"
     },
     "integrations": {
       "canva": {
@@ -418,7 +416,7 @@
     "history": "Replaced the earlier hand-built Figma-1:1 set (12 components) with this shadcn-based system on user direction (2026-08-10). The old components were removed."
   },
   "formats": {
-    "note": "All machine-readable formats derive from the same canonical source (no per-format drift, PRD FR-8). Tokens: CSS is the Tailwind consumption format; JSON is the canonical machine-readable form generated by `npm run tokens`.",
+    "note": "All machine-readable formats derive from the same canonical source, so there is no per-format drift. CSS is the Tailwind consumption format; JSON is the canonical machine-readable form.",
     "available": [
       "tsx (components)",
       "css (theme + tokens)",

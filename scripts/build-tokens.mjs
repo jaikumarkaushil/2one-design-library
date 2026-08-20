@@ -9,11 +9,13 @@
 
   Run:  npm run tokens
 */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+import { config as cfg } from './lib/config.mjs'
+
+const root = cfg.root
 const read = (p) => readFileSync(join(root, p), 'utf8')
 
 // ---- contrast maths ----
@@ -35,10 +37,10 @@ function apcaLc(txt, bg) {
 // ---- parse CSS var: value (hex or length) ----
 const parseVars = (css, re = /(--[\w-]+):\s*([^;]+);/g) => { const o = {}; for (const m of css.matchAll(re)) o[m[1].trim()] = m[2].trim(); return o }
 
-const colorsCss = read('tokens/colors.css')
-const globals = read('src/styles/globals.css')
-const typeCss = read('tokens/typography.css')
-const spaceCss = read('tokens/spacing.css')
+const colorsCss = readFileSync(cfg.path('tokenSources.colors'), 'utf8')
+const globals = readFileSync(cfg.path('theme'), 'utf8')
+const typeCss = readFileSync(cfg.path('tokenSources.typography'), 'utf8')
+const spaceCss = readFileSync(cfg.path('tokenSources.spacing'), 'utf8')
 
 const ramps = parseVars(colorsCss)          // --color-neutral-50 … etc
 // Only the :root (light) block is the canonical semantic set. Parse it alone —
@@ -78,12 +80,20 @@ const pairsFor = (theme, s) => [
 const colors = {
   $schema: '../schema/token.schema.json',
   description: '2one colour tokens. Grayscale system — no brand hue. danger/success are the only hues and are reserved for validation state only. TWO THEMES: `semantic` is the light set, `semantic_dark` the dark one; always say which theme a value belongs to. Contrast pairs cover both and carry a `theme` field.',
-  ramps: {
-    neutral: ramp('--color-neutral-'),
-    accent: ramp('--color-accent-'),
-    danger: ramp('--color-danger-'),
-    success: ramp('--color-success-'),
-  },
+  // Ramp NAMES are payload data, not engine knowledge. Hardcoding
+  // neutral/accent/danger/success emitted four empty objects against a payload
+  // whose ramps are called slate/alert/ok — silently discarding its whole
+  // palette while reporting success. Derived from the CSS instead.
+  ramps: Object.fromEntries(
+    [...new Set(
+      Object.keys(hexOnly(ramps))
+        .map((k) => k.match(/^--color-([a-z][a-z0-9]*)-/)?.[1])
+        .filter(Boolean)
+    // Declaration order, not alphabetical — a payload lists its primary ramp
+    // first, and downstream consumers (the Canva export takes ramps[0]) rely on
+    // that. Sorting put `accent` first for 2one and changed the brand kit.
+    )].map((name) => [name, ramp(`--color-${name}-`)])
+  ),
   themes: ['light', 'dark'],
   /* `semantic` is the LIGHT set — kept under that name because four scripts read
      it. Dark is a sibling, not a replacement. Always state which theme a value
@@ -133,46 +143,67 @@ const spacing = {
   notes: 'Buttons use radius-full (the 2one signature). Everything else uses xs–2xl.',
 }
 
-// ---- CANVA brand-kit export (derived from the tokens above; users' Canva
-//      integration consumes this — same canonical source, no duplication) ----
-const CANVA_RAW = 'https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/'
-const s = colors.semantic
-const canva = {
-  name: '2one',
-  source: 'Generated from tokens/colors.json + tokens/typography.json. Do not edit by hand — run `npm run tokens`.',
-  raw_url: 'https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/integrations/canva/brand-kit.json',
-  colors: [
-    { name: 'Ink', hex: s.foreground }, { name: 'Primary', hex: s.primary },
-    { name: 'Background', hex: s.background }, { name: 'Muted', hex: s.muted },
-    { name: 'Secondary text', hex: s['muted-foreground'] }, { name: 'Border', hex: s.border },
-    { name: 'Danger', hex: s.destructive }, { name: 'Success', hex: s.success },
-  ].filter((c) => c.hex),
-  neutral_ramp: Object.entries(colors.ramps.neutral).map(([step, hex]) => ({ name: `Neutral ${step}`, hex })),
-  fonts: {
-    heading: typography.fonts.heading.split(',')[0].replace(/['"]/g, '').trim(),
-    body: typography.fonts.body.split(',')[0].replace(/['"]/g, '').trim(),
-    note: 'Satoshi ships as .woff2 in src/styles/fonts/. Inter is NOT in this repo — it comes from the @fontsource-variable/inter npm package, or fonts.google.com. Canva brand-font upload may not accept .woff2; convert to .otf/.ttf if it refuses.',
-  },
-  // A Canva Brand Kit holds a logo as well as colours and fonts. Omitting it
-  // was the same gap that produced a typeset wordmark in generated output —
-  // if the mark is not in the export, whoever wires this up will substitute text.
-  logo: {
-    svg: {
-      black: `${CANVA_RAW}brand/logo/svg/2one-logo-black.svg`,
-      white: `${CANVA_RAW}brand/logo/svg/2one-logo-white.svg`,
+// ---- write the canonical token JSON ----
+const tokensOut = cfg.rel('out.tokens')
+mkdirSync(join(root, tokensOut), { recursive: true })
+const out = (name, obj) => {
+  const p = `${tokensOut}/${name}`
+  writeFileSync(join(root, p), JSON.stringify(obj, null, 2) + '\n')
+  console.log('  wrote', p)
+}
+console.log('Generating canonical token JSON:')
+out('colors.json', colors)
+out('typography.json', typography)
+out('spacing.json', spacing)
+
+// ---- Optional per-payload exports ----
+// The Canva brand kit is a 2one integration, not an engine feature. It is
+// emitted only when a payload configures `integrations.canva`, so an engine run
+// against a client repo does not scatter files that client never asked for.
+const canvaOut = cfg.paths.integrations?.canva
+if (canvaOut) {
+  const RAW = cfg.repoUrl ? `${cfg.repoUrl.replace('https://github.com/', 'https://raw.githubusercontent.com/')}/main/` : ''
+  const s = colors.semantic
+  const logoRel = cfg.rel('brand.logo')
+  const mark = cfg.rules.wordmark ?? cfg.name
+  // Named in config. Taking ramps[0] silently depended on CSS declaration
+  // order — 2one declares `accent` first, so the 'neutral ramp' in the brand
+  // kit would have quietly become the accent one.
+  const primaryRamp = cfg.rules.primaryRamp ?? Object.keys(colors.ramps)[0]
+
+  const canva = {
+    name: cfg.name,
+    source: `Generated from the canonical tokens. Do not edit by hand — run \`npm run tokens\`.`,
+    raw_url: `${RAW}${canvaOut}`,
+    theme: 'light — Canva designs sit on light grounds. The dark palette is in the token JSON under semantic_dark.',
+    colors: [
+      { name: 'Ink', hex: s.foreground }, { name: 'Primary', hex: s.primary },
+      { name: 'Background', hex: s.background }, { name: 'Muted', hex: s.muted },
+      { name: 'Secondary text', hex: s['muted-foreground'] }, { name: 'Border', hex: s.border },
+      { name: 'Danger', hex: s.destructive }, { name: 'Success', hex: s.success },
+    ].filter((c) => c.hex),
+    ramp: Object.entries(colors.ramps[primaryRamp] ?? {}).map(([step, hex]) => ({ name: `${primaryRamp} ${step}`, hex })),
+    fonts: {
+      heading: typography.fonts.heading.split(',')[0].replace(/['"]/g, '').trim(),
+      body: typography.fonts.body.split(',')[0].replace(/['"]/g, '').trim(),
+      note: 'The heading font ships as .woff2 in this repo. Canva brand-font upload may not accept .woff2; convert to .otf/.ttf if it refuses.',
     },
-    png: { black_1024: `${CANVA_RAW}brand/logo/png/2one-logo-black-1024w.png`, white_1024: `${CANVA_RAW}brand/logo/png/2one-logo-white-1024w.png` },
-    rules: 'Black on light surfaces, white on dark. Never recolour, rotate, distort, or add effects. Minimum width 96px; clear space 0.5x the logo height. Never typeset "2one" as text in place of the mark.',
-  },
-  theme: 'light — Canva designs sit on light grounds. The dark palette is in tokens/colors.json → semantic_dark if needed.',
-  rules: colors.rules,
+    // A Canva Brand Kit holds a logo as well as colours and fonts. Omitting it
+    // was the gap that produced a typeset wordmark in generated output — if the
+    // mark is not in the export, whoever wires this up substitutes text.
+    logo: {
+      svg: Object.fromEntries(
+        (existsSync(join(cfg.path('brand.logo'), 'svg')) ? readdirSync(join(cfg.path('brand.logo'), 'svg')) : [])
+          .filter((f) => f.endsWith('.svg'))
+          .map((f) => [f.replace(`${mark}-logo-`, '').replace('.svg', ''), `${RAW}${logoRel}/svg/${f}`])
+      ),
+      rules: 'Never recolour, rotate, distort, or add effects. Never typeset the name as text in place of the mark.',
+    },
+    rules: colors.rules,
+  }
+  mkdirSync(join(root, canvaOut, '..'), { recursive: true })
+  writeFileSync(join(root, canvaOut), JSON.stringify(canva, null, 2) + '\n')
+  console.log('  wrote', canvaOut)
 }
 
-const out = (p, obj) => { writeFileSync(join(root, p), JSON.stringify(obj, null, 2) + '\n'); console.log('  wrote', p) }
-console.log('Generating canonical token JSON:')
-out('tokens/colors.json', colors)
-out('tokens/typography.json', typography)
-out('tokens/spacing.json', spacing)
-mkdirSync(join(root, 'integrations/canva'), { recursive: true })
-out('integrations/canva/brand-kit.json', canva)
 console.log('Done.')

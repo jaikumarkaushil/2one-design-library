@@ -2,6 +2,16 @@
   "$schema": "../schema/token.schema.json",
   "description": "2one colour tokens. Grayscale system — no brand hue. danger/success are the only hues and are reserved for validation state only. TWO THEMES: `semantic` is the light set, `semantic_dark` the dark one; always say which theme a value belongs to. Contrast pairs cover both and carry a `theme` field.",
   "ramps": {
+    "accent": {
+      "50": "#fafafa",
+      "100": "#f4f4f4",
+      "200": "#e4e4e4",
+      "300": "#d1d1d1",
+      "600": "#404040",
+      "700": "#262626",
+      "800": "#171717",
+      "950": "#000000"
+    },
     "neutral": {
       "50": "#fafafa",
       "100": "#f4f4f5",
@@ -13,16 +23,6 @@
       "700": "#3f3f46",
       "800": "#27272a",
       "950": "#09090b"
-    },
-    "accent": {
-      "50": "#fafafa",
-      "100": "#f4f4f4",
-      "200": "#e4e4e4",
-      "300": "#d1d1d1",
-      "600": "#404040",
-      "700": "#262626",
-      "800": "#171717",
-      "950": "#000000"
     },
     "danger": {
       "500": "#ef4444",

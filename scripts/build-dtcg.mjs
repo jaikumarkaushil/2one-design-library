@@ -28,7 +28,9 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+import { config as cfg } from './lib/config.mjs'
+
+const root = cfg.root
 const read = (p) => readFileSync(join(root, p), 'utf8')
 const parseVars = (css) => {
   const o = {}
@@ -38,12 +40,12 @@ const parseVars = (css) => {
 const isHex = (v) => /^#[0-9a-fA-F]{6}$/.test(v)
 const block = (css, re) => (css.match(re) || ['', ''])[1]
 
-const globals = read('src/styles/globals.css')
+const globals = readFileSync(cfg.path('theme'), 'utf8')
 const lightVars = parseVars(block(globals, /:root\s*\{([^}]*)\}/))
 const darkVars = parseVars(block(globals, /\.dark\s*\{([^}]*)\}/))
-const rampVars = parseVars(read('tokens/colors.css'))
-const typeVars = parseVars(read('tokens/typography.css'))
-const spaceVars = parseVars(read('tokens/spacing.css'))
+const rampVars = parseVars(readFileSync(cfg.path('tokenSources.colors'), 'utf8'))
+const typeVars = parseVars(readFileSync(cfg.path('tokenSources.typography'), 'utf8'))
+const spaceVars = parseVars(readFileSync(cfg.path('tokenSources.spacing'), 'utf8'))
 
 // rem/px → px string. Figma variables are numeric, so px travels cleanest.
 const toPx = (v) => {

@@ -36,6 +36,7 @@
     "manifest": "node scripts/build-manifest.mjs",
     "validate": "node scripts/validate.mjs",
     "check:exports": "node scripts/check-exports.mjs",
+    "check:usage": "node scripts/check-usage.mjs",
     "check:meta": "npm run build:meta && git diff --exit-code -- tokens manifest.json graph.json",
     "build:meta": "npm run tokens && npm run manifest && npm run graph && npm run validate",
     "graph": "node scripts/build-graph.mjs",

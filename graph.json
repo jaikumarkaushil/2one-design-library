@@ -4,7 +4,7 @@
   "generated_for": "0.1.0",
   "stats": {
     "nodes": 204,
-    "edges": 587,
+    "edges": 588,
     "by_node_type": {
       "token-color": 34,
       "ramp": 23,
@@ -21,7 +21,7 @@
     "by_edge_type": {
       "derived_from": 29,
       "composed_of": 400,
-      "uses": 107,
+      "uses": 108,
       "governed_by": 33,
       "has_contrast": 8,
       "serves": 5,
@@ -3425,6 +3425,11 @@
     {
       "source": "block:login-04",
       "target": "component:input",
+      "type": "uses"
+    },
+    {
+      "source": "block:login-05",
+      "target": "component:logo",
       "type": "uses"
     },
     {

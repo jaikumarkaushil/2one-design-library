@@ -60,13 +60,34 @@ Fonts / `@fontsource-variable/inter`.
 Prefix each with the raw base above. These are **generated from source** and
 verified in CI (`npm run check:meta`), so they never drift from the code.
 
+## Output format — React by default
+
+**Default to React + Tailwind, importing real components.** Not standalone HTML,
+not a token-faithful reproduction. The point of this system is that output is
+built FROM the library, so it inherits the accessibility, the states, the pill
+override, and every later fix:
+
+```tsx
+import { Button, Input, Label, Card } from '@yokesh-2one/design-library'
+```
+
+Only fall back to self-contained HTML when the consumer explicitly cannot run
+React — and say plainly that it is a reproduction, not the real components.
+
+**If the client has their own component library** (MudBlazor, Vuetify, an
+in-house kit), that library wins for structure and this repo supplies the
+*design decisions* — tokens, brand voice, rules, accessibility thresholds.
+Map 2one components to theirs by role (`Button` → their button); never import
+`@yokesh-2one/design-library` into a non-React or non-shadcn codebase. Ask which
+library is in play before generating (see `instructions_for_ai.clarify_first`).
+
 ## By task
 
 | You want to produce | Read |
 | --- | --- |
 | Anything carrying the 2one mark | **Brand assets above** — fetch and inline the SVG |
-| A React/Tailwind screen | `registry.json`, `src/components/ui/<name>.tsx`, a block in `src/blocks/` |
-| Standalone HTML / a deck / a social image | `manifest.json` → `index.assets` for the logo + fonts, then `tokens/*.json` for literal values |
+| **A screen or page (the default)** | `registry.json`, `src/components/ui/<name>.tsx`, a block in `src/blocks/` |
+| A deck / social / print asset | `manifest.json` → `index.assets`, then `tokens/*.json` for literal values |
 | On-brand copy | `brand/brand.json` (voice, tone, vocabulary, writing rules) |
 | Exact colour / type / spacing | `tokens/*.json` — pull literal values, never approximate |
 | Impact of changing a token | `graph.json`, or `npm run what-uses -- <token>` in a clone |

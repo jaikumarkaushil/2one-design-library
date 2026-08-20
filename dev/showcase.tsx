@@ -68,6 +68,7 @@ import { MarketingStats } from '@/blocks/marketing/stats'
 import { MarketingTestimonial } from '@/blocks/marketing/testimonial'
 import { MarketingPricing } from '@/blocks/marketing/pricing'
 import { MarketingFaq } from '@/blocks/marketing/faq'
+import { MarketingClientFaq } from '@/blocks/marketing/client-faq'
 import { MarketingCtaBanner } from '@/blocks/marketing/cta-banner'
 import { MarketingFooter } from '@/blocks/marketing/footer'
 import { MarketingPage } from '@/blocks/marketing/page'
@@ -93,7 +94,7 @@ const NAV = [
   { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', ''], ['playground', 'Theming', '']] },
   { grp: 'Foundations', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
   { grp: 'Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
-  { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['marketing', 'Marketing', '10'], ['charts', 'Charts', '31']] },
+  { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['marketing', 'Marketing', '11'], ['charts', 'Charts', '31']] },
   { grp: 'Reference', items: [['index', 'All components', '57']] },
   { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', '198']] },
 ]
@@ -664,6 +665,7 @@ export function Showcase() {
                   ['testimonial', <MarketingTestimonial />],
                   ['pricing', <MarketingPricing />],
                   ['faq', <MarketingFaq />],
+                  ['client-faq', <MarketingClientFaq />],
                   ['cta-banner', <MarketingCtaBanner />],
                   ['footer', <MarketingFooter />],
                 ] as [string, React.ReactNode][]).map(([id, node]) => (

@@ -161,6 +161,7 @@
       "marketing": {
         "path": "src/blocks/marketing/",
         "items": [
+          "client-faq",
           "cta-banner",
           "faq",
           "feature-grid",

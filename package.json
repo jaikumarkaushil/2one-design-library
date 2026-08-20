@@ -34,6 +34,7 @@
     "dev": "vite --config vite.config.dev.ts",
     "build:site": "vite build --config vite.config.dev.ts",
     "build": "vite build && tsc --emitDeclarationOnly -p tsconfig.json && tsc-alias -p tsconfig.json && node scripts/copy-styles.mjs",
+    "prepare": "npm run build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "a11y": "node scripts/apca-audit.mjs",
     "tokens": "node scripts/build-tokens.mjs && node scripts/build-dtcg.mjs",

@@ -113,8 +113,8 @@ library is in play before generating (see `instructions_for_ai.clarify_first`).
   `RadioGroup` (not RadioButton), `InputOTP` (not OtpField)
 - Blocks (templates, copy-paste not import): `src/blocks/` — `login-01`…`login-05`,
   `signup-01`…`signup-03`, `dashboard-plain`, plus 31 chart examples
-- Published as `@2one/design-library` on the **public npm registry** —
-  `npm install @2one/design-library react react-dom`, no token required
+- NOT yet on npm. Install from the repo: `npm install github:yokesh-2one/2one-design-library` —
+  it builds itself on install. `@2one/design-library` will 404 until published.
 
 ## Theme
 

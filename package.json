@@ -36,15 +36,16 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "a11y": "node scripts/apca-audit.mjs",
     "tokens": "node scripts/build-tokens.mjs && node scripts/build-dtcg.mjs",
-    "manifest": "node scripts/build-manifest.mjs",
+    "manifest": "node scripts/build-manifest.mjs && node scripts/build-ai-entries.mjs",
     "validate": "node scripts/validate.mjs",
     "check:exports": "node scripts/check-exports.mjs",
     "check:usage": "node scripts/check-usage.mjs",
-    "check:meta": "npm run build:meta && git diff --exit-code -- tokens manifest.json graph.json",
+    "check:meta": "npm run build:meta && git diff --exit-code -- tokens manifest.json graph.json CLAUDE.md GEMINI.md .cursorrules .github/copilot-instructions.md",
     "build:meta": "npm run tokens && npm run manifest && npm run graph && npm run validate",
     "graph": "node scripts/build-graph.mjs",
     "what-uses": "node scripts/what-uses.mjs",
-    "info": "node scripts/dls-info.mjs"
+    "info": "node scripts/dls-info.mjs",
+    "ai-entries": "node scripts/build-ai-entries.mjs"
   },
   "peerDependencies": {
     "react": ">=18",

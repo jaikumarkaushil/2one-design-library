@@ -40,7 +40,7 @@
     "validate": "node scripts/validate.mjs",
     "check:exports": "node scripts/check-exports.mjs",
     "check:usage": "node scripts/check-usage.mjs",
-    "check:meta": "npm run build:meta && git diff --exit-code -- tokens manifest.json graph.json CLAUDE.md GEMINI.md .cursorrules .github/copilot-instructions.md",
+    "check:meta": "npm run build:meta && git diff --exit-code -- tokens integrations manifest.json graph.json CLAUDE.md GEMINI.md .cursorrules .github/copilot-instructions.md",
     "build:meta": "npm run tokens && npm run manifest && npm run graph && npm run validate",
     "graph": "node scripts/build-graph.mjs",
     "what-uses": "node scripts/what-uses.mjs",

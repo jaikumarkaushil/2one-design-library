@@ -135,6 +135,7 @@ const spacing = {
 
 // ---- CANVA brand-kit export (derived from the tokens above; users' Canva
 //      integration consumes this — same canonical source, no duplication) ----
+const CANVA_RAW = 'https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/'
 const s = colors.semantic
 const canva = {
   name: '2one',
@@ -147,7 +148,23 @@ const canva = {
     { name: 'Danger', hex: s.destructive }, { name: 'Success', hex: s.success },
   ].filter((c) => c.hex),
   neutral_ramp: Object.entries(colors.ramps.neutral).map(([step, hex]) => ({ name: `Neutral ${step}`, hex })),
-  fonts: { heading: typography.fonts.heading.split(',')[0].replace(/['"]/g, '').trim(), body: typography.fonts.body.split(',')[0].replace(/['"]/g, '').trim() },
+  fonts: {
+    heading: typography.fonts.heading.split(',')[0].replace(/['"]/g, '').trim(),
+    body: typography.fonts.body.split(',')[0].replace(/['"]/g, '').trim(),
+    note: 'Satoshi ships as .woff2 in src/styles/fonts/. Inter is NOT in this repo — it comes from the @fontsource-variable/inter npm package, or fonts.google.com. Canva brand-font upload may not accept .woff2; convert to .otf/.ttf if it refuses.',
+  },
+  // A Canva Brand Kit holds a logo as well as colours and fonts. Omitting it
+  // was the same gap that produced a typeset wordmark in generated output —
+  // if the mark is not in the export, whoever wires this up will substitute text.
+  logo: {
+    svg: {
+      black: `${CANVA_RAW}brand/logo/svg/2one-logo-black.svg`,
+      white: `${CANVA_RAW}brand/logo/svg/2one-logo-white.svg`,
+    },
+    png: { black_1024: `${CANVA_RAW}brand/logo/png/2one-logo-black-1024w.png`, white_1024: `${CANVA_RAW}brand/logo/png/2one-logo-white-1024w.png` },
+    rules: 'Black on light surfaces, white on dark. Never recolour, rotate, distort, or add effects. Minimum width 96px; clear space 0.5x the logo height. Never typeset "2one" as text in place of the mark.',
+  },
+  theme: 'light — Canva designs sit on light grounds. The dark palette is in tokens/colors.json → semantic_dark if needed.',
   rules: colors.rules,
 }
 

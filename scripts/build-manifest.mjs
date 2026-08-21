@@ -12,10 +12,16 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
 const ls = (rel, filter = () => true) => existsSync(join(root, rel)) ? readdirSync(join(root, rel)).filter(filter).sort() : []
 const base = (f) => f.replace(/\.[^.]+$/, '')
 
-const ui = ls('src/components/ui', (f) => f.endsWith('.tsx')).map(base)
-const only = ls('src/components', (f) => f.endsWith('.tsx')).map(base)
+// 2one-authored primitives that live in src/components/ui but are NOT from shadcn
+// (shadcn has no equivalent). Kept out of the "shadcn_primitives" count so the
+// manifest stays honest; they are surfaced under two_one_only instead.
+const TWO_ONE_UI = new Set(['toolbar'])
+const uiAll = ls('src/components/ui', (f) => f.endsWith('.tsx')).map(base)
+const ui = uiAll.filter((n) => !TWO_ONE_UI.has(n))
+const only = [...ls('src/components', (f) => f.endsWith('.tsx')).map(base), ...uiAll.filter((n) => TWO_ONE_UI.has(n))].sort()
 const blocks = ls('src/blocks', (f) => f.endsWith('.tsx')).map(base)
 const dashboards = ls('src/blocks/dashboard-plain', (f) => f.endsWith('.tsx')).length ? ['dashboard-plain'] : []
+const marketing = ls('src/blocks/marketing', (f) => f.endsWith('.tsx')).map(base)
 const charts = ls('src/blocks/charts', (f) => f.endsWith('.tsx')).map(base)
 
 const manifest = {
@@ -51,7 +57,7 @@ const manifest = {
       'colours / type / spacing': 'tokens/colors.json, tokens/typography.json, tokens/spacing.json (canonical machine-readable).',
       'a component spec': 'src/components/ui/<name>.tsx; naming follows shadcn/ui.',
       'accessibility / contrast': 'tokens/colors.json → contrast, and docs/accessibility.md. Verify with `npm run a11y`.',
-      'templates': 'src/blocks/ (auth + dashboard) and src/blocks/charts/.',
+      'templates': 'src/blocks/ (auth + dashboard), src/blocks/marketing/ (landing-page sections), and src/blocks/charts/.',
       'what exists vs planned': 'guide-app/VERSIONLOG.md.',
       'leave feedback': 'guide-app/feedback.md.',
     },
@@ -87,6 +93,7 @@ const manifest = {
     templates: {
       tier: 3,
       blocks: { path: 'src/blocks/', items: blocks.concat(dashboards) },
+      marketing: { path: 'src/blocks/marketing/', items: marketing },
       charts: { path: 'src/blocks/charts/', count: charts.length, grayscale: true, items: charts },
       recipes: 'recipes/ (app, website, marketing, deck)',
     },
@@ -138,4 +145,4 @@ const manifest = {
 }
 
 writeFileSync(join(root, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n')
-console.log(`Wrote manifest.json — ${ui.length} primitives, ${only.length} 2one-only, ${blocks.length + dashboards.length} blocks, ${charts.length} charts.`)
+console.log(`Wrote manifest.json — ${ui.length} primitives, ${only.length} 2one-only, ${blocks.length + dashboards.length} blocks, ${marketing.length} marketing, ${charts.length} charts.`)

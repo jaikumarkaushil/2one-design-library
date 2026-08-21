@@ -47,7 +47,8 @@
     "graph": "node scripts/build-graph.mjs",
     "what-uses": "node scripts/what-uses.mjs",
     "info": "node scripts/dls-info.mjs",
-    "ai-entries": "node scripts/build-ai-entries.mjs"
+    "ai-entries": "node scripts/build-ai-entries.mjs",
+    "test:fixture": "node scripts/test-fixture.mjs"
   },
   "peerDependencies": {
     "react": ">=18",

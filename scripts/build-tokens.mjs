@@ -16,6 +16,7 @@ import { dirname, join } from 'node:path'
 import { config as cfg } from './lib/config.mjs'
 
 const root = cfg.root
+const id = cfg.identity ?? {}
 const read = (p) => readFileSync(join(root, p), 'utf8')
 
 // ---- contrast maths ----
@@ -79,7 +80,10 @@ const pairsFor = (theme, s) => [
 
 const colors = {
   $schema: '../schema/token.schema.json',
-  description: '2one colour tokens. Grayscale system — no brand hue. danger/success are the only hues and are reserved for validation state only. TWO THEMES: `semantic` is the light set, `semantic_dark` the dark one; always say which theme a value belongs to. Contrast pairs cover both and carry a `theme` field.',
+  // Payload prose. Hardcoded, it wrote "2one colour tokens" into a client's
+  // palette — the fixture caught it. The structural half stays here because it
+  // describes the FORMAT, which is an engine concern.
+  description: [id.tokens_description, 'TWO THEMES: `semantic` is the light set, `semantic_dark` the dark one; always say which theme a value belongs to. Contrast pairs cover both and carry a `theme` field.'].filter(Boolean).join(' '),
   // Ramp NAMES are payload data, not engine knowledge. Hardcoding
   // neutral/accent/danger/success emitted four empty objects against a payload
   // whose ramps are called slate/alert/ok — silently discarding its whole
@@ -106,12 +110,9 @@ const colors = {
     note: 'Every pair carries a `theme`. Both themes are audited by `npm run a11y`, which is the authority — these values are the same maths, precomputed.',
     pairs: [...pairsFor('light', sem), ...pairsFor('dark', semDark)],
   },
-  rules: [
-    'Grayscale only — never introduce a brand hue.',
-    'danger/success are for validation state only, never decoration.',
-    'Never convey state by colour alone — pair with an icon or text.',
-    'Any colour-token change must pass `npm run a11y`.',
-  ],
+  // Colour rules are a payload's own policy — "grayscale only" is a 2one
+  // decision, not something an engine may assert about a client's palette.
+  rules: id.token_rules ?? ['Never convey state by colour alone — pair with an icon or text.', 'Any colour-token change must pass `npm run a11y`.'],
 }
 
 // ---- TYPOGRAPHY ----
@@ -140,7 +141,9 @@ const spacing = {
   spacing: Object.fromEntries(Object.entries(svars).filter(([k]) => k.startsWith('--spacing-')).map(([k, v]) => [k.replace('--spacing-', ''), v])),
   radius: Object.fromEntries(Object.entries(svars).filter(([k]) => k.startsWith('--radius-')).map(([k, v]) => [k.replace('--radius-', ''), v])),
   shadow: Object.fromEntries(Object.entries(svars).filter(([k]) => k.startsWith('--shadow-')).map(([k, v]) => [k.replace('--shadow-', ''), v])),
-  notes: 'Buttons use radius-full (the 2one signature). Everything else uses xs–2xl.',
+  // The signature is a payload fact, not an engine one. Hardcoded, it wrote
+  // "the 2one signature" into a client's spacing tokens — caught by the fixture.
+  notes: cfg.rules.signature ?? null,
 }
 
 // ---- write the canonical token JSON ----

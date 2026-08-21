@@ -147,5 +147,12 @@
       "sound"
     ],
     "status": "Not yet in the 2one Figma scope. See guide-app/VERSIONLOG.md."
-  }
+  },
+  "tokens_description": "2one colour tokens. Grayscale system — no brand hue. danger/success are the only hues and are reserved for validation state only.",
+  "token_rules": [
+    "Grayscale only — never introduce a brand hue.",
+    "danger/success are for validation state only, never decoration.",
+    "Never convey state by colour alone — pair with an icon or text.",
+    "Any colour-token change must pass `npm run a11y`."
+  ]
 }

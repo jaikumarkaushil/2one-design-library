@@ -39,5 +39,12 @@ jobs:
       - name: Generated files are in sync with sources
         run: npm run check:meta
 
+      # Runs the engine against a second, deliberately unlike-2one payload and
+      # asserts none of 2one's data appears in its output. Running against 2one
+      # alone cannot detect a 2one-shaped assumption — the run succeeds either
+      # way. Temporary: moves with the engine when it leaves this repo.
+      - name: Engine works against a payload that is not 2one
+        run: npm run test:fixture
+
       - name: Library build
         run: npm run build

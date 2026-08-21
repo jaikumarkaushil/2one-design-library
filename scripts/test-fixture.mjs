@@ -82,7 +82,29 @@ for (const hex of ['#09090b', '#dcdce0', '#c81e1e']) {
   expect('no 2one colour', !blob.includes(hex), `${hex} (a 2one token) appears in Acme's output`)
 }
 
-// 3. Opt-in outputs must stay opt-in.
+// 3. Do the audit rules enforce ACME's policy, not 2one's?
+//    This is the sharpest check available: the same rule engine must reach the
+//    OPPOSITE verdict on lucide for the two payloads. 2one sanctions it; Acme
+//    sanctions phosphor. If the rules were still hardcoded, lucide would pass
+//    here and Acme's own `slate` ramp would be reported as a foreign hue.
+const audit = spawnSync(
+  process.execPath,
+  [join(engineRoot, 'scripts/check-usage.mjs'), 'ui/templates/bad.tsx', '--json'],
+  { cwd: fixture, encoding: 'utf8' }
+)
+try {
+  const rules = JSON.parse(audit.stdout).findings.map((f) => `${f.rule}:${f.detail}`)
+  const has = (r, d) => rules.some((x) => x.startsWith(`${r}:`) && x.includes(d))
+  expect('acme icon policy', has('foreign-icons', 'lucide'), 'lucide-react not flagged — Acme sanctions phosphor, so the rule is still using 2one\'s library')
+  expect('acme own ramps allowed', !rules.some((r) => r.includes('bg-slate-500')), 'Acme\'s own `slate` ramp was reported as a foreign hue')
+  expect('acme own ramps allowed', !rules.some((r) => r.includes('text-alert-600')), 'Acme\'s own `alert` ramp was reported as a foreign hue')
+  expect('acme wordmark', has('typeset-wordmark', 'acme'), 'the wordmark rule did not fire for "acme" — it is still looking for "2one"')
+  expect('foreign hue still caught', has('foreign-palette', 'bg-blue-600'), 'bg-blue-600 was not flagged')
+} catch (e) {
+  failures.push(`audit rules — could not parse check-usage output: ${e.message}`)
+}
+
+// 4. Opt-in outputs must stay opt-in.
 expect('no unrequested files', !existsSync(join(fixture, 'integrations')), 'a Canva export was written for a payload that never configured one')
 
 if (failures.length) {

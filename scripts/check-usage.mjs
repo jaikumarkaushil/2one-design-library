@@ -1,5 +1,8 @@
 /*
-  check-usage — audits generated or hand-written UI code against the 2one rules.
+  check-usage — audits generated or hand-written UI code against a design
+  system's rules. ENGINE: the rule MECHANISMS live here; the values they test
+  against (wordmark, icon library, own ramps, spacing base) come from
+  dls.config.json, so the same checks work for any payload.
 
   The other checks in this repo verify the SYSTEM (tokens valid, contrast passes,
   generated files in sync). This one verifies OUTPUT: code someone — or some
@@ -11,7 +14,7 @@
   brand/logo/manifest.json. This turns them from advisory into checkable.
 
   Usage:
-    node scripts/check-usage.mjs <file|dir> [...]     # defaults to src/blocks
+    node scripts/check-usage.mjs <file|dir> [...]     # defaults to the payload's blocks
     node scripts/check-usage.mjs --json <file>        # machine-readable
     node scripts/check-usage.mjs --warnings <file>    # warnings fail too
 
@@ -19,10 +22,9 @@
 */
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative, extname } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { dirname } from 'node:path'
+import { config as cfg } from './lib/config.mjs'
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+const root = cfg.root
 const args = process.argv.slice(2)
 const asJson = args.includes('--json')
 const strict = args.includes('--warnings')
@@ -38,10 +40,21 @@ const targets = args.filter((a) => !a.startsWith('--'))
   that sounds like yours.
 */
 const graph = (() => {
-  for (const p of [join(root, 'graph.json'), join(root, '..', 'graph.json')]) {
+  for (const p of [join(root, cfg.rel('out.graph')), join(root, '..', 'graph.json')]) {
     try { return JSON.parse(readFileSync(p, 'utf8')) } catch { /* try next */ }
   }
   return null
+})()
+
+// The payload's own ramp names, read from its generated tokens. Needed because
+// Tailwind's stock palette list overlaps with plausible ramp names — a payload
+// whose primary ramp is called `slate` would have had its entire palette
+// reported as a foreign hue by a hardcoded list.
+const ownRamps = (() => {
+  try {
+    const c = JSON.parse(readFileSync(join(cfg.path('out.tokens'), 'colors.json'), 'utf8'))
+    return new Set(Object.keys(c.ramps ?? {}))
+  } catch { return new Set() }
 })()
 
 const knownTokens = new Set()
@@ -63,11 +76,29 @@ const NON_TOKEN = new Set([
   'display', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'full', 'md',
 ])
 
-// Tailwind's stock palettes. The 2one system is grayscale: neutral/accent plus
-// danger/success for validation. Any other hue is a second palette by definition.
-const FOREIGN_HUES =
-  'slate|gray|zinc|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose'
-const FOREIGN_ICONS = /from\s+['"](@tabler\/icons|react-icons|@heroicons|@fortawesome|@radix-ui\/react-icons|@phosphor-icons)/
+// Tailwind's stock palettes, minus any the payload has actually adopted as its
+// own ramp. Whatever remains is a second palette by definition.
+const TAILWIND_HUES = [
+  'slate', 'gray', 'zinc', 'stone', 'red', 'orange', 'amber', 'yellow', 'lime', 'green',
+  'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose',
+]
+const FOREIGN_HUES = TAILWIND_HUES.filter((h) => !ownRamps.has(h)).join('|')
+
+// Every icon package except the one this payload sanctioned. Listing the
+// forbidden ones by hand meant the sanctioned library had to be lucide.
+const ICON_PACKAGES = [
+  'lucide-react', '@tabler/icons-react', 'react-icons', '@heroicons/react',
+  '@fortawesome/react-fontawesome', '@radix-ui/react-icons', '@phosphor-icons/react', 'phosphor-react',
+]
+const OWN_ICONS = cfg.rules.iconLibrary
+const FOREIGN_ICONS = new RegExp(
+  `from\\s+['"](${ICON_PACKAGES.filter((p) => p !== OWN_ICONS).map((p) => p.replace(/[/@.]/g, '\\$&')).join('|')})`
+)
+
+// The mark this payload protects. Hardcoding "2one" meant the rule was inert
+// for every other design system.
+const WORDMARK = cfg.rules.wordmark ?? cfg.name
+const SPACING_BASE = cfg.rules.spacingBase ?? 4
 
 /** @type {{id:string,severity:'error'|'warn',test:(ctx:any)=>{line:number,detail:string}[]}[]} */
 const RULES = [
@@ -86,7 +117,7 @@ const RULES = [
   {
     id: 'foreign-palette',
     severity: 'error',
-    why: 'The 2one system is grayscale — no brand hue anywhere. danger/success are the only hues and are reserved for validation state.',
+    why: `Only this system's own ramps (${[...ownRamps].join(', ') || 'none declared'}) may be used. Any other palette is a second palette by definition.`,
     test: ({ lines }) =>
       lines.flatMap((l, i) =>
         [...l.matchAll(new RegExp(`\\b(?:bg|text|border|ring|fill|stroke|from|to|via)-(?:${FOREIGN_HUES})-\\d{2,3}\\b`, 'g'))].map(
@@ -126,7 +157,7 @@ const RULES = [
   {
     id: 'foreign-icons',
     severity: 'error',
-    why: 'lucide only. A second icon set is one of the most visible "AI-generated" tells (rule 7).',
+    why: `${OWN_ICONS} only. A second icon set is one of the most visible "AI-generated" tells.`,
     test: ({ lines }) =>
       lines.flatMap((l, i) => (FOREIGN_ICONS.test(l) ? [{ line: i + 1, detail: l.trim().slice(0, 80) }] : [])),
   },
@@ -137,12 +168,12 @@ const RULES = [
     test: ({ src, lines }) => {
       if (/from\s+['"][^'"]*\/logo['"]|<Logo\b/.test(src)) return []
       return lines.flatMap((l, i) =>
-        // "2one" as the entire VISIBLE text of an element. sr-only text is the
+        // The wordmark as the entire VISIBLE text of an element. sr-only text is the
         // accessible name for a logo link — correct practice, not a violation;
         // the placeholder-brand-mark rule below is what catches that case.
         /\bsr-only\b/.test(l)
           ? []
-          : [...l.matchAll(/>\s*2one\s*</gi)].map((m) => ({
+          : [...l.matchAll(new RegExp(`>\s*${WORDMARK}\s*<`, 'gi'))].map((m) => ({
               line: i + 1,
               detail: `"${m[0].trim()}" — wordmark typeset as text`,
             }))
@@ -152,12 +183,12 @@ const RULES = [
   {
     id: 'placeholder-brand-mark',
     severity: 'error',
-    why: 'A brand slot exists (sr-only "2one" or aria-label) but the real mark is absent — a generic icon is standing in for the wordmark. Import Logo.',
+    why: `A brand slot exists (sr-only "${WORDMARK}" or aria-label) but the real mark is absent — a generic icon is standing in for the wordmark. Import the Logo component.`,
     test: ({ src, lines }) => {
       if (/from\s+['"][^'"]*\/logo['"]|<Logo\b/.test(src)) return []
       return lines.flatMap((l, i) =>
-        /(?:sr-only[^>]*>\s*2one\s*<|aria-label\s*=\s*["']2one["'])/i.test(l)
-          ? [{ line: i + 1, detail: 'brand slot labelled "2one" but no Logo component in this file' }]
+        new RegExp(`(?:sr-only[^>]*>\s*${WORDMARK}\s*<|aria-label\s*=\s*["']${WORDMARK}["'])`, 'i').test(l)
+          ? [{ line: i + 1, detail: `brand slot labelled "${WORDMARK}" but no Logo component in this file` }]
           : []
       )
     },
@@ -192,11 +223,11 @@ const RULES = [
   {
     id: 'off-scale-spacing',
     severity: 'warn',
-    why: 'Arbitrary spacing values sit off the 8px scale. Prefer a scale step (gap-4, p-6).',
+    why: `Arbitrary spacing values sit off the ${SPACING_BASE}px scale. Prefer a scale step (gap-4, p-6).`,
     test: ({ lines }) =>
       lines.flatMap((l, i) =>
         [...l.matchAll(/\b(?:p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|space-[xy])-\[(\d+)px\]/g)]
-          .filter((m) => Number(m[1]) % 4 !== 0)
+          .filter((m) => Number(m[1]) % SPACING_BASE !== 0)
           .map((m) => ({ line: i + 1, detail: `${m[0]} is off the 4/8px scale` }))
       ),
   },
@@ -240,7 +271,7 @@ const walk = (p, acc = []) => {
   } else if (CODE.has(extname(p))) acc.push(p)
   return acc
 }
-const files = (targets.length ? targets : ['src/blocks'])
+const files = (targets.length ? targets : [cfg.rel('blocks')])
   .map((t) => (t.startsWith('/') || /^[A-Za-z]:/.test(t) ? t : join(root, t)))
   .flatMap((p) => walk(p))
 
@@ -269,7 +300,7 @@ const warns = findings.filter((f) => f.severity === 'warn')
 if (asJson) {
   console.log(JSON.stringify({ scanned: files.length, errors: errors.length, warnings: warns.length, findings }, null, 2))
 } else {
-  console.log(`\n  check-usage — ${files.length} file(s) scanned against the 2one rules\n`)
+  console.log(`\n  check-usage — ${files.length} file(s) scanned against the ${cfg.name} rules\n`)
   if (!findings.length) {
     console.log('  ✓ no violations\n')
   } else {

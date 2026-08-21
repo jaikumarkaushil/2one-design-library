@@ -10,6 +10,25 @@ machine-readable index plus the `instructions_for_ai` contract (answer only from
 content, cite the file, say when something isn't here — never guess). Then this guide,
 then [`registry.json`](registry.json).
 
+## Invariants — generated or checked, never asserted by hand
+
+Every claim this repo makes about itself is either **generated from source** or
+**enforced by a check**, so it can't drift. If you add or remove a capability, extend
+this list — never hand-maintain a fact a script could own.
+
+| Invariant | How it stays true | Command |
+| --- | --- | --- |
+| No stale capability claims (no single-theme wording after dark shipped; no hard-coded graph counts) | banned-phrase scan over tracked prose/config | `npm run check:claims` |
+| Tokens, `manifest.json`, `graph.json` match their sources | regenerate + `git diff` | `npm run check:meta` |
+| Public API exports every component; `docs/consuming.md` matches the package surface | barrel + doc scan | `npm run check:exports` |
+| Contrast (APCA/WCAG) passes in **both** light and dark | audit `:root` + `.dark` | `npm run a11y` |
+| Graph is trustworthy — no dangling edges, every component has a node, ids match `type`, every interactive component is `governed_by` no-color-alone | structural + governance checks | `npm run validate` |
+| Bundle impact is answerable ("what uses recharts?") | `depends_on` edges parsed from imports | `npm run what-uses <pkg>` |
+| Types compile and the library builds | `tsc` + `vite` | `npm run typecheck` · `npm run build` |
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs all of these on every PR —
+reintroducing any drift turns it red. Run them together locally with **`npm run verify`**.
+
 ## How to represent this repository
 
 This is the single source of truth for how any AI tool should *present* this repo —

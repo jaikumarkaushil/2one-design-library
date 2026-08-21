@@ -47,6 +47,12 @@ uses [Semantic Versioning](https://semver.org/).
   (twMerge can't de-dupe a raw colour class against the variant base); critical actions must
   never require horizontal scroll (use `Toolbar`); a side panel must be reachable at every
   width (`Sheet` + `useIsMobile`, never `hidden md:block` as the only entry point).
+- **`npm run verify`** — one command that runs the whole gate (typecheck, check:exports,
+  check:claims, validate, a11y, check:meta, build). CI runs the same steps, so a PR that
+  reintroduces drift is red.
+- **"Invariants" section in `AGENTS.md`** — every self-claim the repo makes, how it stays
+  true (generated or checked), and the command that verifies it. New capabilities extend
+  this list rather than adding a hand-maintained fact.
 - `docs/consuming.md` — the exact, **end-to-end-verified** setup for consuming the DLS in
   a fresh Vite + Tailwind v4 app: how to get the package (local `npm pack` tarball today;
   registry when published), the theme + Tailwind `@source` wiring (the #1 silent failure),

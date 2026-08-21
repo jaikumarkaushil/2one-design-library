@@ -89,9 +89,28 @@ const framework = deps.next ? 'next' : deps.vite || deps['@vitejs/plugin-react']
   layout detail, and pnpm's strict store or Yarn PnP will refuse the same import.
   Both are worth knowing; they are not the same question.
 */
-const iconsDirect = deps['lucide-react'] ?? null
-let iconsResolvable = false
-try { createRequire(join(cwd, 'package.json')).resolve('lucide-react'); iconsResolvable = true } catch { /* not reachable */ }
+const requireFromConsumer = createRequire(join(cwd, 'package.json'))
+const hoistedDependency = (name) => {
+  const direct = deps[name] ?? null
+  let resolvable = false
+  try { requireFromConsumer.resolve(name); resolvable = true } catch { /* not reachable */ }
+  return {
+    library: name,
+    resolvable,
+    direct_dependency: direct,
+    note: direct
+      ? `declared directly (${direct})`
+      : resolvable
+        ? 'resolvable via the library, but not a direct dependency — add it if you import from it yourself, or a strict installer (pnpm, Yarn PnP) will refuse the import'
+        : `not resolvable — run: npm install ${name}`,
+  }
+}
+
+const icons = hoistedDependency('lucide-react')
+// recharts primitives (<BarChart>, <XAxis>, …) are not re-exported by the
+// library's ChartContainer — composing a chart means importing them from
+// recharts directly, the same hoisting trap as icons.
+const charts = hoistedDependency('recharts')
 
 /*
   These are ONE-TIME project setup, not per-install chores, and saying so is
@@ -134,16 +153,8 @@ const info = {
     themes: ['light', 'dark'],
     theme_switch: 'wrap the app in the exported ThemeProvider',
     palette: 'grayscale — no brand hue; danger/success for validation state only',
-    icons: {
-      library: 'lucide-react',
-      resolvable: iconsResolvable,
-      direct_dependency: iconsDirect,
-      note: iconsDirect
-        ? `declared directly (${iconsDirect})`
-        : iconsResolvable
-          ? 'resolvable via the library, but not a direct dependency — add it if you import icons yourself, or a strict installer (pnpm, Yarn PnP) will refuse the import'
-          : 'not resolvable — run: npm install lucide-react',
-    },
+    icons,
+    charts,
     signature: 'buttons are pills (radius-full)',
     fonts: { heading: 'Satoshi', body: 'Inter' },
   },

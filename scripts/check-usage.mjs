@@ -271,9 +271,35 @@ const walk = (p, acc = []) => {
   } else if (CODE.has(extname(p))) acc.push(p)
   return acc
 }
-const files = (targets.length ? targets : [cfg.rel('blocks')])
-  .map((t) => (t.startsWith('/') || /^[A-Za-z]:/.test(t) ? t : join(root, t)))
-  .flatMap((p) => walk(p))
+
+/*
+  A user-supplied target ("npx 2one check src") is a CLI path argument, like
+  eslint's or tsc's — relative to where the command was RUN, not to the
+  resolved payload root. The two are the same directory in every scenario this
+  engine was tested against: inside the 2one repo, and inside the Acme fixture
+  (spawned with cwd === the fixture's own root, which owns a dls.config.json).
+  Neither exercises the actual distributed case — a consumer with no
+  dls.config.json of their own, where `root` silently falls back to the
+  installed package's directory inside node_modules — so `check src` resolved
+  to node_modules/@2one/design-library/src, which is never shipped, and died
+  with a raw ENOENT instead of the checker ever running.
+  The unconfigured default (no target given) is the one exception: it names
+  the payload's OWN blocks directory, so it belongs against `root`.
+*/
+const resolveTarget = (t) => (t.startsWith('/') || /^[A-Za-z]:/.test(t) ? t : join(process.cwd(), t))
+const inputs = targets.length ? targets.map(resolveTarget) : [join(root, cfg.rel('blocks'))]
+
+const files = inputs.flatMap((p) => {
+  try {
+    return walk(p)
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      console.error(`\n  check-usage: no such file or directory: ${p}\n`)
+      process.exit(1)
+    }
+    throw e
+  }
+})
 
 // ---- run ----
 const findings = []

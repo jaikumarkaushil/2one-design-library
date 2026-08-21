@@ -24,6 +24,15 @@ uses [Semantic Versioning](https://semver.org/).
 - "Definition of Done for a capability change" section in
   `docs/building-with-the-dls.md` (near rule 15): run `check:claims` and grep the old
   claim repo-wide in the same PR.
+- **Knowledge-graph dependency edges.** Each component now has `depends_on` edges to the
+  external npm packages it imports (13 `package` nodes, 78 edges), so
+  `npm run what-uses recharts` answers the flagship bundle-impact question — it reports
+  the `Chart` component plus all 31 chart templates and `dashboard-plain`.
+- **Governance coverage.** Every interactive component is now `governed_by`
+  `rule:no-color-alone` (governed_by edges 33 → 51). `npm run validate` fails if any
+  interactive component (`scripts/interactive-components.mjs`, the single source of truth)
+  lacks that edge.
+- `check:claims` now also forbids hard-coded graph counts (`N nodes` / `N edges`) in prose.
 - `docs/consuming.md` — the exact, **end-to-end-verified** setup for consuming the DLS in
   a fresh Vite + Tailwind v4 app: how to get the package (local `npm pack` tarball today;
   registry when published), the theme + Tailwind `@source` wiring (the #1 silent failure),
@@ -32,6 +41,10 @@ uses [Semantic Versioning](https://semver.org/).
   drifts from the package name / `./styles` export.
 
 ### Changed
+- **Graph node ids now match their `type`.** 2one-only components are `component-2one:<name>`
+  (was `component:<name>`), so an impact-analysis consumer keyed on the id prefix is correct
+  (this ambiguity previously broke one). `AGENTS.md` no longer hard-codes the graph node/edge
+  count — it points at `graph.json → stats`, read live.
 - **Killed the "light-only" truth-drift.** Corrected stale single-theme wording to
   reflect the shipped light + audited dark themes across `README.md`,
   `src/styles/globals.css`, `package.json`, `guide-app/knowledge-base.md`,

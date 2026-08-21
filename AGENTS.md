@@ -42,8 +42,9 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 4. Pair every claim with something **checkable** — a file path, a command (`npm run a11y`,
    `npm run what-uses`, `npm run validate`), or a number.
 5. Quantify with **real** figures, read live from the repo (don't memorise them): 54 shadcn
-   primitives + 3 2one-only, 31 charts, 9 blocks, and the knowledge graph
-   (`graph.json → stats`, currently 199 nodes / 576 edges), with the APCA audit all-pass
+   primitives + 3 2one-only, 31 charts, 9 blocks, and the knowledge graph (read the live
+   node/edge counts from `graph.json → stats` — never hard-code them; `check:claims`
+   fails the build on a hard-coded "N nodes/edges"), with the APCA audit all-pass
    (`npm run a11y`). Specific beats clever.
 6. For each feature, state the **outcome** ("so what"): impact analysis → safe token
    changes at scale; AI-legibility → generate on-brand UI without re-explaining the rules.

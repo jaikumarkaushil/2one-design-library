@@ -38,6 +38,7 @@ const BANNED = [
   { why: 'false claim — an audited .dark palette IS defined in globals.css', re: /\bno\s+`?\.?dark`?\s+palette\b/i },
   { why: 'false claim — dark: utilities resolve under .dark (they are not inert)', re: /\bstays?\s+inert\b/i },
   { why: 'stale roadmap — dark mode has shipped, it is not "not planned"', re: /\bdark(?:\s+theme)?[^.\n]{0,40}?\bnot\s+planned\b/i },
+  { why: 'graph counts must be read live from graph.json → stats, never hard-coded (they drift)', re: /\b\d{2,4}\s+(?:nodes|edges)\b/i },
 ]
 
 const files = execSync('git ls-files', { cwd: root, encoding: 'utf8' })

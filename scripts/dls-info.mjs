@@ -16,7 +16,7 @@
 */
 import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { createRequire } from 'node:module'
-import { join, resolve } from 'node:path'
+import { join, resolve, relative, dirname } from 'node:path'
 
 const cwd = process.cwd()
 const asJson = process.argv.includes('--json')
@@ -58,10 +58,20 @@ const components = (() => {
 const tailwind = deps.tailwindcss ?? (inRepo ? consumerPkg?.devDependencies?.tailwindcss : null)
 const tailwindMajor = tailwind ? Number(String(tailwind).replace(/[^\d.]/g, '').split('.')[0]) : null
 
-const cssFiles = ['src/index.css', 'src/app.css', 'src/globals.css', 'app/globals.css', 'styles/globals.css', 'src/styles/globals.css']
-  .map((p) => join(cwd, p))
-  .filter(existsSync)
+const CSS_CANDIDATES = ['src/index.css', 'src/app.css', 'src/globals.css', 'app/globals.css', 'styles/globals.css', 'src/styles/globals.css']
+const cssFiles = CSS_CANDIDATES.map((p) => join(cwd, p)).filter(existsSync)
 const cssText = cssFiles.map((p) => readFileSync(p, 'utf8')).join('\n')
+
+/*
+  The @source path is resolved relative to the CSS FILE, not the project root,
+  so a single hardcoded '../node_modules/…' is wrong for any stylesheet that is
+  not exactly one directory deep. Emitting a path the user cannot paste is
+  worse than emitting none: it looks authoritative and silently does nothing.
+*/
+const cssTarget = cssFiles[0] ?? null
+const sourcePath = cssTarget
+  ? `${relative(dirname(cssTarget), join(cwd, 'node_modules')).replaceAll('\\', '/')}/${PKG}/dist`
+  : `./node_modules/${PKG}/dist`
 const sourced = inRepo ? true : /@source[^\n]*design-library/.test(cssText)
 const stylesImported = inRepo ? true : new RegExp(`@import\\s+['"]${PKG.replace('/', '\\/')}\\/styles`).test(cssText)
 
@@ -83,13 +93,33 @@ const iconsDirect = deps['lucide-react'] ?? null
 let iconsResolvable = false
 try { createRequire(join(cwd, 'package.json')).resolve('lucide-react'); iconsResolvable = true } catch { /* not reachable */ }
 
+/*
+  These are ONE-TIME project setup, not per-install chores, and saying so is
+  part of the message. Read without that framing they look like something npm
+  ought to have done and didn't — the first question a real user asked was
+  "do I need to install this every time?". npm installs packages; it cannot
+  edit your stylesheet, so two of the three can never arrive from an install.
+*/
 const problems = []
 if (!present) problems.push(`${PKG} is not installed here. Run: npm install ${PKG} react react-dom`)
 if (present && !inRepo) {
-  if (!tailwindMajor) problems.push('Tailwind not found. The components ship as Tailwind classes and will render unstyled without it.')
-  else if (tailwindMajor < 4) problems.push(`Tailwind v${tailwindMajor} found; this library requires v4.`)
-  if (!stylesImported) problems.push(`Theme not imported. Add: @import '${PKG}/styles';`)
-  if (!sourced) problems.push(`Package not scanned by Tailwind — every class will be tree-shaken and the UI renders unstyled. Add: @source '../node_modules/${PKG}/dist';`)
+  const where = cssTarget ? relative(cwd, cssTarget).replaceAll('\\', '/') : null
+  const inFile = where ? ` in ${where}` : ` in your app stylesheet (looked for: ${CSS_CANDIDATES.join(', ')})`
+
+  if (!tailwindMajor) {
+    problems.push(
+      `Tailwind v4 not found. It is a peer dependency and npm normally installs it — if it is missing, ` +
+        `legacy-peer-deps is likely set. Run: npm install -D tailwindcss@4`,
+    )
+  } else if (tailwindMajor < 4) problems.push(`Tailwind v${tailwindMajor} found; this library requires v4.`)
+
+  if (!stylesImported) problems.push(`One-time setup — add${inFile}:  @import '${PKG}/styles';`)
+  if (!sourced) {
+    problems.push(
+      `One-time setup — add${inFile}:  @source '${sourcePath}';` +
+        `  (without it Tailwind tree-shakes every component class and the UI renders unstyled)`,
+    )
+  }
 }
 
 const info = {

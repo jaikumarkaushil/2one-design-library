@@ -80,17 +80,25 @@ release would ship.
 > `@2one` scope is claimed and `npm publish` is run — see
 > [Publishing](#publishing). Use the repo install above in the meantime.
 
-Point Tailwind at the package and import the theme once:
+Tailwind v4 is a peer dependency, so npm installs it for you. What npm *cannot*
+do is edit your stylesheet — these three lines are yours to add:
 
 ```css
-/* app.css */
+/* app.css — one-time setup, per project */
 @import 'tailwindcss';
 @import '@2one/design-library/styles';                    /* tokens, variables, fonts */
 @source '../node_modules/@2one/design-library/dist';      /* so Tailwind sees the classes */
 ```
 
+**You do this once.** It is project setup, not an install step — reinstalling,
+updating, or adding packages never undoes it. If `npx 2one info` reports these
+after a fresh `npm install`, it means the lines are not in your CSS yet, not
+that they need repeating.
+
 > The `@source` line matters. Without it Tailwind strips every class the
-> components use and the UI renders completely unstyled.
+> components use and the UI renders completely unstyled. The path is relative
+> to **the CSS file**, so `../node_modules/…` is right for `src/app.css` and
+> `./node_modules/…` for a stylesheet at the project root.
 
 ```tsx
 import { Button, Input, Label } from '@2one/design-library'

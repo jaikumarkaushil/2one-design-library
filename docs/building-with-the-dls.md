@@ -110,11 +110,24 @@ black logo on the dark sidebar simply vanishes.
 
 ## 15. Keep the claims in sync with the capabilities
 When you ship (or remove) a capability, fix **every** place that asserts the old state in
-the same change. Shipping dark mode meant updating the "light-only" wording in
+the same change. Shipping dark mode meant updating the stale single-theme wording in
 `globals.css`, `registry.json`, `AGENTS.md`, the manifest, `.cursorrules`, and the
 copilot instructions — a repo that contradicts itself teaches the next reader (and every
 AI) the wrong thing. Generated files (`manifest.json`, `graph.json`) regenerate from
 source; prose files are updated by hand.
+
+**Definition of Done for a capability change.** A capability change is not done until the
+claims match it *and a check enforces the match*:
+
+1. Run `npm run check:claims` — it fails the build if a known-stale phrase (e.g. a
+   single-theme claim after dark shipped) survives anywhere in tracked prose/config.
+2. Grep the old claim repo-wide in the **same** PR and fix every hit (prose is hand-edited;
+   `manifest.json` / `graph.json` regenerate via `npm run build:meta`).
+3. If the change introduces a *new* class of stale phrasing, add it to the banned list in
+   `scripts/check-claims.mjs` so the same drift can never silently return.
+
+The rule of thumb for this whole repo: **generate it or check it — never hand-maintain a
+claim about the repo in prose alone.** See the *Invariants* list in `AGENTS.md`.
 
 ## 16. Verify the render, not just the build — in every theme
 Compiling and a green audit are **not** "done." **Look** at the page — at multiple widths

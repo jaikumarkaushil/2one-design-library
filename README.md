@@ -4,7 +4,7 @@
 
 **One place for every piece 2one builds with — buttons, forms, layouts, colour, type, and brand — so people and AI can build products that look and feel like 2one, fast.**
 
-Grayscale · light-only · pill buttons · Satoshi headings + Inter body
+Grayscale · light + audited dark · pill buttons · Satoshi headings + Inter body
 54 [shadcn/ui](https://ui.shadcn.com) components re-skinned to the 2one tokens · 3 mobile/brand components of our own
 
 </div>
@@ -218,7 +218,7 @@ The whole look is driven by **CSS variables** defined in [`src/styles/globals.cs
 
 **To re-theme:** edit the values in `globals.css` (or the ramps in `tokens/`) — every component updates at once. Don't hard-code colours in components; use the variables.
 
-**Light-only by design.** No `.dark` palette is defined, so the `dark:` utilities the shadcn components carry never activate. (If dark mode is ever wanted, it's a matter of adding a derived `.dark { … }` block — deliberately not done today.)
+**Light + audited dark.** Both palettes ship in `globals.css` — the light `:root` and the audited `.dark` — both grayscale and APCA-checked (`npm run a11y`). The shadcn `dark:` utilities resolve under the `.dark` ancestor added by the exported `ThemeProvider`.
 
 ### The token files
 
@@ -387,7 +387,7 @@ A few constraints that make output read as "2one" rather than generic shadcn:
 - **Pill buttons.** Buttons use `--radius-full`. This is the signature — enforced in `globals.css` so it survives CLI regenerations.
 - **One primary per view.** Highest-weight action used once; pair a `secondary` with it for lesser actions.
 - **Logo is sacred.** Never recolour, rotate, distort, or add effects. Black on light, white on dark, min width 96px.
-- **Light-only.** Don't introduce dark-mode styling ad hoc.
+- **Light + audited dark.** Both themes are token-driven and APCA-audited; don't hand-roll a third palette or introduce dark styling ad hoc.
 
 ---
 
@@ -400,7 +400,7 @@ The published `.d.ts` must have relative imports, not `@/`. This is handled by `
 Every `npx shadcn add` regenerates `button.tsx` with `rounded-md`. The pill is re-applied via an **unlayered** rule in `globals.css` (`[data-slot="button"] { border-radius: var(--radius-full) }`), which wins over the utility — so the button stays a pill without editing the component. Nothing to do.
 
 **`shadcn add` re-injects a blue `.dark { … }` block.**
-The CLI appends a sidebar dark palette (with a blue accent) to `globals.css` on some adds. It's non-2one and, since we're light-only, dead. **Delete it after running the CLI.**
+The CLI appends its own sidebar dark palette (with a blue accent) to `globals.css` on some adds. It's non-2one and collides with our audited grayscale `.dark`. **Delete it after running the CLI** — our own `.dark` block is the source of truth.
 
 **Importing the package barrel drags in heavy deps.**
 `import { X } from '@yokesh-2one/design-library'` pulls the whole graph (including `Chart` → `recharts`). All required deps are declared, but if you see an unresolved transitive dep, install it. (A future improvement is subpath exports so consumers pull only what they use.)
@@ -419,7 +419,7 @@ It's **built on** shadcn/ui, then re-skinned to the 2one tokens and extended wit
 No — the components ship as Tailwind classes. Your app must run **Tailwind v4** and scan the package (the `@source` line above).
 
 **Does it support dark mode?**
-Not today — it's intentionally light-only. Adding it is a contained change (a derived dark palette).
+Yes — it ships two audited themes, light and dark, both grayscale and contrast-checked (`npm run a11y`). Toggle between them with the exported `ThemeProvider`.
 
 **Where's the visual reference?**
 Run `npm run dev` for the live showcase, or open Storybook with `npm run storybook`.

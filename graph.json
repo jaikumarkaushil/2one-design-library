@@ -1104,7 +1104,7 @@
       "label": "One container language — every panel is a real Card"
     },
     {
-      "id": "rule:light-only",
+      "id": "rule:theming",
       "type": "rule",
       "label": "Theme via ThemeProvider — light + audited dark, no hand-rolled palette"
     },
@@ -4082,7 +4082,7 @@
     },
     {
       "source": "token:background",
-      "target": "rule:light-only",
+      "target": "rule:theming",
       "type": "governed_by"
     },
     {

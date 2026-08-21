@@ -17,8 +17,21 @@ uses [Semantic Versioning](https://semver.org/).
   or `graph.json` drift from their sources.
 - `engines.node >= 18`.
 - `docs/building-with-the-dls.md` — consistency rules for building on the DLS.
+- `scripts/check-claims.mjs` (`npm run check:claims`) — fails the build if a stale
+  capability claim (e.g. a single-theme claim after dark shipped) survives in any
+  tracked prose/config. Wired into `npm run validate` and CI. Seeded from the real
+  drift found after dark mode shipped, so the same class of drift can never return.
+- "Definition of Done for a capability change" section in
+  `docs/building-with-the-dls.md` (near rule 15): run `check:claims` and grep the old
+  claim repo-wide in the same PR.
 
 ### Changed
+- **Killed the "light-only" truth-drift.** Corrected stale single-theme wording to
+  reflect the shipped light + audited dark themes across `README.md`,
+  `src/styles/globals.css`, `package.json`, `guide-app/knowledge-base.md`,
+  `guide-app/VERSIONLOG.md`, and `recipes/build-a-website.md`. Renamed the graph's
+  theming rule id (`rule:light-only` → `rule:theming`) so the id no longer encodes a
+  stale claim; `graph.json` regenerated.
 - **Trimmed the shipped dependency surface.** Moved dev-showcase-only packages
   (`@dnd-kit/*`, `@tanstack/react-table`, `date-fns`) from `dependencies` to
   `devDependencies`, and removed `@tabler/icons-react` (→ lucide) and

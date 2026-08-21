@@ -94,22 +94,38 @@ That opens the showcase — every component, the foundations (colour, type, radi
 
 ## Use it in your own app (developers)
 
-### 1. Install the package
+### 1. Get the package
 
-> **Note:** the package is published to **GitHub Packages**. GitHub Packages requires a personal access token to install **even when the repo is public** — there's no anonymous install. Point the scope at the registry with an `.npmrc` next to your `package.json`:
+The package builds locally but **isn't on a public registry yet**, so there are two
+supported ways to consume it today. Full, verified steps (incl. the Tailwind `@source`
+line): [`docs/consuming.md`](docs/consuming.md).
+
+**A · Local tarball — works today, no registry.** In this repo, build and pack:
+
+```bash
+npm install && npm run build && npm pack   # → yokesh-2one-design-library-0.1.0.tgz
+```
+
+Then in your app, install that tarball plus the React peers:
+
+```bash
+npm install ../2one-design-library/yokesh-2one-design-library-0.1.0.tgz react react-dom
+```
+
+**B · Registry install — when published.** Once it's published to GitHub Packages, add
+an `.npmrc` next to your `package.json` (GitHub Packages needs a token with
+`read:packages`, even for public repos) and install by name:
 
 ```ini
 @yokesh-2one:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 
-`GITHUB_TOKEN` needs the `read:packages` scope. Then:
-
 ```bash
 npm install @yokesh-2one/design-library react react-dom
 ```
 
-*(If you're just evaluating and don't want to deal with tokens, use the clone-and-run path above instead.)*
+*(Just evaluating? Use the clone-and-run path above — no install needed.)*
 
 ### 2. Wire up the theme + Tailwind
 

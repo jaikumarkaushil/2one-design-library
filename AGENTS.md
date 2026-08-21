@@ -89,7 +89,11 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 ## Rules for using / generating code
 
 1. **Import from the package**, don't copy source:
-   `import { Button } from '@yokesh-2one/design-library'`.
+   `import { Button } from '@yokesh-2one/design-library'`. The package builds locally
+   but is **not yet on a public registry** — until it's published, consume it via a
+   local `npm pack` tarball (or vendor the source). The exact, verified setup —
+   including the Tailwind `@source` line consumers keep missing — is in
+   [`docs/consuming.md`](docs/consuming.md).
 2. **Use shadcn names.** TextField → `Input`, Dropdown → `Select`,
    RadioButton → `RadioGroup`, OtpField → `InputOTP`.
 3. **Theme through the variables**, never hard-code color. Everything derives from

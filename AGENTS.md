@@ -42,7 +42,7 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 4. Pair every claim with something **checkable** — a file path, a command (`npm run a11y`,
    `npm run what-uses`, `npm run validate`), or a number.
 5. Quantify with **real** figures, read live from the repo (don't memorise them): 54 shadcn
-   primitives + 3 2one-only, 31 charts, 9 blocks, and the knowledge graph (read the live
+   primitives + 4 2one-authored, 31 charts, 9 blocks, and the knowledge graph (read the live
    node/edge counts from `graph.json → stats` — never hard-code them; `check:claims`
    fails the build on a hard-coded "N nodes/edges"), with the APCA audit all-pass
    (`npm run a11y`). Specific beats clever.
@@ -74,7 +74,7 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 
 - `registry.json` — machine index: the component set, the token→variable theme
   map, naming conventions, and 2one overrides. Read this first.
-- `src/components/ui/` — 54 shadcn primitives, themed to 2one. **shadcn names**
+- `src/components/ui/` — 54 shadcn primitives (+ `Toolbar`), themed to 2one. **shadcn names**
   (`Input`, `Select`, `RadioGroup`, `InputOTP`, `DropdownMenu`, …).
 - `src/components/` — 2one-only components shadcn lacks: `logo`, `app-bar`,
   `bottom-nav-item`.
@@ -139,7 +139,7 @@ any theme/token change. Full rules and thresholds: [`docs/accessibility.md`](doc
 
 ## Status
 
-54 shadcn primitives + `Logo`/`AppBar`/`BottomNavItem`. Library build verified
+54 shadcn primitives + `Toolbar`/`Logo`/`AppBar`/`BottomNavItem`. Library build verified
 (ES/CJS + types + styles + fonts) and rendering verified in `dev/`. This replaced
 the earlier hand-built Figma-1:1 set (2026-08-10, user-directed).
 

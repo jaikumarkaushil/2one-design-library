@@ -5,7 +5,7 @@
 **One place for every piece 2one builds with — buttons, forms, layouts, colour, type, and brand — so people and AI can build products that look and feel like 2one, fast.**
 
 Grayscale · light + audited dark · pill buttons · Satoshi headings + Inter body
-54 [shadcn/ui](https://ui.shadcn.com) components re-skinned to the 2one tokens · 3 mobile/brand components of our own
+54 [shadcn/ui](https://ui.shadcn.com) components re-skinned to the 2one tokens · 4 of our own (`Toolbar`, `Logo`, `AppBar`, `BottomNavItem`)
 
 </div>
 
@@ -65,8 +65,8 @@ So this is a single source of truth, written to be read by **both humans and AI 
 
 | Category | Count | Examples |
 | --- | --- | --- |
-| **shadcn/ui components** (re-skinned to 2one) | 54 | Button, Input, Select, Checkbox, Radio Group, Switch, Dialog, Sheet, Popover, Dropdown Menu, Tooltip, Tabs, Table, Card, Accordion, Badge, Avatar, Calendar, Chart, Command, Sidebar… |
-| **2one-only components** | 3 | `Logo`, `AppBar`, `BottomNavItem` (mobile/brand pieces shadcn has no equivalent for) |
+| **shadcn/ui components** (re-skinned to 2one) | 54 | Button, Input, Select, Checkbox, Radio Group, Switch, Dialog, Sheet, Popover, Dropdown Menu, Tooltip, Tabs, Table, Card, Accordion, Badge, Avatar (+ `AvatarGroup`), Calendar, Chart, Command, Sidebar… |
+| **2one-authored components** | 4 | `Toolbar` (wrapping action bar), `Logo`, `AppBar`, `BottomNavItem` — pieces shadcn has no equivalent for |
 | **Templates (blocks)** | 8 | `login-01`…`login-05`, `signup-01`, `signup-02`, `dashboard-plain` |
 | **Design tokens** | 3 files | colour ramps, type scale, spacing & radius |
 | **Brand** | — | logo (SVG + PNG), usage rules, brand voice & personas |
@@ -313,7 +313,7 @@ It lands in `src/components/ui/`, already picking up the 2one theme. See [Troubl
 2one-design-library/
 ├── src/
 │   ├── components/
-│   │   ├── ui/              54 shadcn primitives, 2one-themed  (button.tsx, dialog.tsx, …)
+│   │   ├── ui/              54 shadcn primitives + Toolbar, 2one-themed  (button.tsx, dialog.tsx, …)
 │   │   ├── logo.tsx         2one-only ─┐
 │   │   ├── app-bar.tsx      2one-only  │ mobile / brand
 │   │   └── bottom-nav-item.tsx  2one-only ─┘
@@ -322,7 +322,7 @@ It lands in `src/components/ui/`, already picking up the 2one theme. See [Troubl
 │   ├── styles/
 │   │   ├── globals.css      THE THEME — tokens → shadcn variables + @font-face
 │   │   └── fonts/           Satoshi (.woff2)
-│   └── index.ts             public entry — re-exports all 57 components
+│   └── index.ts             public entry — re-exports all 58 components + useIsMobile
 ├── tokens/                  design tokens — CSS (Tailwind) + generated JSON
 │   ├── colors.{css,json}    ramps + semantic + WCAG/APCA contrast data
 │   ├── typography.{css,json}  fonts + type scale

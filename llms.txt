@@ -15,7 +15,7 @@
 - Local Q&A knowledge base: guide-app/knowledge-base.md · what's available vs planned: guide-app/VERSIONLOG.md
 
 ## Components
-- Source: src/components/ui/<name>.tsx (54 shadcn primitives, 2one-themed)
+- Source: src/components/ui/<name>.tsx (54 shadcn primitives + Toolbar, 2one-themed)
 - 2one-only: src/components/{logo,app-bar,bottom-nav-item}.tsx
 - Names: shadcn (Input, Select, RadioGroup, InputOTP, DropdownMenu, …)
 - Package name: @yokesh-2one/design-library (not yet on a public registry — consume via a local `npm pack` tarball or vendored source; see docs/consuming.md)

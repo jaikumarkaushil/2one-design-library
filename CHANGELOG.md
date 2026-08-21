@@ -33,6 +33,20 @@ uses [Semantic Versioning](https://semver.org/).
   interactive component (`scripts/interactive-components.mjs`, the single source of truth)
   lacks that edge.
 - `check:claims` now also forbids hard-coded graph counts (`N nodes` / `N edges`) in prose.
+- **`Toolbar` + `ToolbarSpacer`** (`src/components/ui/toolbar.tsx`) — a horizontal action
+  container that **wraps** (`flex-wrap`) and never uses `overflow-x-auto`, so critical
+  actions (a Leave / Close button) can't be clipped at narrow widths. Exported, shown in
+  the dev showcase, and in the knowledge graph.
+- **`--scrim` token** (`bg-scrim` / `from-scrim`) for text placed over images/video, plus a
+  "text over media" section in `docs/accessibility.md`: the APCA audit only checks token
+  pairs and can't see media, so always lay a scrim behind such text.
+- Exported **`useIsMobile`** — needed for the responsive-panel pattern.
+- Surfaced **`AvatarGroup` / `AvatarGroupCount`** in the component index (they were exported
+  but undiscoverable).
+- `docs/building-with-the-dls.md` rules 17–19: change colour via `variant` not a `className`
+  (twMerge can't de-dupe a raw colour class against the variant base); critical actions must
+  never require horizontal scroll (use `Toolbar`); a side panel must be reachable at every
+  width (`Sheet` + `useIsMobile`, never `hidden md:block` as the only entry point).
 - `docs/consuming.md` — the exact, **end-to-end-verified** setup for consuming the DLS in
   a fresh Vite + Tailwind v4 app: how to get the package (local `npm pack` tarball today;
   registry when published), the theme + Tailwind `@source` wiring (the #1 silent failure),
@@ -41,6 +55,10 @@ uses [Semantic Versioning](https://semver.org/).
   drifts from the package name / `./styles` export.
 
 ### Changed
+- **Component count 57 → 58** — added `Toolbar` as a 2one-authored UI primitive. shadcn stays
+  54; 2one-authored 3 → 4. `build-manifest.mjs` keeps `Toolbar` out of the `shadcn_primitives`
+  count (it isn't shadcn) so the manifest stays honest; README / AGENTS / showcase / llms.txt /
+  knowledge-base updated to match.
 - **Graph node ids now match their `type`.** 2one-only components are `component-2one:<name>`
   (was `component:<name>`), so an impact-analysis consumer keyed on the id prefix is correct
   (this ambiguity previously broke one). `AGENTS.md` no longer hard-codes the graph node/edge

@@ -55,6 +55,12 @@
   --background: #ffffff;                 /* neutral / surface */
   --foreground: #09090b;                 /* neutral-950 */
 
+  /* Scrim — a translucent overlay to lay BEHIND text placed over an image/video.
+     Theme-independent (media is media): darkens the media so light caption text
+     stays readable. The APCA audit can only check token pairs, never text over
+     media — always put this behind such text. See docs/accessibility.md. */
+  --scrim: rgb(9 9 11 / 0.55);           /* neutral-950 @ 55% */
+
   --card: #ffffff;
   --card-foreground: #09090b;
   --popover: #ffffff;
@@ -164,6 +170,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-scrim: var(--scrim);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);

@@ -5,3 +5,4 @@ dist-site
 *.tgz
 .DS_Store
 storybook-static
+site

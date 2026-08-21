@@ -41,7 +41,8 @@
     "build:meta": "npm run tokens && npm run manifest && npm run graph && npm run validate",
     "verify": "npm run typecheck && npm run check:exports && npm run check:claims && npm run validate && npm run a11y && npm run check:meta && npm run build",
     "graph": "node scripts/build-graph.mjs",
-    "what-uses": "node scripts/what-uses.mjs"
+    "what-uses": "node scripts/what-uses.mjs",
+    "build:library": "node scripts/build-2one-library.mjs"
   },
   "peerDependencies": {
     "react": ">=18",

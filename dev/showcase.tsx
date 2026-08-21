@@ -83,6 +83,17 @@ const SEM = ['danger-500', 'danger-600', 'success-600']
 const TYPE: [string, string, string][] = [['display', 'text-display', '76 / 103'], ['h1', 'text-h1', '62 / 84'], ['h2', 'text-h2', '48 / 65'], ['h3', 'text-h3', '40 / 54'], ['h4', 'text-h4', '32 / 43'], ['h5', 'text-h5', '26 / 35'], ['h6', 'text-h6', '20 / 27'], ['base', 'text-base', '16 · body'], ['sm', 'text-sm', '14 · UI'], ['xs', 'text-xs', '12 · small']]
 const RADII = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', 'full']
 
+// FAQ — the questions teams ask when they first evaluate the system, answered in
+// the 2one voice (factual, no hype, honest about the gaps). Rendered as its own
+// guide section via the Accordion primitive.
+const FAQS: { q: string; a: string }[] = [
+  { q: "Whose brand do we build with — ours or 2one's?", a: "This repository is 2one's own system: our brand, built on shadcn/ui, so our team ships product and marketing that already look like 2one. We share it so you can try the approach on something real. If it fits, we build the same foundations for your brand, wire them into your front-end library, and wrap an application around them for your team." },
+  { q: "What can our team actually produce with it?", a: "Websites, marketing pages and product screens — generated with AI against the system's rules, so the output stays on-brand and carries fewer bugs. The same foundations live in Figma for designers and developers to share. It won't hand you a finished application: it gives you a strong, consistent first version, and your team makes it their own." },
+  { q: "Who is it for?", a: "The people deciding are product and engineering leaders — VPs, product managers, CXOs — who want their teams using AI productively, without the slop. The people using it day to day are developers, marketing teams and product managers who build against it." },
+  { q: "Is it tied to shadcn, and how is it licensed?", a: "No. shadcn is simply what 2one runs on; if your team is on MudBlazor, or anything else, we build the same system there. Licensing is yours to choose — open (MIT) by default, so anyone can clone and use it, or proprietary if you would rather keep it in-house." },
+  { q: "How do we get access?", a: "Clone the repository and install the packages locally. Access is being opened up so there is nothing to set up — the people we share it with can pull it and start building. Today it is the foundation our team builds on; on the roadmap, a shared design system your whole organisation can draw from." },
+]
+
 // Component index derived from the knowledge graph (single source of truth — no
 // hand-maintained list to drift). Each chip deep-links into /graph.html.
 const GRAPH_COMPONENTS = (graphData.nodes as { id: string; type: string; label: string }[])
@@ -91,7 +102,7 @@ const GRAPH_COMPONENTS = (graphData.nodes as { id: string; type: string; label: 
   .sort((a, b) => a.label.localeCompare(b.label))
 
 const NAV = [
-  { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', ''], ['playground', 'Theming', '']] },
+  { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', ''], ['faq', 'FAQ', ''], ['playground', 'Theming', '']] },
   { grp: 'Foundations', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
   { grp: 'Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
   { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['marketing', 'Marketing', '11'], ['charts', 'Charts', '31']] },
@@ -391,6 +402,20 @@ export function Showcase() {
                   </CardContent>
                 </Card>
               </div>
+            </section>
+
+            {/* FAQ — a first-class guide section (like How to use), built from the Accordion */}
+            <section id="faq" className="g-section">
+              <div className="g-eyebrow">Reference</div><h2>FAQ</h2>
+              <p className="g-lede">The questions teams ask us when they first see the system — what it is, what you can build with it, how it’s licensed, and how an engagement works.</p>
+              <Accordion type="single" collapsible className="mt-6 w-full max-w-3xl">
+                {FAQS.map((f, i) => (
+                  <AccordionItem key={f.q} value={`faq-${i}`}>
+                    <AccordionTrigger className="text-left text-base">{f.q}</AccordionTrigger>
+                    <AccordionContent className="max-w-[68ch] text-muted-foreground">{f.a}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </section>
 
             {/* THEMING PLAYGROUND */}

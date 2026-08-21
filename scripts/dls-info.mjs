@@ -54,8 +54,30 @@ const components = (() => {
   ].sort()
 })()
 
-// The two silent failures.
-const tailwind = deps.tailwindcss ?? (inRepo ? consumerPkg?.devDependencies?.tailwindcss : null)
+// Resolution is done from the CONSUMER's tree, not the engine's — the engine
+// may live inside node_modules, where its own neighbours are not theirs.
+const requireFromConsumer = createRequire(join(cwd, 'package.json'))
+
+/*
+  Tailwind's presence is a RESOLUTION question, not a package.json one.
+
+  Declaring tailwindcss as a peerDependency means npm now installs it for the
+  consumer automatically — but an auto-installed peer lands in node_modules
+  WITHOUT being written into the consumer's package.json. Reading `deps` alone
+  therefore reports "Tailwind not found" for a tree that has Tailwind installed
+  and working, and the suggested cause (legacy-peer-deps) is absent too.
+
+  This is the same conflation already fixed for lucide-react, reintroduced by
+  the peerDependency change itself: before it, Tailwind was never auto-installed
+  so reading package.json happened to be right. Resolve first, and read the real
+  version off the resolved package rather than a declared semver range.
+*/
+const tailwindResolved = (() => {
+  try { return JSON.parse(readFileSync(requireFromConsumer.resolve('tailwindcss/package.json'), 'utf8')).version }
+  catch { return null }
+})()
+const tailwindDeclared = deps.tailwindcss ?? (inRepo ? consumerPkg?.devDependencies?.tailwindcss : null)
+const tailwind = tailwindResolved ?? tailwindDeclared
 const tailwindMajor = tailwind ? Number(String(tailwind).replace(/[^\d.]/g, '').split('.')[0]) : null
 
 const CSS_CANDIDATES = ['src/index.css', 'src/app.css', 'src/globals.css', 'app/globals.css', 'styles/globals.css', 'src/styles/globals.css']
@@ -89,7 +111,6 @@ const framework = deps.next ? 'next' : deps.vite || deps['@vitejs/plugin-react']
   layout detail, and pnpm's strict store or Yarn PnP will refuse the same import.
   Both are worth knowing; they are not the same question.
 */
-const requireFromConsumer = createRequire(join(cwd, 'package.json'))
 const hoistedDependency = (name) => {
   const direct = deps[name] ?? null
   let resolvable = false
@@ -127,8 +148,9 @@ if (present && !inRepo) {
 
   if (!tailwindMajor) {
     problems.push(
-      `Tailwind v4 not found. It is a peer dependency and npm normally installs it — if it is missing, ` +
-        `legacy-peer-deps is likely set. Run: npm install -D tailwindcss@4`,
+      `Tailwind v4 not resolvable. It is a peer dependency, so npm normally installs it automatically — ` +
+        `if it is absent, an installer that skips peers (legacy-peer-deps, or pnpm/Yarn without auto-install-peers) ` +
+        `is the usual cause. Run: npm install -D tailwindcss@4`,
     )
   } else if (tailwindMajor < 4) problems.push(`Tailwind v${tailwindMajor} found; this library requires v4.`)
 

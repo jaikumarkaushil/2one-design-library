@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Toggle } from '@/components/ui/toggle'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Toolbar, ToolbarSpacer } from '@/components/ui/toolbar'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -61,6 +62,16 @@ import { ChartLineMultiple } from '@/blocks/charts/chart-line-multiple'
 import { ChartPieDonutText } from '@/blocks/charts/chart-pie-donut-text'
 import { ChartRadarDefault } from '@/blocks/charts/chart-radar-default'
 import { ChartRadialStacked } from '@/blocks/charts/chart-radial-stacked'
+import { MarketingHero } from '@/blocks/marketing/hero'
+import { MarketingLogoCloud } from '@/blocks/marketing/logo-cloud'
+import { MarketingFeatureGrid } from '@/blocks/marketing/feature-grid'
+import { MarketingStats } from '@/blocks/marketing/stats'
+import { MarketingTestimonial } from '@/blocks/marketing/testimonial'
+import { MarketingPricing } from '@/blocks/marketing/pricing'
+import { MarketingFaq } from '@/blocks/marketing/faq'
+import { MarketingCtaBanner } from '@/blocks/marketing/cta-banner'
+import { MarketingFooter } from '@/blocks/marketing/footer'
+import { MarketingPage } from '@/blocks/marketing/page'
 
 /* ---------- foundation data (from tokens/*.css) ---------- */
 // Foundation swatches derive colour + label from the live @theme tokens
@@ -83,8 +94,8 @@ const NAV = [
   { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', ''], ['playground', 'Theming', '']] },
   { grp: 'Foundations', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
   { grp: 'Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
-  { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['charts', 'Charts', '31']] },
-  { grp: 'Reference', items: [['index', 'All components', '57']] },
+  { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['marketing', 'Marketing', '10'], ['charts', 'Charts', '31']] },
+  { grp: 'Reference', items: [['index', 'All components', '58']] },
   { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', '198']] },
 ]
 
@@ -279,7 +290,7 @@ export function Showcase() {
               <h1>The 2one system, <span className="thin">built on shadcn/ui.</span></h1>
               <p>Every component on this page is the real <span className="mono">@yokesh-2one/design-library</span> — the shadcn/ui set re-skinned to the 2one tokens. Grayscale, light + dark, pill buttons, Satoshi headings, Inter body.</p>
               <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-                {([['57', 'Components'], ['54', 'shadcn primitives'], ['3', '2one-only'], ['1', 'Hue-free system']] as const).map(([k, l]) => (
+                {([['58', 'Components'], ['54', 'shadcn primitives'], ['4', '2one-authored'], ['1', 'Hue-free system']] as const).map(([k, l]) => (
                   <Card key={l}>
                     <CardHeader>
                       <CardDescription>{l}</CardDescription>
@@ -458,6 +469,16 @@ export function Showcase() {
                     <ToggleGroupItem value="i" aria-label="Italic"><Italic /></ToggleGroupItem>
                     <ToggleGroupItem value="u" aria-label="Underline"><Underline /></ToggleGroupItem>
                   </ToggleGroup>
+                </Block>
+                <Block title="Toolbar" meta="wraps — never clips" className="col">
+                  {/* Actions wrap instead of scrolling: the Leave button stays visible at any width. */}
+                  <Toolbar className="w-full rounded-lg border p-2">
+                    <Button variant="ghost" size="sm"><Bold /> Bold</Button>
+                    <Button variant="ghost" size="sm"><Italic /> Italic</Button>
+                    <Button variant="ghost" size="sm"><Underline /> Underline</Button>
+                    <ToolbarSpacer />
+                    <Button variant="destructive" size="sm">Leave</Button>
+                  </Toolbar>
                 </Block>
               </div>
             </section>
@@ -641,6 +662,34 @@ export function Showcase() {
               </div>
             </section>
 
+            {/* MARKETING */}
+            <section id="marketing" className="g-section">
+              <div className="g-eyebrow">Templates</div><h2>Marketing</h2>
+              <p className="g-lede">Landing-page sections, built entirely from the library — grayscale, light + dark. Each is a full-bleed section; <code>marketing/page.tsx</code> composes them into a complete page.</p>
+              <div className="mt-6 flex flex-col gap-6">
+                {([
+                  ['hero', <MarketingHero />],
+                  ['logo-cloud', <MarketingLogoCloud />],
+                  ['feature-grid', <MarketingFeatureGrid />],
+                  ['stats', <MarketingStats />],
+                  ['testimonial', <MarketingTestimonial />],
+                  ['pricing', <MarketingPricing />],
+                  ['faq', <MarketingFaq />],
+                  ['cta-banner', <MarketingCtaBanner />],
+                  ['footer', <MarketingFooter />],
+                ] as [string, React.ReactNode][]).map(([id, node]) => (
+                  <div key={id}>
+                    <div className="g-scale-label">{id}</div>
+                    <div className="overflow-hidden rounded-lg border">{node}</div>
+                  </div>
+                ))}
+                <div>
+                  <div className="g-scale-label">page — full landing page (composed)</div>
+                  <div className="h-[720px] overflow-auto rounded-lg border"><MarketingPage /></div>
+                </div>
+              </div>
+            </section>
+
             {/* CHARTS */}
             <section id="charts" className="g-section">
               <div className="g-eyebrow">Templates · data viz</div><h2>Charts</h2>
@@ -662,7 +711,7 @@ export function Showcase() {
             {/* INDEX */}
             <section id="index" className="g-section">
               <div className="g-eyebrow">Reference</div><h2>All components</h2>
-              <p className="g-lede">Every export in the package — 54 shadcn primitives + 3 2one-only. Click any to open it in the <a className="underline underline-offset-2" href="/graph.html">knowledge graph</a>.</p>
+              <p className="g-lede">Every export in the package — 54 shadcn primitives + 4 2one-authored. Click any to open it in the <a className="underline underline-offset-2" href="/graph.html">knowledge graph</a>.</p>
               <div className="g-index">
                 {GRAPH_COMPONENTS.map((c) => (
                   <a key={c.id} className="chip" href={`/graph.html?node=${encodeURIComponent(c.id)}`} title={`${c.label} — open in the knowledge graph`}>{c.label}</a>

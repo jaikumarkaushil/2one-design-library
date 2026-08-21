@@ -107,7 +107,7 @@ const NAV = [
   { grp: 'Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
   { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['marketing', 'Marketing', '11'], ['charts', 'Charts', '31']] },
   { grp: 'Reference', items: [['index', 'All components', '57']] },
-  { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', '198']] },
+  { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', String(graphData.nodes.length)]] },
 ]
 
 

@@ -136,7 +136,7 @@ function ModuleCard({ icon, title, desc, subs }: { icon: React.ReactNode; title:
       </CardHeader>
       {subs && (
         <CardContent>
-          <div className="dls-subs">{subs.map((s) => <span key={s} className="sub">{s}</span>)}</div>
+          <div className="flex flex-wrap gap-2">{subs.map((s) => <Badge key={s} variant="outline" className="font-normal">{s}</Badge>)}</div>
         </CardContent>
       )}
     </Card>
@@ -237,15 +237,20 @@ export function Dls() {
                   <span className="flex items-center gap-1.5"><ArrowUp className="size-3.5" /> output traces up</span>
                 </div>
               </div>
-              <div className="dls-rows">
+              <div className="flex flex-col gap-3">
                 {ROWS.map(([tier, name, color, desc]) => (
-                  <div className="dls-row" key={tier}>
-                    <span className="swatch" style={{ background: color }} aria-hidden />
-                    <div className="body">
-                      <div className="head"><span className="tier">{tier}</span><span className="name">{name}</span></div>
-                      <p>{desc}</p>
-                    </div>
-                  </div>
+                  <Card key={tier}>
+                    <CardHeader className="flex-row items-stretch gap-3 space-y-0">
+                      <span className="w-1.5 shrink-0 self-stretch rounded-full" style={{ background: color }} aria-hidden />
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-baseline gap-2">
+                          <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">{tier}</span>
+                          <CardTitle className="text-base">{name}</CardTitle>
+                        </div>
+                        <CardDescription className="mt-1">{desc}</CardDescription>
+                      </div>
+                    </CardHeader>
+                  </Card>
                 ))}
               </div>
             </div>

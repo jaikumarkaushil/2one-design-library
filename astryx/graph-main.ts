@@ -14,6 +14,9 @@ const IC: Record<string, string> = {
 }
 const lucide = (name: string, size = 15) => `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[name]}</svg>`
 
+// Node families — the ordered grouping shared by the filter chips AND the legend
+const FAMILY_ORDER = ['Identity', 'Governance', 'Renders on screen', 'Templates', 'Raw token values', 'External', 'Accessibility', 'Other']
+
 // Categorical palette drawn from a Japanese ukiyo-e woodblock print (bonsai pine on a
 // sea cliff under a red sun). Each node family borrows a colour eyedropped from a region
 // of that painting — see the guide's "Why these colours?" note. `src` names the region.
@@ -216,12 +219,21 @@ function select(n: any) {
 const chipsEl = document.getElementById('chips')!
 const types = Array.from(new Set(nodes.map((n: any) => n.type))) as string[]
 const chipByType = new Map<string, HTMLElement>()
-types.sort((a, b) => (TYPES[a] ? TYPES[a].label : a).localeCompare(TYPES[b] ? TYPES[b].label : b)).forEach((t) => {
+const makeChip = (t: string) => {
   const meta = TYPES[t] || { label: t }; const chip = el('div', 'chip'); chip.dataset.t = t
   const dot = el('span', 'dot'); dot.style.background = meta.semantic ? cvarv('--ok') : nodeColor(t)
   chip.appendChild(dot); chip.appendChild(document.createTextNode(meta.label || t))
   chip.addEventListener('click', () => { if (hidden.has(t)) { hidden.delete(t); chip.classList.remove('off') } else { hidden.add(t); chip.classList.add('off') } })
-  chipsEl.appendChild(chip); chipByType.set(t, chip)
+  chipByType.set(t, chip); return chip
+}
+// Group the type filters by family — same grouping as the Colors Inspiration legend
+const chipFamilies: Record<string, string[]> = {}
+types.forEach((t) => { const f = (TYPES[t] || {}).family || 'Other'; (chipFamilies[f] = chipFamilies[f] || []).push(t) })
+FAMILY_ORDER.filter((f) => chipFamilies[f]).forEach((f) => {
+  const grp = el('div', 'chip-fam'); const ft = el('div', 'chip-fam-title'); ft.textContent = f; grp.appendChild(ft)
+  const row = el('div', 'chip-row')
+  chipFamilies[f].sort((a, b) => (TYPES[a] ? TYPES[a].label : a).localeCompare(TYPES[b] ? TYPES[b].label : b)).forEach((t) => row.appendChild(makeChip(t)))
+  grp.appendChild(row); chipsEl.appendChild(grp)
 })
 
 // Select all / Deselect all — toggle every type filter at once
@@ -257,7 +269,6 @@ if (paintImg) {
 const guideLegend = document.getElementById('guide-legend')!
 const families: Record<string, string[]> = {}
 types.forEach((t) => { const f = (TYPES[t] || {}).family || 'Other'; (families[f] = families[f] || []).push(t) })
-const FAMILY_ORDER = ['Identity', 'Governance', 'Renders on screen', 'Templates', 'Raw token values', 'External', 'Accessibility', 'Other']
 FAMILY_ORDER.filter((f) => families[f]).forEach((f) => {
   const grp = el('div', 'g-fam'); const ft = el('div', 'g-fam-title'); ft.textContent = f; grp.appendChild(ft)
   families[f].forEach((t) => {

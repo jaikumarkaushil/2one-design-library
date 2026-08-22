@@ -35,7 +35,9 @@
   .grow{flex:1}
   input.search{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:var(--r-field);padding:8px 12px;font-size:13px;font-family:var(--sans);width:100%}
   input.search:focus{outline:2px solid var(--line-2);outline-offset:2px;border-color:var(--line-2)}
-  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chips{display:flex;flex-direction:column;gap:12px}
+  .chip-fam-title{font-family:var(--sans);font-weight:600;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+  .chip-row{display:flex;flex-wrap:wrap;gap:6px}
   .chip{font-family:var(--sans);font-size:11px;border:1px solid var(--line);border-radius:var(--r-pill);padding:6px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--ink-2);user-select:none}
   .chip:hover{border-color:var(--line-2);color:var(--ink)}
   .chip .dot{width:8px;height:8px;border-radius:var(--r-pill);flex-shrink:0}
@@ -70,7 +72,6 @@
   .paint img{width:100%;border-radius:var(--r-field);border:1px solid var(--line);display:block}
   .paint figcaption{margin-top:8px;font-size:11px;color:var(--ink-3);line-height:1.5}
   .paint.missing{border:1px dashed var(--line);border-radius:var(--r-field);padding:16px;text-align:center;font-size:11px;color:var(--ink-3);line-height:1.6}
-  .ff-badge{align-self:flex-start;font-family:var(--sans);font-weight:600;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--bg);background:var(--ink);border-radius:var(--r-pill);padding:4px 8px}
   .insp-text{margin:0;font-size:12px;line-height:1.6;color:var(--ink-2)}
   .insp-text b{color:var(--ink);font-weight:600}
   .guide-legend{display:flex;flex-direction:column;gap:4px}
@@ -115,7 +116,24 @@
   <canvas id="c"></canvas>
 
   <aside class="rail">
-    <!-- SELECTION — every control lives here, keeping the canvas clean -->
+    <!-- INSPIRATION — where the palette comes from (closed by default) -->
+    <section class="pnl collapsed" id="pnl-inspiration">
+      <button class="pnl-head" data-target="pnl-inspiration" aria-expanded="false">
+        <svg class="ic chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        <span>Colors Inspiration</span>
+      </button>
+      <div class="pnl-body">
+        <figure class="paint" id="paint">
+          <img id="paint-img" src="./assets/painting.avif" alt="Japanese ukiyo-e woodblock print — a bonsai pine on a sea cliff beneath a red sun" />
+          <figcaption>The source palette — a Japanese woodblock print.</figcaption>
+        </figure>
+        <p class="insp-text">The colors in this knowledge graph were <b>inspired by Japanese woodblock paintings</b> — a bonsai pine on a sea cliff beneath a red sun. Japanese prints are famous for their small and distinct palettes. every colour is already chosen to sit apart from the others.</p>
+        <div class="pnl-label">Each family, eyedropped from the print</div>
+        <div class="guide-legend" id="guide-legend"></div>
+      </div>
+    </section>
+
+    <!-- GRAPH CONTROLS — every control lives here, keeping the canvas clean (open by default) -->
     <section class="pnl" id="pnl-selection">
       <button class="pnl-head" data-target="pnl-selection" aria-expanded="true">
         <svg class="ic chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
@@ -131,24 +149,6 @@
           <button class="btn" id="reset">Reset view</button>
         </div>
         <p class="pnl-cues">Dot size = number of connections · a ring marks a rule · select a node and the arrowheads point to whatever it uses.</p>
-      </div>
-    </section>
-
-    <!-- INSPIRATION — where the palette comes from -->
-    <section class="pnl collapsed" id="pnl-inspiration">
-      <button class="pnl-head" data-target="pnl-inspiration" aria-expanded="false">
-        <svg class="ic chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        <span>Colors Inspiration</span>
-      </button>
-      <div class="pnl-body">
-        <figure class="paint" id="paint">
-          <img id="paint-img" src="./assets/painting.avif" alt="Japanese ukiyo-e woodblock print — a bonsai pine on a sea cliff beneath a red sun" />
-          <figcaption>The source palette — a Japanese woodblock print.</figcaption>
-        </figure>
-        <span class="ff-badge">Fun fact</span>
-        <p class="insp-text">The colours in this knowledge graph were <b>inspired by Japanese woodblock paintings</b> — a bonsai pine on a sea cliff beneath a red sun. Japanese prints are famous for their small, distinct palettes, and borrowing one for data visualisation is a surprisingly good idea: every colour is already chosen to sit apart from the others.</p>
-        <div class="pnl-label">Each family, eyedropped from the print</div>
-        <div class="guide-legend" id="guide-legend"></div>
       </div>
     </section>
   </aside>

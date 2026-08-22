@@ -14,7 +14,7 @@
     --bg:var(--background,#fff); --panel:var(--card,#fff);
     --line:var(--border,#dcdce0); --line-2:var(--ring,#a1a1aa);
     --ink:var(--foreground,#09090b); --ink-2:var(--muted-foreground,#52525b); --ink-3:var(--ring,#a1a1aa);
-    --edge:var(--border,#dcdce0); --edge-hi:var(--foreground,#09090b); --node-stroke:var(--background,#fff);
+    --edge:var(--muted-foreground,#52525b); --edge-hi:var(--foreground,#09090b); --node-stroke:var(--background,#fff);
     --chip:var(--muted,#f4f4f5); --sel:var(--primary,#09090b);
     --ok:var(--success,#15803d); --bad:var(--destructive,#c81e1e);
     --r-pill:var(--radius-full,999px); --r-card:var(--radius-xl,12px); --r-field:var(--radius-md,6px);
@@ -22,6 +22,9 @@
     --sans:var(--font-sans,"Inter Variable",Inter,system-ui,-apple-system,sans-serif);
     --heading:var(--font-heading,"Satoshi","Inter Variable",Inter,system-ui,sans-serif);
   }
+  /* Edges: light ground needs a darker hairline than --border (#dcdce0 vanishes under
+     the 0.35 line opacity); dark keeps its --border edge, which already reads well. */
+  .dark{ --edge:var(--border,#606069); }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden}
   body{display:grid;grid-template-rows:auto 1fr;height:100vh}

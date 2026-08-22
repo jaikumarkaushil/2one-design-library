@@ -48,6 +48,14 @@ const cvarv = (n: string) => getComputedStyle(root).getPropertyValue(n).trim()
 const theme = () => (root.classList.contains('dark') ? 'dark' : 'light') // DLS drives dark via the .dark class
 const nodeColor = (t: string) => { const m = TYPES[t] || { light: '#888', dark: '#888' }; return theme() === 'dark' ? m.dark : m.light }
 const el = (tag: string, cls?: string) => { const e = document.createElement(tag); if (cls) e.className = cls; return e }
+// Paint a legend/chip swatch so it matches how the node renders on the canvas:
+// ring types (Rule) are a hollow ring (transparent + coloured border), everything
+// else is a solid fill. Keeps the key and the graph in sync.
+const paintSwatch = (dot: any, t: string) => {
+  const m = TYPES[t] || {}
+  if (m.ring) { dot.style.background = 'transparent'; dot.style.border = '2px solid ' + nodeColor(t) }
+  else { dot.style.background = m.semantic ? cvarv('--ok') : nodeColor(t); dot.style.border = '0' }
+}
 
 const nodes = GRAPH.nodes.map((n: any) => ({ ...n }))
 const byId = new Map(nodes.map((n: any) => [n.id, n]))
@@ -221,7 +229,7 @@ const types = Array.from(new Set(nodes.map((n: any) => n.type))) as string[]
 const chipByType = new Map<string, HTMLElement>()
 const makeChip = (t: string) => {
   const meta = TYPES[t] || { label: t }; const chip = el('div', 'chip'); chip.dataset.t = t
-  const dot = el('span', 'dot'); dot.style.background = meta.semantic ? cvarv('--ok') : nodeColor(t)
+  const dot = el('span', 'dot'); paintSwatch(dot, t)
   chip.appendChild(dot); chip.appendChild(document.createTextNode(meta.label || t))
   chip.addEventListener('click', () => { if (hidden.has(t)) { hidden.delete(t); chip.classList.remove('off') } else { hidden.add(t); chip.classList.add('off') } })
   chipByType.set(t, chip); return chip
@@ -273,9 +281,7 @@ FAMILY_ORDER.filter((f) => families[f]).forEach((f) => {
   const grp = el('div', 'g-fam'); const ft = el('div', 'g-fam-title'); ft.textContent = f; grp.appendChild(ft)
   families[f].forEach((t) => {
     const meta = TYPES[t] || { label: t }; const row = el('div', 'g-row'); row.dataset.t = t
-    // Solid swatch of the node's colour (even for ring types like Rule — a tiny hollow
-    // ring reads as white, misrepresenting the colour; the ring stays on the canvas).
-    const dot = el('span', 'g-dot'); dot.style.background = meta.semantic ? cvarv('--ok') : nodeColor(t)
+    const dot = el('span', 'g-dot'); paintSwatch(dot, t)
     const name = el('span', 'g-name'); name.textContent = meta.label || t
     row.appendChild(dot); row.appendChild(name)
     if (meta.src) { const s = el('span', 'g-src'); s.textContent = meta.src; row.appendChild(s) }
@@ -293,8 +299,8 @@ document.getElementById('reset')!.addEventListener('click', () => { scale = 1; o
 
 const tb = document.getElementById('theme')!
 function setT(t: string) { root.classList.toggle('dark', t === 'dark'); tb.innerHTML = lucide(t === 'dark' ? 'moon' : 'sun')
-  Array.prototype.forEach.call(document.querySelectorAll('.chip'), (c: any) => { const m = TYPES[c.dataset.t] || {}; c.querySelector('.dot').style.background = m.semantic ? cvarv('--ok') : nodeColor(c.dataset.t) })
-  Array.prototype.forEach.call(document.querySelectorAll('.g-row'), (row: any) => { const t2 = row.dataset.t; if (!t2) return; const m = TYPES[t2] || {}; const d = row.querySelector('.g-dot'); d.style.background = m.semantic ? cvarv('--ok') : nodeColor(t2) })
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'), (c: any) => paintSwatch(c.querySelector('.dot'), c.dataset.t))
+  Array.prototype.forEach.call(document.querySelectorAll('.g-row'), (row: any) => { const t2 = row.dataset.t; if (t2) paintSwatch(row.querySelector('.g-dot'), t2) })
   if (selected) select(selected) }
 setT(matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light')
 tb.addEventListener('click', () => setT(theme() === 'dark' ? 'light' : 'dark'))

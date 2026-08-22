@@ -16,7 +16,7 @@
   the actual contents. Run: npm run manifest
 */
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, dirname } from 'node:path'
 import { config as cfg } from './lib/config.mjs'
 
 const root = cfg.root
@@ -34,6 +34,61 @@ const RAW = cfg.repoUrl ? `${cfg.repoUrl.replace('https://github.com/', 'https:/
 
 const ui = ls(cfg.path('components'), tsx).map(base)
 const only = ls(cfg.path('ownComponents'), tsx).map(base)
+
+/*
+  The PUBLIC SYMBOLS a consumer may import, not the file names.
+
+  These differ by roughly 5x: 57 component files export ~290 symbols, because
+  one file ships a family (card.tsx → Card, CardHeader, CardTitle, CardContent,
+  CardFooter, CardAction, CardDescription). Any check that treats the file list
+  as the API therefore rejects most correct imports — CardHeader would read as
+  invented — which is the fastest way to get a checker switched off.
+
+  Emitted here, rather than parsed at check time, because the source tree does
+  not ship: `files` carries dist/ and manifest.json, never src/. Generating it
+  into the manifest means the same list is available in-repo and in a consumer,
+  it is drift-guarded by check:meta like everything else here, and the engine
+  keeps no opinion about TypeScript — a payload on another stack populates this
+  however its own language requires.
+*/
+const exportedSymbols = (() => {
+  const out = new Set()
+  const barrel = cfg.path('barrel')
+  if (!existsSync(barrel)) return []
+  const barrelDir = dirname(barrel)
+  const barrelSrc = readFileSync(barrel, 'utf8')
+
+  const collect = (file) => {
+    if (!existsSync(file)) return
+    const src = readFileSync(file, 'utf8')
+    for (const m of src.matchAll(/export\s+(?:async\s+)?(?:function|const|class|type|interface)\s+([A-Za-z0-9_$]+)/g)) out.add(m[1])
+    for (const m of src.matchAll(/export\s*\{([^}]*)\}/g)) {
+      for (const part of m[1].split(',')) {
+        // `export { type CarouselApi }` and `export { x as Y }` — take the
+        // exported name, and drop an inline `type` qualifier rather than
+        // letting it become part of the identifier.
+        const name = part.trim().split(/\s+as\s+/).pop()?.trim().replace(/^type\s+/, '')
+        if (name && /^[A-Za-z_$][\w$]*$/.test(name)) out.add(name)
+      }
+    }
+  }
+
+  /*
+    Follow the BARREL, not a directory listing. The barrel is the definition of
+    the public API — a first pass walked the two component directories instead
+    and missed ThemeProvider, which the barrel re-exports from outside both, so
+    a correct import of it was reported as unknown.
+  */
+  for (const m of barrelSrc.matchAll(/export\s+(?:\*|\{[^}]*\})\s+from\s+['"](\.[^'"]+)['"]/g)) {
+    const rel = m[1]
+    for (const ext of ['.tsx', '.ts', '/index.tsx', '/index.ts']) {
+      const candidate = join(barrelDir, rel + ext)
+      if (existsSync(candidate)) { collect(candidate); break }
+    }
+  }
+  collect(barrel) // anything the barrel declares directly
+  return [...out].sort()
+})()
 const blocksDir = cfg.path('blocks')
 const blocks = ls(blocksDir, tsx).map(base)
 const dashboards = ls(join(blocksDir, 'dashboard-plain'), tsx).length ? ['dashboard-plain'] : []
@@ -126,6 +181,9 @@ const manifest = {
       formats_planned: ['json', 'svg', 'html-css', 'ios', 'android'],
       primitives: ui,
       own: only,
+      // Every symbol importable from the package barrel — the API surface, as
+      // opposed to `primitives`/`own`, which are the files behind it.
+      exports: exportedSymbols,
     },
     templates: {
       tier: 3,

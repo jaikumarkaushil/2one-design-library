@@ -46,6 +46,24 @@ const graph = (() => {
   return null
 })()
 
+// The specifier a consumer imports from. Payload-declared; without it the
+// unknown-import rule has no idea which imports are the system's own.
+const PKG_SPECIFIER = cfg.packageName ?? null
+
+/*
+  The package's public API, for the unknown-import rule. Read from the manifest
+  because the source tree does not ship to a consumer — see build-manifest.
+*/
+const knownExports = (() => {
+  for (const p of [join(root, cfg.rel('out.manifest')), join(root, '..', 'manifest.json')]) {
+    try {
+      const list = JSON.parse(readFileSync(p, 'utf8'))?.index?.components?.exports
+      if (Array.isArray(list) && list.length) return new Set(list)
+    } catch { /* try next */ }
+  }
+  return null // absent → the rule stays silent rather than guessing
+})()
+
 // The payload's own ramp names, read from its generated tokens. Needed because
 // Tailwind's stock palette list overlaps with plausible ramp names — a payload
 // whose primary ramp is called `slate` would have had its entire palette
@@ -152,6 +170,57 @@ const RULES = [
           })
           .map((name) => ({ line: i + 1, detail: `"${name}" is not a token in this system` }))
       )
+    },
+  },
+  /*
+    Deliberately narrow: this flags a named import FROM THE PACKAGE that the
+    package does not export, and nothing else.
+
+    Composing something the library has no primitive for — a kanban board, a
+    wizard, a heatmap — is legitimate and expected work, and the other ten rules
+    already hold it to the brand: its colours, tokens, icons, spacing, wordmark
+    and container pattern are all checked whether or not the thing itself is
+    novel. Flagging invention as such would break the one behaviour this system
+    most needs to allow.
+
+    What is never legitimate is `import { DataGrid } from '@2one/design-library'`
+    when no DataGrid exists. That is not creativity, it is a build error the
+    author has not hit yet — and the likeliest next step is hand-rolling a
+    parallel component off-system. Locally defined components and relative
+    imports are untouched.
+  */
+  {
+    id: 'unknown-import',
+    severity: 'error',
+    why: `Imported from ${PKG_SPECIFIER ?? 'the design system package'}, which does not export it. Compose it from real primitives instead — building it locally is fine, importing something that does not exist is a build error.`,
+    test: ({ src }) => {
+      if (!knownExports || !PKG_SPECIFIER) return []
+      const out = []
+      /*
+        Blank out comments first. theme-provider.tsx documents its own usage in
+        a JSDoc block — `* import { ThemeProvider } from '<pkg>'` — and the
+        first version read that example as a real import. Replacing comment
+        bodies with spaces rather than deleting them keeps every byte offset
+        intact, so reported line numbers still point at the real source.
+      */
+      const blank = (s) => s.replace(/[^\n]/g, ' ')
+      src = src
+        .replace(/\/\*[\s\S]*?\*\//g, blank)
+        .replace(/(^|[^:])\/\/[^\n]*/g, (m, p) => p + blank(m.slice(p.length)))
+      // `import { A, B as C } from '<pkg>'` — value imports only; `import type`
+      // is a types question and not this rule's business.
+      const re = new RegExp(`import\\s+(?!type\\b)\\{([^}]*)\\}\\s*from\\s*['"]${PKG_SPECIFIER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]`, 'g')
+      for (const m of src.matchAll(re)) {
+        const line = src.slice(0, m.index).split('\n').length
+        for (const part of m[1].split(',')) {
+          const raw = part.trim()
+          if (!raw || raw.startsWith('type ')) continue
+          const name = raw.split(/\s+as\s+/)[0].trim()
+          if (!name || !/^[A-Za-z_$][\w$]*$/.test(name)) continue
+          if (!knownExports.has(name)) out.push({ line, detail: `"${name}" is not exported by the package` })
+        }
+      }
+      return out
     },
   },
   {

@@ -148,6 +148,31 @@
     { "id": "filter-select-all", "category": "interaction", "severity": "should", "label": "Filters offer Select all + Deselect all",
       "statement": "Any multi-select filter (a set of toggleable options that includes/excludes items) must provide Select all and Deselect all (or Clear) controls, so the whole set can be reset in one action instead of toggling every option by hand.",
       "rationale": "Toggling a long filter option-by-option to include everything or start from empty is slow and error-prone; a bulk Select all / Deselect all is the expected, faster affordance and keeps every 2one filter consistent.",
-      "applies_to": ["component:checkbox", "component:toggle-group"] }
+      "applies_to": ["component:checkbox", "component:toggle-group"] },
+
+    { "id": "no-hardcoded-ui-data", "category": "consistency", "severity": "must", "label": "UI counts and lists are generated, not hand-typed",
+      "statement": "Any count, badge number, or list shown in the UI derives from the generated source (manifest.json / graph.json) — never a hand-typed literal.",
+      "rationale": "Hand-typed numbers drift the moment the repo grows — a nav badge read 198 while the graph held 213. Deriving from source keeps the UI honest by construction (docs/building-with-the-dls.md §20).",
+      "applies_to": [] },
+
+    { "id": "mono-for-code-only", "category": "consistency", "severity": "should", "label": "Monospace is for code, not chrome",
+      "statement": "Use the mono font only for code blocks and literal commands/paths. Product chrome, labels and prose use the UI font (Inter/Satoshi).",
+      "rationale": "Monospace in chrome reads as a developer sampler, not a product, and undercuts the SaaS feel (docs/building-with-the-dls.md §21).",
+      "applies_to": [] },
+
+    { "id": "pages-over-scroll", "category": "layout", "severity": "should", "label": "Split a product into destination pages",
+      "statement": "A product is a set of destination pages (Dashboard, Components, Guide, Graph), not one endless scroll. Keep the global menu short and destination-oriented; deep section lists live on the page, not in the sidebar.",
+      "rationale": "One long everything-page is a sampler, not a product — it buries the hierarchy and the way around (docs/building-with-the-dls.md §22).",
+      "applies_to": [] },
+
+    { "id": "content-page-chrome", "category": "layout", "severity": "should", "label": "Content pages: header + breadcrumb, not the app menu",
+      "statement": "A content/reading page (an explainer, an article) uses a simple header with a clickable logo and a breadcrumb back to the dashboard — not the full app sidebar. Every page has an obvious way home.",
+      "rationale": "The app menu on a reading page is noise; a breadcrumb + logo is the clearer, product-standard way back (docs/building-with-the-dls.md §22).",
+      "applies_to": ["component:sidebar", "component:breadcrumb"] },
+
+    { "id": "one-system-all-surfaces", "category": "consistency", "severity": "must", "label": "One system across every surface — even bespoke ones",
+      "statement": "Every surface shares the logo, fonts, tokens and theme — including surfaces that cannot be a component shell (e.g. a data-viz canvas). A page that opts out of the shell still opts into the system.",
+      "rationale": "A single off-system page (different fonts, no logo, its own palette) breaks the 'one product' feel more than any missing feature (docs/building-with-the-dls.md §23).",
+      "applies_to": ["component-2one:logo"] }
   ]
 }

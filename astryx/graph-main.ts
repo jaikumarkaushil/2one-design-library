@@ -286,12 +286,12 @@ const setCompVisible = (n: any, box: HTMLInputElement, row: HTMLElement, vis: bo
 compNodes.forEach((n: any) => {
   const row = el('div', 'comp-item'); row.dataset.id = n.id
   const box = el('input') as HTMLInputElement; box.type = 'checkbox'; box.className = 'comp-check'; box.checked = true
+  box.dataset.type = n.type; box.style.accentColor = nodeColor(n.type) // the checkbox carries the node's colour
   box.setAttribute('aria-label', 'Show ' + n.label + ' on the canvas')
   box.addEventListener('change', () => setCompVisible(n, box, row, box.checked))
   const jump = el('button', 'comp-jump'); jump.title = 'Show ' + n.label + ' in the graph'
-  const dot = el('span', 'cdot'); dot.style.background = nodeColor(n.type)
   const name = el('span', 'comp-name'); name.textContent = n.label
-  jump.appendChild(dot); jump.appendChild(name)
+  jump.appendChild(name)
   if (n.type === 'component-2one') { const tag = el('span', 'ctag'); tag.textContent = '2one'; jump.appendChild(tag) }
   // Jumping to a hidden component reveals it first, so the focus is never invisible.
   jump.addEventListener('click', () => { if (hiddenComp.has(n.id)) setCompVisible(n, box, row, true); select(n); centerOn(n); scale = Math.max(scale, 1.3); alpha = Math.max(alpha, 0.5) })
@@ -349,6 +349,7 @@ const tb = document.getElementById('theme')!
 function setT(t: string) { root.classList.toggle('dark', t === 'dark'); tb.innerHTML = lucide(t === 'dark' ? 'moon' : 'sun')
   Array.prototype.forEach.call(document.querySelectorAll('.chip'), (c: any) => paintSwatch(c.querySelector('.dot'), c.dataset.t))
   Array.prototype.forEach.call(document.querySelectorAll('.g-row'), (row: any) => { const t2 = row.dataset.t; if (t2) paintSwatch(row.querySelector('.g-dot'), t2) })
+  Array.prototype.forEach.call(document.querySelectorAll('.comp-check'), (b: any) => { if (b.dataset.type) b.style.accentColor = nodeColor(b.dataset.type) })
   if (selected) select(selected) }
 setT(matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light')
 tb.addEventListener('click', () => setT(theme() === 'dark' ? 'light' : 'dark'))

@@ -131,7 +131,7 @@ function CodeBlock({ code }: { code: string }) {
   const [done, setDone] = useState(false)
   return (
     <div className="relative min-w-0">
-      <pre className="overflow-x-auto rounded-md bg-muted p-3 pr-11 font-mono text-sm text-muted-foreground">{code}</pre>
+      <pre className="overflow-hidden whitespace-pre-wrap break-words rounded-md bg-muted p-3 pr-11 font-mono text-sm text-muted-foreground">{code}</pre>
       <Button
         variant="ghost"
         size="icon-sm"

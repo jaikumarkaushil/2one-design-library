@@ -32,8 +32,17 @@ const tsx = (f) => f.endsWith('.tsx')
 // absolute URL, so every asset entry is emitted fully qualified.
 const RAW = cfg.repoUrl ? `${cfg.repoUrl.replace('https://github.com/', 'https://raw.githubusercontent.com/')}/main/` : ''
 
-const ui = ls(cfg.path('components'), tsx).map(base)
-const only = ls(cfg.path('ownComponents'), tsx).map(base)
+/*
+  Some payload-authored primitives live alongside the upstream ones (2one's
+  Toolbar sits in components/ui because that is where a consumer expects it,
+  but shadcn has no equivalent). Counting it as an upstream primitive would
+  overstate what was inherited, so the config names them and they are reported
+  under `own` instead.
+*/
+const ownInUi = new Set(cfg.rules.ownComponentsInUi ?? [])
+const uiAll = ls(cfg.path('components'), tsx).map(base)
+const ui = uiAll.filter((n) => !ownInUi.has(n))
+const only = [...ls(cfg.path('ownComponents'), tsx).map(base), ...uiAll.filter((n) => ownInUi.has(n))].sort()
 
 /*
   The PUBLIC SYMBOLS a consumer may import, not the file names.
@@ -93,6 +102,15 @@ const blocksDir = cfg.path('blocks')
 const blocks = ls(blocksDir, tsx).map(base)
 const dashboards = ls(join(blocksDir, 'dashboard-plain'), tsx).length ? ['dashboard-plain'] : []
 const charts = ls(join(blocksDir, 'charts'), tsx).map(base)
+const marketing = ls(join(blocksDir, 'marketing'), tsx).map(base)
+
+// The payload's machine-readable UX-rules contract, when it ships one. Indexed
+// here so an agent finds the rules the same way it finds tokens — and so the
+// counts in the manifest cannot disagree with the rules file itself.
+const uxRules = (() => {
+  const p = join(root, 'rules/ux-rules.json')
+  return existsSync(p) ? JSON.parse(readFileSync(p, 'utf8')) : null
+})()
 const logoDir = cfg.path('brand.logo')
 
 const wordmark = cfg.rules.wordmark ?? cfg.name
@@ -188,9 +206,22 @@ const manifest = {
     templates: {
       tier: 3,
       blocks: { path: `${cfg.rel('blocks')}/`, items: blocks.concat(dashboards) },
+      marketing: { path: `${cfg.rel('blocks')}/marketing/`, items: marketing },
       charts: { path: `${cfg.rel('blocks')}/charts/`, count: charts.length, items: charts },
       recipes: 'recipes/',
     },
+    ...(uxRules
+      ? {
+          rules: {
+            file: 'rules/ux-rules.json',
+            count: uxRules.rules?.length ?? 0,
+            version: uxRules.version ?? null,
+            severity_levels: Object.keys(uxRules.severity_levels ?? {}),
+            precedence: uxRules.precedence?.order ?? [],
+            validate: 'npm run check:rules',
+          },
+        }
+      : {}),
     guide_app: id.guide_app ?? null,
     checks: {
       accessibility: 'npm run a11y (APCA contrast audit)',

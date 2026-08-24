@@ -21,6 +21,28 @@ Live rendered showcase (no install, see every component): https://origin.2one.so
 - https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/brand/brand.json
   Mission, voice, tone, personas — match this in any 2one-facing copy
 
+## Design decisions — resolve them here, don't invent them
+
+Before choosing a pattern, ask the system. It answers deterministically, so the
+same question gives the same answer every time.
+
+- https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/rules/ux-rules.json
+  26 machine-readable UX rules, each with a severity (`forbidden` → `must` → `should` → `may` → `avoid`)
+  and a conflict-precedence ladder: accessibility → brand → consistency → interaction → layout → implementation.
+  A specific 2one rule beats a generic convention. Validated by `npm run check:rules`.
+- `npm run graph:decide -- decide <intent> [--context <ctx>]`
+  → the preferred pattern or component, its composition, the mandatory rules in
+  precedence order, the anti-patterns to avoid, accessibility requirements, and the
+  provenance of each. Also: `check | rules | alternatives | incompatible | a11y | states | why`.
+  Add `--json` for machine output.
+- `npm run what-uses -- <element>` — impact analysis: everything a token or
+  component change would touch.
+- Guarantees: deterministic (`npm run graph:test`) and semantically sound
+  (`npm run graph:validate`). Full protocol: AGENTS.md → "AI decision protocol".
+
+Authority order when two things disagree:
+**2one rules → 2one patterns → 2one components → 2one tokens → primitives → framework defaults.**
+
 ## Brand assets — embed these, never re-create them
 
 The wordmark is an **asset, not type**. Typesetting "2one" as text is the single

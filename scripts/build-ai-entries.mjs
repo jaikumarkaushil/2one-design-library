@@ -10,8 +10,8 @@
   The cost is on record. docs/building-with-the-dls.md rule 15 notes that
   shipping dark mode meant hand-updating "globals.css, registry.json, AGENTS.md,
   the manifest, .cursorrules, and the copilot instructions" — six files, one
-  fact. Predictably the sync was imperfect: "light-only" survived in several of
-  them for weeks. CLAUDE.md and GEMINI.md were also byte-identical, i.e. one
+  fact. Predictably the sync was imperfect: the stale single-theme wording
+  survived in several of them for weeks. CLAUDE.md and GEMINI.md were also byte-identical, i.e. one
   piece of content maintained twice.
 
   So: same filenames, same locations, same tool compatibility — but derived from

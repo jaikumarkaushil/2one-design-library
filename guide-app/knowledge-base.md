@@ -63,7 +63,7 @@ destructive, link. Buttons are **pills** (`radius-full`) — the 2one signature.
 *Source: `src/components/ui/button.tsx`, `docs/` and `AGENTS.md`.*
 
 **How many components are there?**
-54 shadcn primitives + 3 2one-only (`Logo`, `AppBar`, `BottomNavItem`) = 57.
+54 shadcn primitives + 4 2one-authored (`Toolbar`, `Logo`, `AppBar`, `BottomNavItem`) = 58.
 Plus 9 block templates and 31 chart templates.
 *Source: `manifest.json → index`.*
 

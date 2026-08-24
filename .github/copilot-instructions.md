@@ -6,7 +6,7 @@ Read [`manifest.json`](../manifest.json) **FIRST** — the machine-readable inde
 `instructions_for_ai` contract: answer **only** from repo content, cite the file you used,
 and say explicitly when something is not here — never guess a brand fact.
 
-The 2one Design Language System: 57 components (shadcn/ui re-skinned to the 2one
+The 2one Design Language System: 58 components (shadcn/ui re-skinned to the 2one
 tokens), design tokens, and the brand. The system is grayscale (no brand hue), with a light and an audited dark theme, pill buttons, Satoshi headings and Inter body; danger/success are the only colours and are used for validation only.
 
 **Non-negotiables**

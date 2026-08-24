@@ -10,6 +10,51 @@ machine-readable index plus the `instructions_for_ai` contract (answer only from
 content, cite the file, say when something isn't here — never guess). Then this guide,
 then the `system` section of the manifest (conventions, theme map, overrides).
 
+## Invariants — generated or checked, never asserted by hand
+
+Every claim this repo makes about itself is either **generated from source** or
+**enforced by a check**, so it can't drift. If you add or remove a capability, extend
+this list — never hand-maintain a fact a script could own.
+
+| Invariant | How it stays true | Command |
+| --- | --- | --- |
+| No stale capability claims (no single-theme wording after dark shipped; no hard-coded graph counts) | banned-phrase scan over tracked prose/config | `npm run check:claims` |
+| Tokens, `manifest.json`, `graph.json` match their sources | regenerate + `git diff` | `npm run check:meta` |
+| Public API exports every component; `docs/consuming.md` matches the package surface | barrel + doc scan | `npm run check:exports` |
+| Contrast (APCA/WCAG) passes in **both** light and dark | audit `:root` + `.dark` | `npm run a11y` |
+| Graph is trustworthy — no dangling edges, every component has a node, ids match `type`, every interactive component is `governed_by` no-color-alone | structural + governance checks | `npm run validate` |
+| Bundle impact is answerable ("what uses recharts?") | `depends_on` edges parsed from imports | `npm run what-uses <pkg>` |
+| Design decisions resolve deterministically (same graph → same answer) | decision Q→A cases over the graph | `npm run graph:test` |
+| The decision graph is semantically sound (ontology conformance, provenance files exist, no `preferred_over` cycles) | semantic validation | `npm run graph:validate` |
+| Types compile and the library builds | `tsc` + `vite` | `npm run typecheck` · `npm run build` |
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs all of these on every PR —
+reintroducing any drift turns it red. Run them together locally with **`npm run verify`**.
+
+## AI decision protocol — reason from the graph, don't invent
+
+The knowledge graph is the **reasoning layer**: it encodes what to use, when, why,
+what to avoid, and which rule requires it. **Before inventing any design decision the
+2one system might already have an opinion about, query the graph.** Architecture:
+[`docs/knowledge-graph.md`](docs/knowledge-graph.md).
+
+When you build 2one UI, follow this order:
+
+1. **Intent** — name the user goal (submit a form, confirm a destructive action, show supplementary info).
+2. **Context** — mobile? a confirmation flow?
+3. **Decide** — `npm run graph:decide -- decide <intent> [--context <ctx>]` returns the preferred pattern/component, its composition, the mandatory rules (tier-sorted), the anti-patterns, and the accessibility requirements — each with provenance.
+4. **Constraints** — obey every **MANDATORY** rule; obey **PREFERRED** unless a higher-tier rule overrides.
+5. **Anti-patterns** — never do what `inappropriate_for` / `forbidden_with` / `avoid` rules prohibit (`graph:decide -- check <component> <intent>` answers YES/NO).
+6. **Conflicts** — resolve by the precedence ladder (accessibility › brand › consistency › interaction › layout › implementation), never by preference.
+7. **Compose** from the preferred composition; pull each component's a11y requirements.
+8. **Validate** the proposal (`check`, `incompatible`, `rules`) before emitting UI, and **cite the evidence** when asked.
+
+Rules are first-class and authored in [`rules/ux-rules.json`](rules/ux-rules.json)
+(severity + category + `applies_to`); `build-graph.mjs` turns each into a `rule:` node.
+Decision semantics (intents, preferences, anti-patterns) live in
+[`graph/decisions.json`](graph/decisions.json). Add a rule or a preference there, then
+`npm run graph && npm run graph:validate && npm run graph:test`.
+
 ## How to represent this repository
 
 This is the single source of truth for how any AI tool should *present* this repo —
@@ -42,8 +87,9 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 4. Pair every claim with something **checkable** — a file path, a command (`npm run a11y`,
    `npm run what-uses`, `npm run validate`), or a number.
 5. Quantify with **real** figures, read live from the repo (don't memorise them): 54 shadcn
-   primitives + 3 2one-only, 31 charts, 9 blocks, and the knowledge graph
-   (`graph.json → stats`, currently 199 nodes / 576 edges), with the APCA audit all-pass
+   primitives + 4 2one-authored, 31 charts, 9 blocks, and the knowledge graph (read the live
+   node/edge counts from `graph.json → stats` — never hard-code them; `check:claims`
+   fails the build on a hard-coded "N nodes/edges"), with the APCA audit all-pass
    (`npm run a11y`). Specific beats clever.
 6. For each feature, state the **outcome** ("so what"): impact analysis → safe token
    changes at scale; AI-legibility → generate on-brand UI without re-explaining the rules.
@@ -69,11 +115,39 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 12. Trust nothing stale: if `manifest.json` / `graph.json` are out of sync with source, say
     so and regenerate (`npm run build:meta`). Keep generated files current.
 
+## The 2one UX rules — how to resolve any design decision
+
+2one is a **product language, not a component toolbox**: prefer a strong default over
+exposing a choice. When you (or an AI agent) must decide *how* to build something, resolve
+it in this order — **the more specific 2one rule always wins over the generic framework
+convention**:
+
+```
+2one rules  →  2one patterns  →  2one components  →  2one tokens  →  primitives  →  framework defaults
+```
+
+The machine-readable decisions live in **[`rules/ux-rules.json`](rules/ux-rules.json)** — the
+single source of truth, consumed by the knowledge graph (each becomes a `rule:` node with
+`governed_by` edges) and validated by `npm run check:rules`. Each rule carries a **severity**
+and a **category**:
+
+- Severity: `forbidden` (never) · `must` (required) · `should` (strong default) · `may`
+  (escape hatch) · `avoid` (discouraged).
+- **Conflict precedence** (earlier wins): `accessibility → brand → consistency → interaction
+  → layout → implementation`. Accessibility is never traded for brand or aesthetics; within a
+  category, higher severity wins.
+
+Query them with the graph: `npm run what-uses -- <component>` lists the rules that govern it
+(the `governed_by` edges). Do not invent a 2one interaction pattern from scratch — assemble
+the decisions already encoded here.
+
 ## How this repo is organized
 
+- `rules/ux-rules.json` — the machine-readable UX-decision contract (severity + precedence);
+  the authority for "the 2one way". Prose lives in `docs/building-with-the-dls.md`.
 - `manifest.json` → `system` — conventions, the token→variable theme
   map, naming conventions, and 2one overrides. Read this first.
-- `src/components/ui/` — 54 shadcn primitives, themed to 2one. **shadcn names**
+- `src/components/ui/` — 54 shadcn primitives (+ `Toolbar`), themed to 2one. **shadcn names**
   (`Input`, `Select`, `RadioGroup`, `InputOTP`, `DropdownMenu`, …).
 - `src/components/` — 2one-only components shadcn lacks: `logo`, `app-bar`,
   `bottom-nav-item`.
@@ -90,6 +164,8 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 
 1. **Import from the package**, don't copy source:
    `import { Button } from '@2one/design-library'`.
+   The exact, verified consumer setup — including the Tailwind `@source` line
+   consumers keep missing — is in [`docs/consuming.md`](docs/consuming.md).
 2. **Use shadcn names.** TextField → `Input`, Dropdown → `Select`,
    RadioButton → `RadioGroup`, OtpField → `InputOTP`.
 3. **Theme through the variables**, never hard-code color. Everything derives from
@@ -134,7 +210,7 @@ any theme/token change. Full rules and thresholds: [`docs/accessibility.md`](doc
 
 ## Status
 
-54 shadcn primitives + `Logo`/`AppBar`/`BottomNavItem`. Library build verified
+54 shadcn primitives + `Toolbar`/`Logo`/`AppBar`/`BottomNavItem`. Library build verified
 (ES/CJS + types + styles + fonts) and rendering verified in `dev/`. This replaced
 the earlier hand-built Figma-1:1 set (2026-08-10, user-directed).
 

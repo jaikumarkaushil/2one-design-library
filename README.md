@@ -30,9 +30,10 @@ slop," the generic output you get when the tool has no ground truth.
 
 | | |
 | --- | --- |
-| **57 components** | 54 [shadcn/ui](https://ui.shadcn.com) primitives re-skinned to 2one, plus `Logo`, `AppBar`, `BottomNavItem` |
-| **9 templates** | five sign-in screens, three sign-ups, a dashboard — plus 31 charts |
+| **58 components** | 54 [shadcn/ui](https://ui.shadcn.com) primitives re-skinned to 2one, plus `Toolbar`, `Logo`, `AppBar`, `BottomNavItem` |
+| **9 templates** | five sign-in screens, three sign-ups, a dashboard — plus marketing sections and 31 charts |
 | **Two themes** | light and dark, both grayscale, both contrast-audited |
+| **26 UX rules** | machine-readable, with severity and a conflict-precedence ladder |
 | **Brand** | logo with usage rules, plus voice, tone, and personas |
 
 ---
@@ -156,19 +157,62 @@ Add a shadcn component with `npx shadcn@latest add <name>` — it lands in
 
 ```
 src/
-  components/ui/     54 shadcn primitives, 2one-themed
+  components/ui/     54 shadcn primitives (2one-themed) + toolbar
   components/        logo · app-bar · bottom-nav-item  (2one-only)
-  blocks/            templates — login-*, signup-*, dashboard-plain, charts/
+  blocks/            templates — login-*, signup-*, dashboard-plain, marketing/, charts/
   styles/globals.css THE THEME — tokens → CSS variables, light + dark, @font-face
   index.ts           public entry
 tokens/              colour, type, spacing — CSS for Tailwind, JSON canonical, DTCG for design tools
+rules/ux-rules.json  the UX-decision contract — severity + conflict precedence
 brand/               brand.json (voice, personas) · logo/ (SVG, PNG, rules)
 skills/2one-dls/     the rules as wrong/right pairs + the CLI
 docs/                rules · recipes/ walkthroughs · guide-app/ knowledge + status
 manifest.json        READ FIRST — machine index + instructions_for_ai + system conventions
-graph.json           knowledge graph — tokens, components, blocks and their relationships
+graph.json           knowledge graph — tokens, components, blocks, rules and their relationships
+astryx/              the 2one brand on Meta's Astryx (React 19 + StyleX) — a second stack
 dev/                 the showcase app
 ```
+</details>
+
+<details>
+<summary><b>The four 2one-authored components</b></summary>
+
+Pieces shadcn has no equivalent for, built to the same token system:
+
+| Component | What it is | Key props |
+| --- | --- | --- |
+| **`Toolbar`** | Wrapping action bar — lays actions out and wraps them at narrow widths. | `children` |
+| **`Logo`** | The 2one wordmark. Brand identification only — never decorative. | `variant: 'black' \| 'white'`, `width?` |
+| **`AppBar`** | Mobile top navigation bar, 64px tall, centred title. | `title`, `onBack?`, `trailingSlot?` |
+| **`BottomNavItem`** | One tab in a mobile bottom nav (icon + label). Compose several in a row. | `icon`, `label`, `selected?`, `onClick?` |
+
+```tsx
+import { Logo, AppBar, BottomNavItem } from '@2one/design-library'
+
+<Logo variant="black" width={120} />   {/* black on light, white on dark — never recoloured */}
+<AppBar title="Sign in" onBack={() => history.back()} />
+```
+
+The wordmark is an **asset, never type** — import `Logo`, or inline
+`brand/logo/svg/*.svg`. `npx 2one check` fails the build if it is typeset.
+</details>
+
+<details>
+<summary><b>Asking the system what to build</b></summary>
+
+The knowledge graph is not only an index — it answers design questions
+deterministically, so an agent does not have to invent a decision:
+
+```bash
+npm run graph:decide -- decide "sign-in screen"   # preferred pattern, composition,
+                                                  # mandatory rules, anti-patterns, a11y
+npm run what-uses -- primary                      # impact analysis: what a token change hits
+```
+
+Rules live in `rules/ux-rules.json` with a severity level
+(`forbidden` → `must` → `should` → `may` → `avoid`) and a precedence ladder —
+accessibility outranks brand, brand outranks consistency, and so on down.
+Same graph in, same answer out; `npm run graph:test` locks that behaviour.
 </details>
 
 <details>

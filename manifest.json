@@ -59,7 +59,7 @@
       "colours / type / spacing": "tokens/colors.json, tokens/typography.json, tokens/spacing.json (canonical machine-readable).",
       "a component spec": "src/components/ui/<name>.tsx; naming follows shadcn/ui.",
       "accessibility / contrast": "tokens/colors.json → contrast, and docs/accessibility.md. Verify with `npm run a11y`.",
-      "templates": "src/blocks/ (auth + dashboard) and src/blocks/charts/.",
+      "templates": "src/blocks/ (auth + dashboard), src/blocks/marketing/ (landing-page sections), and src/blocks/charts/.",
       "what exists vs planned": "guide-app/VERSIONLOG.md.",
       "leave feedback": "guide-app/feedback.md."
     }
@@ -196,7 +196,7 @@
     },
     "components": {
       "tier": 2,
-      "count": 57,
+      "count": 58,
       "naming": "shadcn (Input, Select, RadioGroup, InputOTP, DropdownMenu, …) — not the pre-2026 custom names",
       "path": "src/components/ui/",
       "formats_available": [
@@ -268,7 +268,8 @@
       "own": [
         "app-bar",
         "bottom-nav-item",
-        "logo"
+        "logo",
+        "toolbar"
       ],
       "exports": [
         "Accordion",
@@ -563,6 +564,8 @@
         "Toggle",
         "ToggleGroup",
         "ToggleGroupItem",
+        "Toolbar",
+        "ToolbarSpacer",
         "Tooltip",
         "TooltipContent",
         "TooltipProvider",
@@ -574,6 +577,7 @@
         "tabsListVariants",
         "toggleVariants",
         "useFormField",
+        "useIsMobile",
         "useSidebar"
       ]
     },
@@ -591,6 +595,22 @@
           "signup-02",
           "signup-03",
           "dashboard-plain"
+        ]
+      },
+      "marketing": {
+        "path": "src/blocks/marketing/",
+        "items": [
+          "client-faq",
+          "cta-banner",
+          "faq",
+          "feature-grid",
+          "footer",
+          "hero",
+          "logo-cloud",
+          "page",
+          "pricing",
+          "stats",
+          "testimonial"
         ]
       },
       "charts": {
@@ -631,6 +651,27 @@
         ]
       },
       "recipes": "recipes/"
+    },
+    "rules": {
+      "file": "rules/ux-rules.json",
+      "count": 26,
+      "version": "1.0.0",
+      "severity_levels": [
+        "forbidden",
+        "must",
+        "should",
+        "may",
+        "avoid"
+      ],
+      "precedence": [
+        "accessibility",
+        "brand",
+        "consistency",
+        "interaction",
+        "layout",
+        "implementation"
+      ],
+      "validate": "npm run check:rules"
     },
     "guide_app": {
       "path": "guide-app/",

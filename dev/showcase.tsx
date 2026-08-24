@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react'
 import {
   Star, Bold, Italic, Underline, Search, Bell, Home, User, Rocket, CreditCard,
   LogOut, CircleAlert, Copy, Check, Sun, Moon,
+  Network, Accessibility, Sparkles, Globe, ArrowRight, Mail, ExternalLink, BookOpen,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { toast } from 'sonner'
 import graphData from '../graph.json'
+import manifest from '../manifest.json'
 
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Toggle } from '@/components/ui/toggle'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Toolbar, ToolbarSpacer } from '@/components/ui/toolbar'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -61,16 +64,38 @@ import { ChartLineMultiple } from '@/blocks/charts/chart-line-multiple'
 import { ChartPieDonutText } from '@/blocks/charts/chart-pie-donut-text'
 import { ChartRadarDefault } from '@/blocks/charts/chart-radar-default'
 import { ChartRadialStacked } from '@/blocks/charts/chart-radial-stacked'
+import { MarketingHero } from '@/blocks/marketing/hero'
+import { MarketingLogoCloud } from '@/blocks/marketing/logo-cloud'
+import { MarketingFeatureGrid } from '@/blocks/marketing/feature-grid'
+import { MarketingStats } from '@/blocks/marketing/stats'
+import { MarketingTestimonial } from '@/blocks/marketing/testimonial'
+import { MarketingPricing } from '@/blocks/marketing/pricing'
+import { MarketingFaq } from '@/blocks/marketing/faq'
+import { MarketingClientFaq } from '@/blocks/marketing/client-faq'
+import { MarketingCtaBanner } from '@/blocks/marketing/cta-banner'
+import { MarketingFooter } from '@/blocks/marketing/footer'
+import { MarketingPage } from '@/blocks/marketing/page'
 
 /* ---------- foundation data (from tokens/*.css) ---------- */
 // Foundation swatches derive colour + label from the live @theme tokens
 // (--color-<ramp>-<step> in tokens/colors.css), so this section can never
 // drift from the real theme — change a token and the swatch follows.
-const NEUTRAL = ['50', '100', '200', '250', '300', '400', '600', '700', '800', '950']
+const NEUTRAL = ['50', '100', '200', '300', '400', '600', '700', '800', '950']
 const ACCENT = ['50', '100', '200', '300', '600', '700', '800', '950']
-const SEM = ['danger-500', 'danger-600', 'danger-700', 'success-600']
+const SEM = ['danger-500', 'danger-600', 'success-600']
 const TYPE: [string, string, string][] = [['display', 'text-display', '76 / 103'], ['h1', 'text-h1', '62 / 84'], ['h2', 'text-h2', '48 / 65'], ['h3', 'text-h3', '40 / 54'], ['h4', 'text-h4', '32 / 43'], ['h5', 'text-h5', '26 / 35'], ['h6', 'text-h6', '20 / 27'], ['base', 'text-base', '16 · body'], ['sm', 'text-sm', '14 · UI'], ['xs', 'text-xs', '12 · small']]
 const RADII = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', 'full']
+
+// FAQ — the questions teams ask when they first evaluate the system, answered in
+// the 2one voice (factual, no hype, honest about the gaps). Rendered as its own
+// guide section via the Accordion primitive.
+const FAQS: { q: string; a: string }[] = [
+  { q: "Whose brand do we build with — ours or 2one's?", a: "This repository is 2one's own system: our brand, built on shadcn/ui, so our team ships product and marketing that already look like 2one. We share it so you can try the approach on something real. If it fits, we build the same foundations for your brand, wire them into your front-end library, and wrap an application around them for your team." },
+  { q: "What can our team actually produce with it?", a: "Websites, marketing pages and product screens — generated with AI against the system's rules, so the output stays on-brand and carries fewer bugs. The same foundations live in Figma for designers and developers to share. It won't hand you a finished application: it gives you a strong, consistent first version, and your team makes it their own." },
+  { q: "Who is it for?", a: "The people deciding are product and engineering leaders — VPs, product managers, CXOs — who want their teams using AI productively, without the slop. The people using it day to day are developers, marketing teams and product managers who build against it." },
+  { q: "Is it tied to shadcn, and how is it licensed?", a: "No. shadcn is simply what 2one runs on; if your team is on MudBlazor, or anything else, we build the same system there. Licensing is yours to choose — open (MIT) by default, so anyone can clone and use it, or proprietary if you would rather keep it in-house." },
+  { q: "How do we get access?", a: "Clone the repository and install the packages locally. Access is being opened up so there is nothing to set up — the people we share it with can pull it and start building. Today it is the foundation our team builds on; on the roadmap, a shared design system your whole organisation can draw from." },
+]
 
 // Component index derived from the knowledge graph (single source of truth — no
 // hand-maintained list to drift). Each chip deep-links into /graph.html.
@@ -79,13 +104,30 @@ const GRAPH_COMPONENTS = (graphData.nodes as { id: string; type: string; label: 
   .map((n) => ({ id: n.id, label: n.label }))
   .sort((a, b) => a.label.localeCompare(b.label))
 
+// Counts + template lists derived from the generated manifest/graph — never
+// hand-typed, so a badge, heading or list can't drift from the real repo.
+// Regenerated by `npm run build:meta`; `npm run check:meta` guards them.
+const IX = manifest.index
+const COUNT = {
+  components: IX.components.count,
+  shadcn: IX.components.shadcn_primitives.length,
+  twoOne: IX.components.two_one_only.length,
+  blocks: IX.templates.blocks.items.length,
+  marketing: IX.templates.marketing.items.length,
+  charts: IX.templates.charts.count,
+  graphNodes: graphData.nodes.length,
+}
+const BLOCK_ITEMS = IX.templates.blocks.items as string[]
+const CHART_ITEMS = IX.templates.charts.items as string[]
+
 const NAV = [
-  { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', ''], ['playground', 'Theming', '']] },
-  { grp: 'Foundations', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
-  { grp: 'Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
-  { grp: 'Templates', items: [['blocks', 'Blocks', '9'], ['charts', 'Charts', '31']] },
-  { grp: 'Reference', items: [['index', 'All components', '57']] },
-  { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', '198']] },
+  { grp: 'Dashboard', items: [['overview', 'Overview', ''], ['use', 'How to use', '']] },
+  { grp: 'Assets', items: [['/dls.html', 'What is a DLS?', '']] },
+  { grp: 'Tier 2 · Foundation', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', ''], ['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
+  { grp: 'Tier 3 · Output', items: [['blocks', 'Blocks', String(COUNT.blocks)], ['marketing', 'Marketing', String(COUNT.marketing)], ['charts', 'Charts', String(COUNT.charts)]] },
+  { grp: 'Reference', items: [['index', 'All components', String(COUNT.components)]] },
+  { grp: 'Knowledge graph', items: [['/graph.html', 'Explore the graph', String(COUNT.graphNodes)]] },
+  { grp: 'Help', items: [['faq', 'FAQ', ''], ['support', 'Support', '']] },
 ]
 
 
@@ -143,84 +185,6 @@ function ThemeToggle({ className = '' }: { className?: string }) {
   )
 }
 
-/* ---------- Theming playground: APCA ported from scripts/apca-audit.mjs ---------- */
-function sRGBtoY(hex: string) {
-  const h = hex.replace('#', ''); const R = parseInt(h.slice(0, 2), 16), G = parseInt(h.slice(2, 4), 16), B = parseInt(h.slice(4, 6), 16)
-  const f = (v: number) => Math.pow(v / 255, 2.4); return 0.2126729 * f(R) + 0.7151522 * f(G) + 0.0721750 * f(B)
-}
-function apca(txt: string, bg: string) {
-  let t = sRGBtoY(txt), b = sRGBtoY(bg)
-  const bT = 0.022, bC = 1.414, dY = 0.0005, s = 1.14, lB = 0.027, lW = 0.027, lC = 0.1, nBG = 0.56, nT = 0.57, rT = 0.62, rB = 0.65
-  t = t > bT ? t : t + Math.pow(bT - t, bC); b = b > bT ? b : b + Math.pow(bT - b, bC)
-  if (Math.abs(b - t) < dY) return 0
-  let C: number
-  if (b > t) { const S = (Math.pow(b, nBG) - Math.pow(t, nT)) * s; C = S < lC ? 0 : S - lB }
-  else { const S = (Math.pow(b, rB) - Math.pow(t, rT)) * s; C = S > -lC ? 0 : S + lW }
-  return Math.round(C * 1000) / 10
-}
-// auto-pick the label colour with the strongest contrast — the "contrasting label" guidance
-const bestFg = (bg: string) => (Math.abs(apca('#ffffff', bg)) >= Math.abs(apca('#09090b', bg)) ? '#ffffff' : '#09090b')
-const PRESETS = ['#09090b', '#0057ff', '#15803d', '#7c3aed', '#db2777', '#ea580c']
-const THEME_VARS = ['--primary', '--primary-foreground', '--sidebar-primary', '--sidebar-primary-foreground', '--ring']
-
-function ThemingPlayground() {
-  const [color, setColor] = useState('#09090b')
-  useEffect(() => {
-    const cur = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim()
-    if (/^#[0-9a-f]{6}$/i.test(cur)) setColor(cur)
-  }, [])
-  const apply = (c: string) => {
-    setColor(c)
-    const f = bestFg(c), r = document.documentElement.style
-    r.setProperty('--primary', c); r.setProperty('--primary-foreground', f)
-    r.setProperty('--sidebar-primary', c); r.setProperty('--sidebar-primary-foreground', f); r.setProperty('--ring', c)
-  }
-  const reset = () => {
-    const r = document.documentElement.style
-    THEME_VARS.forEach((p) => r.removeProperty(p))
-    setColor(getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#09090b')
-  }
-  const fg = bestFg(color)
-  const lc = Math.abs(apca(fg, color))
-  const pass = lc >= 75
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">Brand colour</CardTitle>
-        <CardDescription>Set <span className="mono">--primary</span> and the whole system recolors — buttons, links, focus, nav.</CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <input type="color" aria-label="Pick brand colour" value={color} onChange={(e) => apply(e.target.value)}
-            className="size-10 cursor-pointer rounded-md border bg-background p-0.5" />
-          <span className="mono text-sm">{color}</span>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {PRESETS.map((p) => (
-              <button key={p} aria-label={`Use ${p}`} onClick={() => apply(p)}
-                className="size-6 rounded-full border" style={{ background: p }} />
-            ))}
-          </div>
-          <Button variant="outline" size="sm" onClick={reset} className="ml-auto">Reset</Button>
-        </div>
-        <div className="flex flex-wrap items-center gap-2 text-sm">
-          {pass
-            ? <Badge variant="secondary" className="gap-1.5"><Check className="size-3.5" /> APCA Lc {lc.toFixed(1)} · pass</Badge>
-            : <Badge variant="destructive" className="gap-1.5"><CircleAlert className="size-3.5" /> APCA Lc {lc.toFixed(1)} · fail</Badge>}
-          <span className="text-muted-foreground">{pass ? 'label clears the Lc 75 threshold for button text.' : 'label is unreadable on this colour — pick a darker/lighter hue.'}</span>
-        </div>
-        <div className="flex flex-wrap items-center gap-3 rounded-md border p-4">
-          <Button>Primary</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="outline">Outline</Button>
-          <Badge>Badge</Badge>
-          <a href="#playground" className="text-primary underline underline-offset-2 text-sm">A themed link</a>
-          <Input placeholder="Focus me" className="w-40" />
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
 export function Showcase() {
   const [active, setActive] = useState('overview')
 
@@ -266,8 +230,8 @@ export function Showcase() {
           <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-1 !h-5" />
-            <span className="font-mono text-xs text-muted-foreground">
-              <b className="font-semibold text-foreground">@2one/design-library</b> · shadcn · 2one-themed
+            <span className="text-sm text-muted-foreground">
+              <b className="font-semibold text-foreground">2one</b> Design Language System
             </span>
             <ThemeToggle className="ml-auto" />
           </header>
@@ -275,11 +239,47 @@ export function Showcase() {
 
             {/* OVERVIEW */}
             <section id="overview" className="g-section g-hero">
-              <div className="g-eyebrow">2one · design language system</div>
-              <h1>The 2one system, <span className="thin">built on shadcn/ui.</span></h1>
-              <p>Every component on this page is the real <span className="mono">@2one/design-library</span> — the shadcn/ui set re-skinned to the 2one tokens. Grayscale, light + dark, pill buttons, Satoshi headings, Inter body.</p>
+              <div className="g-eyebrow">Design language system · delivered as a product</div>
+              <h1>Ship on-brand product &amp; marketing, <span className="thin">without the guesswork.</span></h1>
+              <p>2one is a design language system for <b className="text-foreground">product development and product marketing</b> — the components, tokens, brand, and the rules that bind them. A <b className="text-foreground">knowledge graph</b> makes the system opinionated and deterministic, so people <em>and</em> AI build interfaces that already feel like 2one.</p>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <Button asChild size="lg"><a href="/graph.html">Explore the knowledge graph <ArrowRight /></a></Button>
+                <Button asChild size="lg" variant="outline"><a href="/dls.html">Read the guide</a></Button>
+              </div>
+
+              {/* DLS teaser — content + a way into the dedicated DLS page (which now hosts the theming playground) */}
+              <Card className="mt-8">
+                <CardHeader>
+                  <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden><BookOpen /></div>
+                  <CardTitle className="pt-2 text-base">New here? Start with the DLS</CardTitle>
+                  <CardDescription>A Design Language System is the shared kit — brand, tokens, components, and the rules that bind them. The guide explains the three tiers it’s built from and includes the live theming playground: set one brand colour and watch the whole system recolour, contrast-checked as you go.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild variant="outline"><a href="/dls.html">Open the DLS guide <ArrowRight /></a></Button>
+                </CardContent>
+              </Card>
+
+              {/* Differentiators — the key selling points, each with checkable evidence (honest, no hype) */}
+              <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {([
+                  [<Network />, 'Opinionated & deterministic', 'A knowledge graph of every token, component and rule — ask what a change touches before you ship it.', 'npm run what-uses'],
+                  [<Accessibility />, 'Accessible by default', 'Radix primitives + an APCA contrast audit that runs on every change, in light and dark.', 'npm run a11y'],
+                  [<Sparkles />, 'AI-legible', 'Machine-readable UX rules with severity + precedence, so AI composes the 2one language — it doesn’t invent one.', 'rules/ux-rules.json'],
+                  [<Globe />, 'Universal & one system', 'One grayscale token system, two audited themes, semantic HTML — the same product feel on every surface.', 'tokens/*.json'],
+                ] as [React.ReactNode, string, string, string][]).map(([icon, title, desc, ev]) => (
+                  <Card key={title}>
+                    <CardHeader>
+                      <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden>{icon}</div>
+                      <CardTitle className="pt-2 text-base">{title}</CardTitle>
+                      <CardDescription>{desc}</CardDescription>
+                    </CardHeader>
+                    <CardContent><Badge variant="outline" className="font-mono font-normal">{ev}</Badge></CardContent>
+                  </Card>
+                ))}
+              </div>
+
               <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-                {([['57', 'Components'], ['54', 'shadcn primitives'], ['3', '2one-only'], ['1', 'Hue-free system']] as const).map(([k, l]) => (
+                {([[String(COUNT.components), 'Components'], [String(COUNT.shadcn), 'shadcn primitives'], [String(COUNT.twoOne), '2one-authored'], ['1', 'Hue-free system']] as [string, string][]).map(([k, l]) => (
                   <Card key={l}>
                     <CardHeader>
                       <CardDescription>{l}</CardDescription>
@@ -304,17 +304,79 @@ export function Showcase() {
                     <CardDescription>React 19 · Tailwind v4.</CardDescription>
                   </CardHeader>
                   <CardContent className="min-w-0">
-                    <CodeBlock code={"import { Button } from '@2one/design-library'\nimport '@2one/design-library/styles'"} />
+                    <CodeBlock code={"import { Button } from '@yokesh-2one/design-library'\nimport '@yokesh-2one/design-library/styles'"} />
                   </CardContent>
                 </Card>
               </div>
             </section>
 
-            {/* HOW TO USE — composed from the 2one library (Card / Badge / Button), token-driven, grayscale */}
+            {/* HOW TO USE THE APPLICATION — connect to the library + build with AI (from the 2one library, token-driven) */}
             <section id="use" className="g-section">
-              <div className="g-eyebrow">Start here</div><h2>How to use — build with AI</h2>
-              <p className="g-lede">Built to be read by AI. Point your assistant — Claude Code, Cursor, Copilot, Gemini — at the repo and say what you want. It builds from the real 2one components, colours and rules. No code required.</p>
+              <div className="g-eyebrow">Start here</div><h2>How to use the application</h2>
+              <p className="g-lede">A step-by-step way to connect an AI assistant to the 2one library and build with it. Point your assistant — Claude Code, Cursor, Copilot, Gemini — at the repo, have it read the system, then build from the real components, tokens and rules. No manual coding required.</p>
 
+              <div className="mt-2 grid gap-4 md:grid-cols-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">1</Badge> Connect to the library</CardTitle>
+                    <CardDescription>Give your AI the repo. It reads <span className="font-mono">manifest.json</span> first, then builds only from the system.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="min-w-0"><CodeBlock code={'https://github.com/yokesh-2one/2one-design-library'} /></CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">2</Badge> Ask for a summary first</CardTitle>
+                    <CardDescription>Have it report which components, tokens, brand foundations and templates exist — before it builds anything.</CardDescription>
+                  </CardHeader>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">3</Badge> Build with the prompt</CardTitle>
+                    <CardDescription>Fill the [brackets] in the prompt below and paste it. The assistant composes real 2one UI; you refine.</CardDescription>
+                  </CardHeader>
+                </Card>
+              </div>
+
+              <Card className="mt-4 min-w-0">
+                <CardHeader>
+                  <CardTitle className="text-base">The build prompt</CardTitle>
+                  <CardDescription>Copy it, fill in the [brackets], and paste it into your AI assistant.</CardDescription>
+                </CardHeader>
+                <CardContent className="min-w-0">
+                  <CodeBlock code={`Prompt for Building with the 2one Design Library
+
+I want to build [Product], used by [target users] to [why users want to use it].
+
+Workflow / Core Features:
+1. [Feature / workflow step 1]
+2. [Feature / workflow step 2]
+3. [Feature / workflow step 3]
+
+Design System Source
+Use the 2one Design Library, hosted at:
+https://github.com/yokesh-2one/2one-design-library
+
+Before building anything, read the repo and give me a brief summary of:
+- What components, tokens, and brand foundations are available
+- Any templates relevant to this specific build
+
+Component Rules
+- Use ShadCN components and templates as the primary UI library.
+- If no ShadCN equivalent exists for something this build needs, flag it explicitly instead of improvising a new style or component from scratch.
+- All colors, typography, iconography, and other visual elements must come from the 2one Design Library — do not introduce styles, colors, or components outside of it.
+
+Accuracy Rule
+Only answer questions and make design decisions based on what's actually in the repo. Do not hallucinate or assume components, tokens, or brand rules that aren't present — if something is unclear or missing, say so rather than guessing.
+
+Accessibility
+All components and layouts must meet the accessibility standards defined in the 2one Design Library (WCAG AA baseline, APCA contrast thresholds where specified). Never use color alone to convey state or information — pair it with an icon or other visual cue.
+
+Brand Consistency
+The final product must be consistent with the 2one brand foundation (voice, tone, personality, and visual identity) as defined in the repo.`} />
+                </CardContent>
+              </Card>
+
+              <div className="g-scale-label">More on building on brand</div>
               <div className="grid gap-4 md:grid-cols-2">
                 <Card>
                   <CardHeader>
@@ -327,7 +389,7 @@ export function Showcase() {
                       <span className="mr-1 text-xs text-muted-foreground">It reads</span>
                       <Badge variant="secondary">manifest.json</Badge>
                       <Badge variant="secondary">brand/brand.json</Badge>
-                      <Badge variant="secondary">graph.json</Badge>
+                      <Badge variant="secondary">registry.json</Badge>
                     </div>
                     <Button asChild variant="outline" size="sm" className="w-fit">
                       <a href="https://github.com/yokesh-2one/2one-design-library" target="_blank" rel="noreferrer">Open the repo</a>
@@ -382,13 +444,6 @@ export function Showcase() {
               </div>
             </section>
 
-            {/* THEMING PLAYGROUND */}
-            <section id="playground" className="g-section">
-              <div className="g-eyebrow">Live</div><h2>Theming playground</h2>
-              <p className="g-lede">Try your company colour. One variable carries the brand, so the whole system recolors at once — and the APCA check runs live so you never ship an unreadable button. This is exactly the change an AI makes when you say “make it our colour”.</p>
-              <div className="mt-6"><ThemingPlayground /></div>
-            </section>
-
             {/* COLOUR */}
             <section id="color" className="g-section">
               <div className="g-eyebrow">Foundations</div><h2>Colour</h2>
@@ -397,7 +452,7 @@ export function Showcase() {
                   The swatches read var(--color-<ramp>-<step>) at runtime, so we force
                   those vars into :root by naming every ramp utility here (literal names
                   only — Tailwind can't see interpolated class names). Kept hidden. */}
-              <div className="hidden bg-neutral-50 bg-neutral-100 bg-neutral-200 bg-neutral-250 bg-neutral-300 bg-neutral-400 bg-neutral-600 bg-neutral-700 bg-neutral-800 bg-neutral-950 bg-accent-50 bg-accent-100 bg-accent-200 bg-accent-300 bg-accent-600 bg-accent-700 bg-accent-800 bg-accent-950 bg-danger-500 bg-danger-600 bg-danger-700 bg-success-600" aria-hidden />
+              <div className="hidden bg-neutral-50 bg-neutral-100 bg-neutral-200 bg-neutral-300 bg-neutral-400 bg-neutral-600 bg-neutral-700 bg-neutral-800 bg-neutral-950 bg-accent-50 bg-accent-100 bg-accent-200 bg-accent-300 bg-accent-600 bg-accent-700 bg-accent-800 bg-accent-950 bg-danger-500 bg-danger-600 bg-success-600" aria-hidden />
               <div className="g-scale-label">neutral</div>
               <Swatches items={NEUTRAL} prefix="neutral-" />
               <div className="g-scale-label">accent</div>
@@ -458,6 +513,16 @@ export function Showcase() {
                     <ToggleGroupItem value="i" aria-label="Italic"><Italic /></ToggleGroupItem>
                     <ToggleGroupItem value="u" aria-label="Underline"><Underline /></ToggleGroupItem>
                   </ToggleGroup>
+                </Block>
+                <Block title="Toolbar" meta="wraps — never clips" className="col">
+                  {/* Actions wrap instead of scrolling: the Leave button stays visible at any width. */}
+                  <Toolbar className="w-full rounded-lg border p-2">
+                    <Button variant="ghost" size="sm"><Bold /> Bold</Button>
+                    <Button variant="ghost" size="sm"><Italic /> Italic</Button>
+                    <Button variant="ghost" size="sm"><Underline /> Underline</Button>
+                    <ToolbarSpacer />
+                    <Button variant="destructive" size="sm">Leave</Button>
+                  </Toolbar>
                 </Block>
               </div>
             </section>
@@ -637,14 +702,43 @@ export function Showcase() {
               </Card>
               <div className="g-scale-label">All blocks</div>
               <div className="g-index">
-                {['login-01', 'login-02', 'login-03', 'login-04', 'login-05', 'signup-01', 'signup-02', 'signup-03', 'dashboard-plain'].map((b) => <span key={b} className="chip">{b}</span>)}
+                {BLOCK_ITEMS.map((b) => <span key={b} className="chip">{b}</span>)}
+              </div>
+            </section>
+
+            {/* MARKETING */}
+            <section id="marketing" className="g-section">
+              <div className="g-eyebrow">Templates</div><h2>Marketing</h2>
+              <p className="g-lede">Landing-page sections, built entirely from the library — grayscale, light + dark. Each is a full-bleed section; <code>marketing/page.tsx</code> composes them into a complete page.</p>
+              <div className="mt-6 flex flex-col gap-6">
+                {([
+                  ['hero', <MarketingHero />],
+                  ['logo-cloud', <MarketingLogoCloud />],
+                  ['feature-grid', <MarketingFeatureGrid />],
+                  ['stats', <MarketingStats />],
+                  ['testimonial', <MarketingTestimonial />],
+                  ['pricing', <MarketingPricing />],
+                  ['faq', <MarketingFaq />],
+                  ['client-faq', <MarketingClientFaq />],
+                  ['cta-banner', <MarketingCtaBanner />],
+                  ['footer', <MarketingFooter />],
+                ] as [string, React.ReactNode][]).map(([id, node]) => (
+                  <div key={id}>
+                    <div className="g-scale-label">{id}</div>
+                    <div className="overflow-hidden rounded-lg border">{node}</div>
+                  </div>
+                ))}
+                <div>
+                  <div className="g-scale-label">page — full landing page (composed)</div>
+                  <div className="h-[720px] overflow-auto rounded-lg border"><MarketingPage /></div>
+                </div>
               </div>
             </section>
 
             {/* CHARTS */}
             <section id="charts" className="g-section">
               <div className="g-eyebrow">Templates · data viz</div><h2>Charts</h2>
-              <p className="g-lede">31 chart templates across every type — grayscale by default (the <code>--chart-1…5</code> tokens map to the neutral ramp, no hues). One of each type shown; the full set lives in <code>src/blocks/charts/</code>.</p>
+              <p className="g-lede">{COUNT.charts} chart templates across every type — grayscale by default (the <code>--chart-1…5</code> tokens map to the neutral ramp, no hues). One of each type shown; the full set lives in <code>src/blocks/charts/</code>.</p>
               <div className="g-grid2">
                 <ChartArea />
                 <ChartBarMultiple />
@@ -653,16 +747,16 @@ export function Showcase() {
                 <ChartPieDonutText />
                 <ChartRadialStacked />
               </div>
-              <div className="g-scale-label">All 31 charts</div>
+              <div className="g-scale-label">All {COUNT.charts} charts</div>
               <div className="g-index">
-                {['area-default','area-linear','area-stacked','area-legend','area-interactive','bar-default','bar-horizontal','bar-multiple','bar-stacked','bar-label','bar-interactive','line-default','line-multiple','line-dots','line-label','line-interactive','pie-simple','pie-label','pie-donut','pie-donut-text','pie-interactive','radar-default','radar-dots','radar-multiple','radar-legend','radial-simple','radial-label','radial-grid','radial-stacked','tooltip-default','tooltip-advanced'].map((c) => <span key={c} className="chip">chart-{c}</span>)}
+                {CHART_ITEMS.map((c) => <span key={c} className="chip">{c}</span>)}
               </div>
             </section>
 
             {/* INDEX */}
             <section id="index" className="g-section">
               <div className="g-eyebrow">Reference</div><h2>All components</h2>
-              <p className="g-lede">Every export in the package — 54 shadcn primitives + 3 2one-only. Click any to open it in the <a className="underline underline-offset-2" href="/graph.html">knowledge graph</a>.</p>
+              <p className="g-lede">Every export in the package — {COUNT.shadcn} shadcn primitives + {COUNT.twoOne} 2one-authored. Click any to open it in the <a className="underline underline-offset-2" href="/graph.html">knowledge graph</a>.</p>
               <div className="g-index">
                 {GRAPH_COMPONENTS.map((c) => (
                   <a key={c.id} className="chip" href={`/graph.html?node=${encodeURIComponent(c.id)}`} title={`${c.label} — open in the knowledge graph`}>{c.label}</a>
@@ -670,7 +764,49 @@ export function Showcase() {
               </div>
             </section>
 
-            <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">@2one/design-library · shadcn/ui re-skinned to the 2one tokens · light + audited dark · rendered live from the real components.</footer>
+            {/* FAQ */}
+            <section id="faq" className="g-section">
+              <div className="g-eyebrow">Help</div><h2>FAQ</h2>
+              <p className="g-lede">The questions teams ask us when they first see the system — what it is, what you can build with it, how it’s licensed, and how an engagement works.</p>
+              <Accordion type="single" collapsible className="mt-6 w-full max-w-3xl">
+                {FAQS.map((f, i) => (
+                  <AccordionItem key={f.q} value={`faq-${i}`}>
+                    <AccordionTrigger className="text-left text-base">{f.q}</AccordionTrigger>
+                    <AccordionContent className="max-w-[68ch] text-muted-foreground">{f.a}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </section>
+
+            {/* SUPPORT */}
+            <section id="support" className="g-section">
+              <div className="g-eyebrow">Help</div><h2>Support</h2>
+              <p className="g-lede">Questions about the system, or want it built for your brand? We answer directly — with full transparency about what it does and doesn’t do today.</p>
+              <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden><Mail /></div>
+                    <CardTitle className="pt-2 text-base">Questions</CardTitle>
+                    <CardDescription>Email us and we’ll get back to you.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button asChild><a href="mailto:yokesh@2one.solutions">yokesh@2one.solutions <ArrowRight /></a></Button>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden><ExternalLink /></div>
+                    <CardTitle className="pt-2 text-base">Follow us</CardTitle>
+                    <CardDescription>Updates and what we’re shipping.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button asChild variant="outline"><a href="https://www.linkedin.com/company/2onesolutions" target="_blank" rel="noreferrer">2one Solutions on LinkedIn <ArrowRight /></a></Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
+            <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">@yokesh-2one/design-library · shadcn/ui re-skinned to the 2one tokens · light + audited dark · rendered live from the real components.</footer>
           </div>
         </SidebarInset>
       </SidebarProvider>

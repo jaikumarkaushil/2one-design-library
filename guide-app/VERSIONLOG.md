@@ -49,7 +49,7 @@ flagged with **⚠ BREAKING** and migration guidance.
 | MCP query server / API | Planned (stretch) | Structured queries; JSON index ships first (PRD FR-12) |
 | Canva integration | **Repo accessible now** | Export + docs in `integrations/canva/`; the integration itself is **user-built**. Needs the repo reachable by Canva (public, or a PAT) |
 | Tier 2 visual categories (icons/illustration/photo/moodboard) | Future content | Arrive as added to Figma |
-| Dark theme | **Shipped** | Grayscale dark palette on `.dark`, APCA-audited alongside light; switch via `ThemeProvider` |
+| Dark theme | **Shipped** | Grayscale dark palette on `.dark`, APCA-audited alongside light (`npm run a11y` audits both); switch via `ThemeProvider` |
 
 ---
 

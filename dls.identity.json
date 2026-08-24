@@ -55,7 +55,7 @@
       "colours / type / spacing": "tokens/colors.json, tokens/typography.json, tokens/spacing.json (canonical machine-readable).",
       "a component spec": "src/components/ui/<name>.tsx; naming follows shadcn/ui.",
       "accessibility / contrast": "tokens/colors.json → contrast, and docs/accessibility.md. Verify with `npm run a11y`.",
-      "templates": "src/blocks/ (auth + dashboard) and src/blocks/charts/.",
+      "templates": "src/blocks/ (auth + dashboard), src/blocks/marketing/ (landing-page sections), and src/blocks/charts/.",
       "what exists vs planned": "guide-app/VERSIONLOG.md.",
       "leave feedback": "guide-app/feedback.md."
     }

@@ -1,0 +1,148 @@
+{
+  "name": "2one UX Rules — the machine-readable design-decision contract",
+  "version": "1.0.0",
+  "purpose": "The single source of truth for 2one's opinionated UX decisions, structured so AI agents and validators consume them deterministically. Prose lives in docs/building-with-the-dls.md and AGENTS.md; this file is the machine contract the knowledge graph and checks are built from (scripts/build-graph.mjs turns each rule into a `rule:` node with `governed_by` edges; scripts/check-rules.mjs validates it).",
+  "severity_levels": {
+    "forbidden": "Never do this — a violation is a defect. No escape hatch.",
+    "must": "Required for every 2one UI. Deviation is a bug.",
+    "should": "The strong 2one default. Deviate only with a documented, deliberate reason.",
+    "may": "An allowed escape hatch — not the default; reach for it only when the default genuinely does not fit.",
+    "avoid": "Discouraged. Prefer the stated alternative; use only under constraint."
+  },
+  "precedence": {
+    "order": ["accessibility", "brand", "consistency", "interaction", "layout", "implementation"],
+    "note": "When two rules conflict, the category earlier in this list wins. Accessibility is never traded away for brand or aesthetics. Within a category, the higher severity wins (forbidden > must > should > may > avoid)."
+  },
+  "target_macros": {
+    "@interactive": "Expands to every interactive/stateful component (scripts/interactive-components.mjs) — the surfaces where state is shown to the user."
+  },
+  "rules": [
+    { "id": "grayscale", "category": "brand", "severity": "must", "label": "Grayscale only — no brand hue",
+      "statement": "Theme the whole system in grayscale. There is no brand hue; the only chromatic tokens are danger and success.",
+      "rationale": "The hue-free constraint is what makes every 2one screen read as one system and keeps recolour/theming deterministic.",
+      "applies_to": ["token:primary", "token:secondary", "token:muted", "token:accent", "token:background"] },
+
+    { "id": "validation-only", "category": "brand", "severity": "must", "label": "danger/success for validation only",
+      "statement": "Use danger and success colours only to express validation state (error/success) — never for emphasis, branding, or decoration.",
+      "rationale": "Reserving the only two hues for state keeps their meaning unambiguous.",
+      "applies_to": ["token:destructive", "token:success"] },
+
+    { "id": "pill-buttons", "category": "brand", "severity": "must", "label": "Buttons are pills (radius-full)",
+      "statement": "Buttons use the fully-rounded pill radius — the 2one signature. Do not square them off.",
+      "rationale": "The pill is the single most recognisable 2one form cue.",
+      "applies_to": ["component:button", "radius:full"] },
+
+    { "id": "logo-untouchable", "category": "brand", "severity": "forbidden", "label": "Logo: never recolour/rotate/distort",
+      "statement": "Never recolour, rotate, stretch, or distort the logo. Use the provided black/white marks on their intended grounds.",
+      "rationale": "A modified mark stops being the brand.",
+      "applies_to": ["component-2one:logo"] },
+
+    { "id": "no-color-alone", "category": "accessibility", "severity": "must", "label": "Never convey state by colour alone",
+      "statement": "State (error, success, selected, active) must be carried by an icon and/or text — never colour alone. An invalid field needs an icon plus a message, not just a red border.",
+      "rationale": "Colour-only state is invisible to colour-blind and low-vision users; it is a brand AND accessibility rule.",
+      "applies_to": ["token:destructive", "token:success", "@interactive"] },
+
+    { "id": "focus-visible", "category": "accessibility", "severity": "must", "label": "Visible focus on every interactive element",
+      "statement": "Every interactive element must show a clear focus-visible ring (via the --ring token). Never remove the outline without an equal-or-better replacement.",
+      "rationale": "Keyboard users navigate by the focus ring; removing it strands them.",
+      "applies_to": ["@interactive", "token:ring"] },
+
+    { "id": "error-semantics", "category": "accessibility", "severity": "must", "label": "Form errors are programmatically associated",
+      "statement": "A field error must set aria-invalid and link its message with aria-describedby, and show icon+text (see no-color-alone).",
+      "rationale": "Screen readers only announce errors that are wired to the control.",
+      "applies_to": ["component:input", "component:field", "component:form"] },
+
+    { "id": "reduced-motion", "category": "accessibility", "severity": "must", "label": "All motion respects prefers-reduced-motion",
+      "statement": "Every transition/animation must be disabled or reduced under prefers-reduced-motion. Motion is purposeful (opacity/transform), never decorative.",
+      "rationale": "Motion can trigger vestibular disorders; it must be opt-out-able by the OS setting.",
+      "applies_to": ["component:carousel", "component:sonner"] },
+
+    { "id": "build-from-library", "category": "consistency", "severity": "must", "label": "Build from the library — never hand-roll parallel chrome",
+      "statement": "Compose real 2one components. Never hand-roll a parallel sidebar, card, badge, or 'stage' box for something the library already provides.",
+      "rationale": "Parallel chrome is the #1 source of inconsistency and responsive/a11y bugs.",
+      "applies_to": ["component:card", "component:sidebar", "component:button"] },
+
+    { "id": "tokens-only", "category": "consistency", "severity": "must", "label": "Theme only through tokens — no hard-coded hex or second palette",
+      "statement": "Every colour comes from a DLS token. No hard-coded hex, no parallel palette.",
+      "rationale": "Hard-coded colour drifts from the tokens and breaks recolour + theming.",
+      "applies_to": ["token:background", "token:primary", "token:muted", "token:border"] },
+
+    { "id": "one-container", "category": "consistency", "severity": "must", "label": "One container language — every panel is a real Card",
+      "statement": "Every panel is a real Card — same border, radius, padding, shadow. Do not invent bespoke boxes, and do not nest a Card in a Card.",
+      "rationale": "One container language is what makes screens feel like one product.",
+      "applies_to": ["component:card"] },
+
+    { "id": "lucide-only", "category": "consistency", "severity": "must", "label": "Icons: lucide only",
+      "statement": "Use lucide-react for every icon. Do not mix a second icon set.",
+      "rationale": "One icon library keeps weight, stroke, and metaphor consistent.",
+      "applies_to": ["component:button"] },
+
+    { "id": "theming", "category": "consistency", "severity": "must", "label": "Theme via ThemeProvider — light + audited dark",
+      "statement": "Switch themes with the exported ThemeProvider (light + audited dark). Never hand-roll a third palette, a brand hue, or data-* dark hacks.",
+      "rationale": "Both shipped themes are APCA-audited; a hand-rolled palette bypasses the audit.",
+      "applies_to": ["token:background"] },
+
+    { "id": "multi-theme-audit", "category": "consistency", "severity": "must", "label": "Dark is not invert-and-ship",
+      "statement": "Audit every rendered surface×text pair in BOTH themes and keep component colours token-driven so the audit matches the render.",
+      "rationale": "A component that hardcodes text-white passes the token audit while rendering unreadable.",
+      "applies_to": ["token:destructive", "token:border", "token:muted"] },
+
+    { "id": "one-primary", "category": "interaction", "severity": "should", "label": "One primary action per view",
+      "statement": "Each view/major section has exactly one primary (filled) action. Everything else is outline/ghost/secondary.",
+      "rationale": "Competing primaries destroy the visual hierarchy that tells users what to do.",
+      "applies_to": ["component:button"] },
+
+    { "id": "destructive-confirm", "category": "interaction", "severity": "must", "label": "Destructive actions confirm + use the destructive variant",
+      "statement": "An irreversible action must use the destructive button variant AND require confirmation via AlertDialog before it runs.",
+      "rationale": "Undo-less loss demands a deliberate second step and an unmistakable colour.",
+      "applies_to": ["component:alert-dialog", "component:button"] },
+
+    { "id": "loading-state", "category": "interaction", "severity": "should", "label": "Async work shows a loading state",
+      "statement": "An async action shows a loading state (Spinner in the trigger; Skeleton for content) and disables re-entry — never a dead click.",
+      "rationale": "Silent latency reads as a broken UI and causes double-submits.",
+      "applies_to": ["component:button", "component:spinner", "component:skeleton"] },
+
+    { "id": "empty-state", "category": "interaction", "severity": "should", "label": "Empty collections render an Empty state",
+      "statement": "A collection with no items renders the Empty component (icon + message + primary next action) — not a blank area.",
+      "rationale": "A blank region reads as a bug; an empty state tells the user what to do next.",
+      "applies_to": ["component:empty"] },
+
+    { "id": "one-spacing-scale", "category": "layout", "severity": "must", "label": "One 8px spacing scale",
+      "statement": "Use the 8px spacing scale via Tailwind utilities (gap-4, p-6, mt-6). No ad-hoc inline margins or off-scale pixel values.",
+      "rationale": "Inconsistent gaps are the single most visible 'AI-generated' tell.",
+      "applies_to": ["radius:md"] },
+
+    { "id": "width-by-content", "category": "layout", "severity": "should", "label": "Cap width by content type",
+      "statement": "A reading-width cap is for long-form prose only. App/component layouts get a generous responsive cap (max-w-7xl) or go fluid; cap only the prose inside.",
+      "rationale": "A reading cap on an app wastes half a large monitor in empty gutters.",
+      "applies_to": [] },
+
+    { "id": "keep-tokens-alive", "category": "implementation", "severity": "should", "label": "Reading a @theme token at runtime? Keep it alive",
+      "statement": "Tailwind v4 tree-shakes unused ramp vars. If you read var(--color-<ramp>-<step>) at runtime, safelist the ramp utilities; otherwise prefer the always-live semantic tokens.",
+      "rationale": "An un-referenced ramp var is absent from :root and paints blank.",
+      "applies_to": ["token:accent", "token:destructive", "token:success"] },
+
+    { "id": "scan-what-you-render", "category": "implementation", "severity": "should", "label": "Tailwind only keeps classes it can SEE",
+      "statement": "@source every folder you render. An arbitrary value (h-[250px]) used in exactly one place is the canary — if it does nothing, the folder was never scanned.",
+      "rationale": "A class in an un-scanned folder is never generated at all.",
+      "applies_to": ["component:chart", "component:card"] },
+
+    { "id": "fixed-vs-theme-color", "category": "implementation", "severity": "must", "label": "Brand marks need a FIXED ground",
+      "statement": "Demo the logo on a fixed ground (bg-white / bg-neutral-950), never a theme token. In-app marks must be theme-adaptive (.dark swap or currentColor).",
+      "rationale": "The white logo on bg-foreground vanishes in dark (foreground flips near-white).",
+      "applies_to": ["component-2one:logo"] },
+
+    { "id": "destructive-intent", "category": "interaction", "severity": "must", "label": "Destructive styling requires destructive intent",
+      "statement": "Reserve destructive styling (the danger colour) for actions that delete or irreversibly change data. Never use destructive styling for ordinary navigation or non-destructive actions.",
+      "rationale": "Destructive colour is a warning; spending it on navigation trains users to ignore it and misreads risk.",
+      "applies_to": ["component:button"] },
+    { "id": "tooltip-not-essential", "category": "accessibility", "severity": "must", "label": "Never put essential information only in a Tooltip",
+      "statement": "Tooltips are supplementary. Any information the user MUST perceive to succeed (required, error, or instruction) must be visible without hover or focus discovery — not tooltip-only.",
+      "rationale": "Tooltips are unreachable on touch and are skipped by many assistive contexts; essential info behind one is lost.",
+      "applies_to": ["component:tooltip"] },
+    { "id": "mobile-sheet-over-dialog", "category": "interaction", "severity": "should", "label": "Prefer a Sheet over a Dialog on mobile",
+      "statement": "On mobile (useIsMobile), present a Dialog's content as a Sheet. Render the trigger at every width; switch the presentation, not the availability.",
+      "rationale": "A desktop-sized Dialog is cramped or unreachable on mobile; the Sheet is the reachable equivalent (docs/building-with-the-dls.md §19).",
+      "applies_to": ["component:dialog", "component:sheet"] }
+  ]
+}

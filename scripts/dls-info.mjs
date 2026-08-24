@@ -1,7 +1,7 @@
 /*
   `2one info` — reports the LIVE state of whatever project it is run in.
 
-  A skill written as static prose rots: it described a light-only system for
+  A skill written as static prose rots: it described a single-theme system for
   weeks after dark shipped, and told agents to install from a registry that had
   moved. This command exists so the skill never has to assert a fact it cannot
   observe. The skill says "run this and use what it returns"; the answer is

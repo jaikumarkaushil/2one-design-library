@@ -307,8 +307,8 @@ export function Showcase() {
           <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-1 !h-5" />
-            <span className="font-mono text-xs text-muted-foreground">
-              <b className="font-semibold text-foreground">@yokesh-2one/design-library</b> · shadcn · 2one-themed
+            <span className="text-sm text-muted-foreground">
+              <b className="font-semibold text-foreground">2one</b> Design Language System
             </span>
             <ThemeToggle className="ml-auto" />
           </header>

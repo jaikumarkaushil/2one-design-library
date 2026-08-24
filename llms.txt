@@ -14,6 +14,12 @@
 - Authority order: 2one rules → 2one patterns → 2one components → 2one tokens → primitives → framework defaults (a specific 2one rule beats a generic convention)
 - Consumed by graph.json (rule: nodes + governed_by edges); validated by `npm run check:rules`. Query with `npm run what-uses -- <component>`.
 
+## Decision engine (reason from the graph — don't invent)
+- graph.json is a semantic DECISION graph: derived structure + an authored decision layer (graph/decisions.json: intents, contexts, states, a11y requirements, variants, and edges preferred_for / preferred_over / inappropriate_for / requires / supports_state). Schema: graph/ontology.json.
+- Ask it: `npm run graph:decide -- decide <intent> [--context <ctx>]` → preferred pattern/component, composition, tier-sorted mandatory rules, anti-patterns, a11y, provenance. Also: check | rules | alternatives | incompatible | a11y | states | why. Add --json.
+- Protocol for agents: AGENTS.md → "AI decision protocol". Architecture: docs/knowledge-graph.md.
+- Guarantees: deterministic (`npm run graph:test`) + semantically sound (`npm run graph:validate`).
+
 ## Machine-readable data
 - Tokens: tokens/colors.json (+ contrast data), tokens/typography.json, tokens/spacing.json
 - Regenerate: npm run tokens · npm run manifest · npm run validate · npm run a11y

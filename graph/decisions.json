@@ -1,0 +1,150 @@
+{
+  "$schema": "./decisions.schema.json",
+  "name": "2one Design System — authored decision layer",
+  "description": "The part of the knowledge graph that cannot be derived from code: user intents, contexts, states, accessibility requirements, button variants, and the semantic decision edges (preferred_for, preferred_over, inappropriate_for, requires, ...). Rules themselves live in rules/ux-rules.json (the authoritative contract, with severity + precedence); this file references them by id. Everything here is provenance=explicit (authored policy). `source` on each item points at the real repository artifact that states or justifies it. build-graph.mjs merges this with the derived structural graph.",
+  "default_confidence": "explicit",
+  "default_provenance": "authored",
+
+  "nodes": {
+    "intent": [
+      { "id": "intent:primary-action", "label": "Primary action", "description": "The single most important action in a view or section.", "source": "recipes/build-an-app.md" },
+      { "id": "intent:low-emphasis-action", "label": "Low-emphasis action", "description": "A secondary/tertiary action that must not compete with the primary.", "source": "recipes/build-an-app.md" },
+      { "id": "intent:destructive-action", "label": "Destructive action", "description": "An action that deletes or irreversibly changes data.", "source": "docs/accessibility.md" },
+      { "id": "intent:confirm-action", "label": "Confirm an action", "description": "Ask the user to confirm before proceeding.", "source": "graph/decisions.json" },
+      { "id": "intent:submit-form", "label": "Submit a form", "description": "Send the data the user has entered.", "source": "recipes/build-an-app.md" },
+      { "id": "intent:authenticate", "label": "Authenticate", "description": "Sign in or sign up.", "source": "src/blocks/login-01.tsx" },
+      { "id": "intent:navigate", "label": "Navigate", "description": "Move between views or destinations.", "source": "docs/building-with-the-dls.md" },
+      { "id": "intent:supplementary-info", "label": "Show supplementary info", "description": "Reveal optional, non-essential helper information.", "source": "graph/decisions.json" },
+      { "id": "intent:essential-instruction", "label": "Convey essential information", "description": "Information the user MUST perceive to succeed (required, error, or instruction).", "source": "docs/accessibility.md" },
+      { "id": "intent:select-option", "label": "Select an option", "description": "Choose one or more values from a set.", "source": "graph/decisions.json" },
+      { "id": "intent:recover-error", "label": "Recover from an error", "description": "Understand and fix an invalid input.", "source": "docs/accessibility.md" }
+    ],
+    "context": [
+      { "id": "context:web", "label": "Web", "description": "Any browser context.", "source": "recipes/build-an-app.md" },
+      { "id": "context:desktop", "label": "Desktop / md+", "description": "Viewport at the md breakpoint and above.", "source": "docs/building-with-the-dls.md" },
+      { "id": "context:mobile", "label": "Mobile", "description": "Below md; useIsMobile() is true.", "source": "docs/building-with-the-dls.md" },
+      { "id": "context:confirmation-flow", "label": "Confirmation flow", "description": "A step that gates an action behind explicit confirmation.", "source": "graph/decisions.json" }
+    ],
+    "state": [
+      { "id": "state:default", "label": "Default", "source": "src/styles/globals.css" },
+      { "id": "state:hover", "label": "Hover", "source": "src/styles/globals.css" },
+      { "id": "state:focus", "label": "Focus", "source": "docs/accessibility.md" },
+      { "id": "state:active", "label": "Active", "source": "src/styles/globals.css" },
+      { "id": "state:selected", "label": "Selected", "source": "src/components/ui/checkbox.tsx" },
+      { "id": "state:disabled", "label": "Disabled", "source": "src/components/ui/button.tsx" },
+      { "id": "state:loading", "label": "Loading", "source": "src/components/ui/button.tsx" },
+      { "id": "state:error", "label": "Error / invalid", "source": "docs/accessibility.md" },
+      { "id": "state:success", "label": "Success", "source": "docs/accessibility.md" },
+      { "id": "state:empty", "label": "Empty", "source": "src/components/ui/empty.tsx" }
+    ],
+    "a11y": [
+      { "id": "a11y:contrast-apca", "label": "APCA + WCAG contrast", "description": "Text/UI pairs must clear their APCA Lc threshold, audited light and dark.", "source": "docs/accessibility.md" },
+      { "id": "a11y:non-color-signal", "label": "Never signal state by colour alone", "description": "State must carry an icon, label, or shape in addition to colour.", "source": "docs/accessibility.md" },
+      { "id": "a11y:visible-focus", "label": "Visible focus indicator", "description": "A focusable control must show a focus ring (Lc 15 non-text floor).", "source": "docs/accessibility.md" },
+      { "id": "a11y:accessible-label", "label": "Accessible label", "description": "Inputs and controls must have a programmatic label.", "source": "docs/accessibility.md" },
+      { "id": "a11y:keyboard-access", "label": "Keyboard operable", "description": "All interactive controls must be reachable and operable by keyboard.", "source": "graph/decisions.json" },
+      { "id": "a11y:focus-management", "label": "Focus management", "description": "Overlays must trap and restore focus.", "source": "graph/decisions.json" },
+      { "id": "a11y:reduced-motion", "label": "Reduced-motion support", "description": "Animation must respect prefers-reduced-motion.", "source": "graph/decisions.json" },
+      { "id": "a11y:scrim-over-media", "label": "Scrim behind text over media", "description": "Never place text directly over media — lay a scrim behind it.", "source": "docs/accessibility.md" }
+    ],
+    "pattern": [
+      { "id": "pattern:form-submission", "label": "Form submission", "description": "Label + Input + validation message, one primary submit.", "source": "recipes/build-an-app.md" },
+      { "id": "pattern:destructive-confirmation", "label": "Destructive confirmation", "description": "AlertDialog gating a destructive action, confirmed by a destructive button.", "source": "graph/decisions.json" },
+      { "id": "pattern:authentication", "label": "Authentication", "description": "Sign-in / sign-up composed from Card + Label + Input + Button.", "source": "src/blocks/login-01.tsx" },
+      { "id": "pattern:mobile-side-panel", "label": "Mobile side panel", "description": "A panel that renders inline on md+ and as a Sheet on mobile.", "source": "docs/building-with-the-dls.md" }
+    ],
+    "variant": [
+      { "id": "variant:button-primary", "label": "Primary Button", "description": "Button variant=default — the one solid primary action.", "specializes": "component:button", "source": "src/components/ui/button.tsx" },
+      { "id": "variant:button-secondary", "label": "Secondary Button", "description": "Button variant=secondary.", "specializes": "component:button", "source": "src/components/ui/button.tsx" },
+      { "id": "variant:button-outline", "label": "Outline Button", "description": "Button variant=outline.", "specializes": "component:button", "source": "src/components/ui/button.tsx" },
+      { "id": "variant:button-ghost", "label": "Ghost Button", "description": "Button variant=ghost — lowest emphasis.", "specializes": "component:button", "source": "src/components/ui/button.tsx" },
+      { "id": "variant:button-destructive", "label": "Destructive Button", "description": "Button variant=destructive — validation/destructive only.", "specializes": "component:button", "source": "src/components/ui/button.tsx" },
+      { "id": "variant:button-link", "label": "Link Button", "description": "Button variant=link.", "specializes": "component:button", "source": "src/components/ui/button.tsx" }
+    ]
+  },
+
+  "edges": [
+    { "source": "intent:primary-action", "target": "variant:button-primary", "type": "realized_by", "priority": "PREFERRED", "source_ref": "recipes/build-an-app.md" },
+    { "source": "intent:low-emphasis-action", "target": "variant:button-ghost", "type": "realized_by", "priority": "PREFERRED", "source_ref": "src/components/ui/button.tsx" },
+    { "source": "intent:destructive-action", "target": "pattern:destructive-confirmation", "type": "realized_by", "priority": "PREFERRED", "source_ref": "graph/decisions.json" },
+    { "source": "intent:confirm-action", "target": "component:alert-dialog", "type": "realized_by", "priority": "PREFERRED", "source_ref": "src/components/ui/alert-dialog.tsx" },
+    { "source": "intent:submit-form", "target": "pattern:form-submission", "type": "realized_by", "priority": "PREFERRED", "source_ref": "recipes/build-an-app.md" },
+    { "source": "intent:authenticate", "target": "pattern:authentication", "type": "realized_by", "priority": "PREFERRED", "source_ref": "src/blocks/login-01.tsx" },
+    { "source": "intent:supplementary-info", "target": "component:tooltip", "type": "realized_by", "priority": "PREFERRED", "source_ref": "graph/decisions.json" },
+    { "source": "intent:select-option", "target": "component:select", "type": "realized_by", "priority": "PREFERRED", "source_ref": "src/components/ui/select.tsx" },
+
+    { "source": "variant:button-primary", "target": "intent:primary-action", "type": "preferred_for", "priority": "PREFERRED", "source_ref": "recipes/build-an-app.md" },
+    { "source": "variant:button-ghost", "target": "intent:low-emphasis-action", "type": "preferred_for", "priority": "PREFERRED", "source_ref": "src/components/ui/button.tsx" },
+    { "source": "variant:button-destructive", "target": "intent:destructive-action", "type": "preferred_for", "priority": "PREFERRED", "source_ref": "docs/accessibility.md" },
+    { "source": "component:tooltip", "target": "intent:supplementary-info", "type": "preferred_for", "priority": "PREFERRED", "source_ref": "graph/decisions.json" },
+    { "source": "component:alert-dialog", "target": "intent:confirm-action", "type": "preferred_for", "priority": "PREFERRED", "source_ref": "src/components/ui/alert-dialog.tsx" },
+    { "source": "component:select", "target": "intent:select-option", "type": "preferred_for", "priority": "PREFERRED", "source_ref": "src/components/ui/select.tsx" },
+
+    { "source": "variant:button-outline", "target": "intent:low-emphasis-action", "type": "appropriate_for", "priority": "ALLOWED", "source_ref": "src/components/ui/button.tsx" },
+    { "source": "variant:button-secondary", "target": "intent:primary-action", "type": "appropriate_for", "priority": "ALTERNATIVE", "source_ref": "src/components/ui/button.tsx" },
+    { "source": "component:sheet", "target": "context:mobile", "type": "appropriate_for", "priority": "PREFERRED", "source_ref": "docs/building-with-the-dls.md" },
+    { "source": "component:dialog", "target": "context:desktop", "type": "appropriate_for", "priority": "PREFERRED", "source_ref": "docs/building-with-the-dls.md" },
+
+    { "source": "variant:button-destructive", "target": "intent:navigate", "type": "inappropriate_for", "priority": "FORBIDDEN", "source_ref": "docs/accessibility.md" },
+    { "source": "component:tooltip", "target": "intent:essential-instruction", "type": "inappropriate_for", "priority": "FORBIDDEN", "source_ref": "docs/accessibility.md" },
+    { "source": "component:sonner", "target": "intent:essential-instruction", "type": "inappropriate_for", "priority": "AVOID", "source_ref": "docs/accessibility.md" },
+    { "source": "component:dialog", "target": "context:mobile", "type": "inappropriate_for", "priority": "AVOID", "source_ref": "docs/building-with-the-dls.md" },
+
+    { "source": "component:sheet", "target": "component:dialog", "type": "preferred_over", "priority": "PREFERRED", "applies_when": "context:mobile", "source_ref": "docs/building-with-the-dls.md" },
+    { "source": "variant:button-primary", "target": "variant:button-secondary", "type": "preferred_over", "priority": "PREFERRED", "applies_when": "context:web", "source_ref": "recipes/build-an-app.md" },
+
+    { "source": "variant:button-secondary", "target": "variant:button-primary", "type": "alternative_to", "priority": "ALTERNATIVE", "source_ref": "src/components/ui/button.tsx" },
+    { "source": "component:drawer", "target": "component:sheet", "type": "alternative_to", "priority": "ALTERNATIVE", "source_ref": "src/components/ui/drawer.tsx" },
+
+    { "source": "variant:button-link", "target": "pattern:destructive-confirmation", "type": "forbidden_with", "priority": "FORBIDDEN", "source_ref": "graph/decisions.json" },
+
+    { "source": "component:button", "target": "a11y:keyboard-access", "type": "requires", "source_ref": "graph/decisions.json" },
+    { "source": "component:button", "target": "a11y:visible-focus", "type": "requires", "source_ref": "docs/accessibility.md" },
+    { "source": "component:input", "target": "a11y:accessible-label", "type": "requires", "source_ref": "docs/accessibility.md" },
+    { "source": "component:input", "target": "a11y:non-color-signal", "type": "requires", "source_ref": "docs/accessibility.md" },
+    { "source": "component:field", "target": "a11y:accessible-label", "type": "requires", "source_ref": "docs/accessibility.md" },
+    { "source": "component:select", "target": "a11y:accessible-label", "type": "requires", "source_ref": "docs/accessibility.md" },
+    { "source": "component:checkbox", "target": "a11y:non-color-signal", "type": "requires", "source_ref": "docs/accessibility.md" },
+    { "source": "component:switch", "target": "a11y:non-color-signal", "type": "requires", "source_ref": "docs/accessibility.md" },
+    { "source": "component:dialog", "target": "a11y:focus-management", "type": "requires", "source_ref": "graph/decisions.json" },
+    { "source": "component:alert-dialog", "target": "a11y:focus-management", "type": "requires", "source_ref": "graph/decisions.json" },
+    { "source": "component:sheet", "target": "a11y:focus-management", "type": "requires", "source_ref": "graph/decisions.json" },
+    { "source": "component:tooltip", "target": "a11y:keyboard-access", "type": "requires", "source_ref": "graph/decisions.json" },
+    { "source": "component:chart", "target": "a11y:non-color-signal", "type": "requires", "source_ref": "docs/accessibility.md" },
+    { "source": "component:carousel", "target": "a11y:reduced-motion", "type": "requires", "source_ref": "graph/decisions.json" },
+
+    { "source": "component:button", "target": "state:loading", "type": "supports_state", "source_ref": "src/components/ui/button.tsx" },
+    { "source": "component:button", "target": "state:disabled", "type": "supports_state", "source_ref": "src/components/ui/button.tsx" },
+    { "source": "component:button", "target": "state:hover", "type": "supports_state", "source_ref": "src/styles/globals.css" },
+    { "source": "component:button", "target": "state:focus", "type": "supports_state", "source_ref": "src/styles/globals.css" },
+    { "source": "component:input", "target": "state:error", "type": "supports_state", "source_ref": "docs/accessibility.md" },
+    { "source": "component:input", "target": "state:disabled", "type": "supports_state", "source_ref": "src/components/ui/input.tsx" },
+    { "source": "component:input", "target": "state:focus", "type": "supports_state", "source_ref": "src/styles/globals.css" },
+    { "source": "component:field", "target": "state:error", "type": "supports_state", "source_ref": "src/components/ui/field.tsx" },
+    { "source": "component:select", "target": "state:selected", "type": "supports_state", "source_ref": "src/components/ui/select.tsx" },
+    { "source": "component:checkbox", "target": "state:selected", "type": "supports_state", "source_ref": "src/components/ui/checkbox.tsx" },
+    { "source": "component:switch", "target": "state:selected", "type": "supports_state", "source_ref": "src/components/ui/switch.tsx" },
+    { "source": "component:empty", "target": "state:empty", "type": "supports_state", "source_ref": "src/components/ui/empty.tsx" },
+
+    { "source": "pattern:form-submission", "target": "component:label", "type": "preferred_composition", "source_ref": "recipes/build-an-app.md" },
+    { "source": "pattern:form-submission", "target": "component:input", "type": "preferred_composition", "source_ref": "recipes/build-an-app.md" },
+    { "source": "pattern:form-submission", "target": "component:field", "type": "preferred_composition", "source_ref": "src/components/ui/field.tsx" },
+    { "source": "pattern:form-submission", "target": "variant:button-primary", "type": "preferred_composition", "source_ref": "recipes/build-an-app.md" },
+    { "source": "pattern:authentication", "target": "component:card", "type": "preferred_composition", "source_ref": "src/blocks/login-01.tsx" },
+    { "source": "pattern:authentication", "target": "component:label", "type": "preferred_composition", "source_ref": "src/blocks/login-01.tsx" },
+    { "source": "pattern:authentication", "target": "component:input", "type": "preferred_composition", "source_ref": "src/blocks/login-01.tsx" },
+    { "source": "pattern:authentication", "target": "variant:button-primary", "type": "preferred_composition", "source_ref": "src/blocks/login-01.tsx" },
+    { "source": "pattern:destructive-confirmation", "target": "component:alert-dialog", "type": "preferred_composition", "source_ref": "src/components/ui/alert-dialog.tsx" },
+    { "source": "pattern:destructive-confirmation", "target": "variant:button-destructive", "type": "preferred_composition", "source_ref": "src/components/ui/button.tsx" },
+    { "source": "pattern:mobile-side-panel", "target": "component:sheet", "type": "preferred_composition", "source_ref": "docs/building-with-the-dls.md" },
+
+    { "source": "block:login-01", "target": "pattern:authentication", "type": "demonstrates", "source_ref": "src/blocks/login-01.tsx" },
+    { "source": "block:login-02", "target": "pattern:authentication", "type": "demonstrates", "source_ref": "src/blocks/login-02.tsx" },
+    { "source": "block:login-03", "target": "pattern:authentication", "type": "demonstrates", "source_ref": "src/blocks/login-03.tsx" },
+    { "source": "block:signup-01", "target": "pattern:authentication", "type": "demonstrates", "source_ref": "src/blocks/signup-01.tsx" },
+    { "source": "block:login-01", "target": "intent:authenticate", "type": "demonstrates", "source_ref": "src/blocks/login-01.tsx" },
+
+    { "source": "rule:mobile-sheet-over-dialog", "target": "context:mobile", "type": "applies_when", "source_ref": "docs/building-with-the-dls.md" },
+    { "source": "rule:validation-only", "target": "rule:grayscale", "type": "overrides", "source_ref": "tokens/colors.json" }
+  ]
+}

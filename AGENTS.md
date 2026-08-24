@@ -24,10 +24,36 @@ this list — never hand-maintain a fact a script could own.
 | Contrast (APCA/WCAG) passes in **both** light and dark | audit `:root` + `.dark` | `npm run a11y` |
 | Graph is trustworthy — no dangling edges, every component has a node, ids match `type`, every interactive component is `governed_by` no-color-alone | structural + governance checks | `npm run validate` |
 | Bundle impact is answerable ("what uses recharts?") | `depends_on` edges parsed from imports | `npm run what-uses <pkg>` |
+| Design decisions resolve deterministically (same graph → same answer) | decision Q→A cases over the graph | `npm run graph:test` |
+| The decision graph is semantically sound (ontology conformance, provenance files exist, no `preferred_over` cycles) | semantic validation | `npm run graph:validate` |
 | Types compile and the library builds | `tsc` + `vite` | `npm run typecheck` · `npm run build` |
 
 CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs all of these on every PR —
 reintroducing any drift turns it red. Run them together locally with **`npm run verify`**.
+
+## AI decision protocol — reason from the graph, don't invent
+
+The knowledge graph is the **reasoning layer**: it encodes what to use, when, why,
+what to avoid, and which rule requires it. **Before inventing any design decision the
+2one system might already have an opinion about, query the graph.** Architecture:
+[`docs/knowledge-graph.md`](docs/knowledge-graph.md).
+
+When you build 2one UI, follow this order:
+
+1. **Intent** — name the user goal (submit a form, confirm a destructive action, show supplementary info).
+2. **Context** — mobile? a confirmation flow?
+3. **Decide** — `npm run graph:decide -- decide <intent> [--context <ctx>]` returns the preferred pattern/component, its composition, the mandatory rules (tier-sorted), the anti-patterns, and the accessibility requirements — each with provenance.
+4. **Constraints** — obey every **MANDATORY** rule; obey **PREFERRED** unless a higher-tier rule overrides.
+5. **Anti-patterns** — never do what `inappropriate_for` / `forbidden_with` / `avoid` rules prohibit (`graph:decide -- check <component> <intent>` answers YES/NO).
+6. **Conflicts** — resolve by the precedence ladder (accessibility › brand › consistency › interaction › layout › implementation), never by preference.
+7. **Compose** from the preferred composition; pull each component's a11y requirements.
+8. **Validate** the proposal (`check`, `incompatible`, `rules`) before emitting UI, and **cite the evidence** when asked.
+
+Rules are first-class and authored in [`rules/ux-rules.json`](rules/ux-rules.json)
+(severity + category + `applies_to`); `build-graph.mjs` turns each into a `rule:` node.
+Decision semantics (intents, preferences, anti-patterns) live in
+[`graph/decisions.json`](graph/decisions.json). Add a rule or a preference there, then
+`npm run graph && npm run graph:validate && npm run graph:test`.
 
 ## How to represent this repository
 

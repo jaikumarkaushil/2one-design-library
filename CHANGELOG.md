@@ -7,6 +7,23 @@ uses [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- **Knowledge graph → AI decision engine.** The graph is now a semantic *decision*
+  graph, not just a dependency graph. New authored decision layer
+  ([`graph/decisions.json`](graph/decisions.json)) adds intents, contexts, states,
+  accessibility requirements, and button variants, plus decision edges
+  (`preferred_for`, `preferred_over`, `inappropriate_for`, `requires`,
+  `supports_state`, `preferred_composition`, `realized_by`, …). A formal ontology
+  ([`graph/ontology.json`](graph/ontology.json)) types every node/edge and the
+  conflict-precedence ladder; `build-graph.mjs` now sources rules from
+  [`rules/ux-rules.json`](rules/ux-rules.json) (severity + category) and tags every
+  node/edge with an ontology class + provenance (`explicit`/`derived`).
+- Deterministic reasoning layer [`scripts/graph-decide.mjs`](scripts/graph-decide.mjs)
+  (`npm run graph:decide`): `decide <intent> [--context]`, `check`, `rules`,
+  `alternatives`, `incompatible`, `a11y`, `states`, `why`.
+- Graph guarantees: `npm run graph:validate` (ontology conformance, provenance,
+  cycles, coverage) and `npm run graph:test` (deterministic decision tests) — both
+  wired into `npm run verify`. Architecture: [`docs/knowledge-graph.md`](docs/knowledge-graph.md);
+  agent protocol in `AGENTS.md`.
 - `LICENSE` (MIT) and a `license` field in `package.json` — the package can now
   be distributed unambiguously.
 - CI workflow (`.github/workflows/ci.yml`): typecheck, public-API completeness,

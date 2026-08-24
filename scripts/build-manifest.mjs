@@ -129,8 +129,12 @@ const manifest = {
     graph: {
       file: 'graph.json',
       build: 'npm run graph',
-      description: 'Knowledge graph — every design element as a node, relationships (composed_of, uses, derived_from, governed_by, has_contrast, embodies) as edges. Use it for impact analysis ("what uses this token?") and composition-aware context.',
+      description: 'Semantic decision graph — the reasoning layer of the DLS. Two layers: DERIVED (parsed from source: tokens, components, templates, dependencies, contrast) and AUTHORED (graph/decisions.json + rules/ux-rules.json: intents, contexts, states, accessibility requirements, first-class rules, and decision edges like preferred_for / preferred_over / inappropriate_for / requires). Nodes carry an ontology class + provenance; edges carry provenance + decision priority. Schema: graph/ontology.json.',
+      ontology: 'graph/ontology.json — node classes, edge domain→range, priority vocabulary, and the conflict-precedence ladder (mirrors rules/ux-rules.json).',
+      decision_engine: 'npm run graph:decide -- decide <intent> [--context <ctx>]   → preferred pattern/component, composition, mandatory rules (tier-sorted), anti-patterns, a11y, provenance. Also: rules|alternatives|incompatible|a11y|states|check|why. Add --json for machine output.',
       impact_query: 'npm run what-uses -- <element>   (e.g. `-- primary` → every component/template affected; add --json for machine output, --depends for what it uses + its rules)',
+      validation: 'npm run graph:validate (semantic soundness) · npm run graph:test (deterministic decision tests)',
+      ai_protocol: 'AGENTS.md → "AI decision protocol": how an agent must query the graph before inventing a design decision.',
       visual: 'run `npm run dev` and see the graph, or use the standalone knowledge-graph explorer.',
     },
     integrations: {

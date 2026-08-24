@@ -55,7 +55,7 @@
     { "id": "reduced-motion", "category": "accessibility", "severity": "must", "label": "All motion respects prefers-reduced-motion",
       "statement": "Every transition/animation must be disabled or reduced under prefers-reduced-motion. Motion is purposeful (opacity/transform), never decorative.",
       "rationale": "Motion can trigger vestibular disorders; it must be opt-out-able by the OS setting.",
-      "applies_to": [] },
+      "applies_to": ["component:carousel", "component:sonner"] },
 
     { "id": "build-from-library", "category": "consistency", "severity": "must", "label": "Build from the library — never hand-roll parallel chrome",
       "statement": "Compose real 2one components. Never hand-roll a parallel sidebar, card, badge, or 'stage' box for something the library already provides.",
@@ -130,6 +130,19 @@
     { "id": "fixed-vs-theme-color", "category": "implementation", "severity": "must", "label": "Brand marks need a FIXED ground",
       "statement": "Demo the logo on a fixed ground (bg-white / bg-neutral-950), never a theme token. In-app marks must be theme-adaptive (.dark swap or currentColor).",
       "rationale": "The white logo on bg-foreground vanishes in dark (foreground flips near-white).",
-      "applies_to": ["component-2one:logo"] }
+      "applies_to": ["component-2one:logo"] },
+
+    { "id": "destructive-intent", "category": "interaction", "severity": "must", "label": "Destructive styling requires destructive intent",
+      "statement": "Reserve destructive styling (the danger colour) for actions that delete or irreversibly change data. Never use destructive styling for ordinary navigation or non-destructive actions.",
+      "rationale": "Destructive colour is a warning; spending it on navigation trains users to ignore it and misreads risk.",
+      "applies_to": ["component:button"] },
+    { "id": "tooltip-not-essential", "category": "accessibility", "severity": "must", "label": "Never put essential information only in a Tooltip",
+      "statement": "Tooltips are supplementary. Any information the user MUST perceive to succeed (required, error, or instruction) must be visible without hover or focus discovery — not tooltip-only.",
+      "rationale": "Tooltips are unreachable on touch and are skipped by many assistive contexts; essential info behind one is lost.",
+      "applies_to": ["component:tooltip"] },
+    { "id": "mobile-sheet-over-dialog", "category": "interaction", "severity": "should", "label": "Prefer a Sheet over a Dialog on mobile",
+      "statement": "On mobile (useIsMobile), present a Dialog's content as a Sheet. Render the trigger at every width; switch the presentation, not the availability.",
+      "rationale": "A desktop-sized Dialog is cramped or unreachable on mobile; the Sheet is the reachable equivalent (docs/building-with-the-dls.md §19).",
+      "applies_to": ["component:dialog", "component:sheet"] }
   ]
 }

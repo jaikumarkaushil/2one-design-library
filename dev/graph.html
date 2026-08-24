@@ -73,15 +73,21 @@
   .pnl-view{flex-direction:row;align-items:center;gap:8px}
   .pnl-view .btn{flex:1}
   .pnl-cues{margin:0;font-size:11px;color:var(--ink-3);line-height:1.55}
-  /* All Components list */
+  /* All Components list — a per-component visibility filter (checkbox) + jump (label) */
   .comp-list{display:flex;flex-direction:column;gap:1px;max-height:min(46vh,340px);overflow-y:auto;margin:0 -8px;padding:2px 8px}
-  .comp-item{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;border-radius:var(--r-field);padding:6px 8px;cursor:pointer;font-family:var(--sans);font-size:12.5px;color:var(--ink)}
+  .comp-item{display:flex;align-items:center;gap:8px;border-radius:var(--r-field);padding:1px 4px}
   .comp-item:hover{background:var(--chip)}
-  .comp-item.sel{background:var(--chip);font-weight:600}
-  .comp-item .cdot{width:8px;height:8px;border-radius:var(--r-pill);flex-shrink:0}
-  .comp-item .ctag{margin-left:auto;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .comp-item.sel{background:var(--chip)}
+  .comp-item.sel .comp-name{font-weight:600}
+  .comp-item.off{opacity:.45}
+  .comp-item.off .comp-name{text-decoration:line-through}
   .comp-item.hidden{display:none}
-  .comp-empty{font-size:11px;color:var(--ink-3);padding:6px 8px}
+  .comp-check{width:14px;height:14px;flex:0 0 auto;accent-color:var(--sel);cursor:pointer;margin:0}
+  .comp-jump{display:flex;align-items:center;gap:8px;flex:1;min-width:0;text-align:left;background:none;border:0;border-radius:var(--r-field);padding:5px 4px;cursor:pointer;font-family:var(--sans);font-size:12.5px;color:var(--ink)}
+  .comp-jump:hover .comp-name{text-decoration:underline}
+  .comp-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .comp-item .cdot{width:8px;height:8px;border-radius:var(--r-pill);flex-shrink:0}
+  .comp-item .ctag{margin-left:auto;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);flex-shrink:0}
   /* Inspiration */
   .paint{margin:0}
   .paint img{width:100%;border-radius:var(--r-field);border:1px solid var(--line);display:block}
@@ -176,6 +182,7 @@
       </button>
       <div class="pnl-body">
         <input class="search" id="comp-search" placeholder="filter components…" autocomplete="off" spellcheck="false" />
+        <div class="pnl-label">Show on canvas <span class="mini-actions"><button class="link-btn" id="comp-all">All</button><button class="link-btn" id="comp-none">None</button></span></div>
         <div class="comp-list" id="comp-list"></div>
       </div>
     </section>

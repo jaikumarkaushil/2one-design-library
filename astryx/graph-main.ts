@@ -96,7 +96,10 @@ function resize() { W = cv.clientWidth; H = cv.clientHeight; cv.width = W * DPR;
 addEventListener('resize', resize)
 
 let selected: any = null, hover: any = null
-const hidden = new Set<string>()
+const hidden = new Set<string>()          // hidden by node TYPE (Graph Controls filter)
+const hiddenComp = new Set<string>()      // hidden by individual component (All Components filter)
+const nodeHidden = (n: any) => hidden.has(n.type) || hiddenComp.has(n.id)
+const edgeHidden = (e: any) => nodeHidden(e.s) || nodeHidden(e.t)
 const screenX = (x: number) => x * scale + W / 2 + ox
 const screenY = (y: number) => y * scale + H / 2 + oy
 const worldX = (sx: number) => (sx - W / 2 - ox) / scale
@@ -107,7 +110,7 @@ function draw() {
   const neigh = selected ? adj.get(selected.id) : null
   ctx.lineWidth = 1
   edges.forEach((e: any) => {
-    if (hidden.has(e.s.type) || hidden.has(e.t.type)) return
+    if (edgeHidden(e)) return
     const on = selected && (e.source === selected.id || e.target === selected.id)
     ctx.globalAlpha = selected ? (on ? 0.9 : 0.06) : 0.35
     ctx.strokeStyle = on ? cvarv('--edge-hi') : cvarv('--edge')
@@ -131,7 +134,7 @@ function draw() {
   })
   ctx.globalAlpha = 1
   nodes.forEach((n: any) => {
-    if (hidden.has(n.type)) return
+    if (nodeHidden(n)) return
     const px = screenX(n.x), py = screenY(n.y), r = n.r * Math.min(scale, 1.4)
     const dim = selected && n !== selected && !(neigh && neigh.has(n.id))
     ctx.globalAlpha = dim ? 0.15 : 1
@@ -153,7 +156,7 @@ function draw() {
 }
 function loop() { if (!reduced) { tick(); tick() } draw(); requestAnimationFrame(loop) }
 
-function pick(sx: number, sy: number) { let best: any = null, bd = 1e9; nodes.forEach((n: any) => { if (hidden.has(n.type)) return
+function pick(sx: number, sy: number) { let best: any = null, bd = 1e9; nodes.forEach((n: any) => { if (nodeHidden(n)) return
   const dx = screenX(n.x) - sx, dy = screenY(n.y) - sy, d = dx * dx + dy * dy, rr = Math.pow(n.r * Math.min(scale, 1.4) + 6, 2)
   if (d < rr && d < bd) { bd = d; best = n } }); return best }
 let panning = false, px0 = 0, py0 = 0, moved = false
@@ -271,20 +274,37 @@ const compNodes = nodes
   .filter((n: any) => n.type === 'component' || n.type === 'component-2one')
   .sort((a: any, b: any) => a.label.localeCompare(b.label))
 document.getElementById('comp-count')!.textContent = String(compNodes.length)
-const compItems: { node: any; elm: HTMLElement }[] = []
+// Each row is a filter (checkbox = show/hide on the canvas) AND a jump (label →
+// select + centre the node). All / None toggle every component's visibility at once
+// — the DLS rule "filters offer Select all + Deselect all" (rule:filter-select-all).
+const compItems: { node: any; row: HTMLElement; box: HTMLInputElement }[] = []
+const setCompVisible = (n: any, box: HTMLInputElement, row: HTMLElement, vis: boolean) => {
+  box.checked = vis
+  if (vis) hiddenComp.delete(n.id); else hiddenComp.add(n.id)
+  row.classList.toggle('off', !vis)
+}
 compNodes.forEach((n: any) => {
-  const item = el('button', 'comp-item'); item.dataset.id = n.id; item.title = 'Show ' + n.label + ' in the graph'
+  const row = el('div', 'comp-item'); row.dataset.id = n.id
+  const box = el('input') as HTMLInputElement; box.type = 'checkbox'; box.className = 'comp-check'; box.checked = true
+  box.setAttribute('aria-label', 'Show ' + n.label + ' on the canvas')
+  box.addEventListener('change', () => setCompVisible(n, box, row, box.checked))
+  const jump = el('button', 'comp-jump'); jump.title = 'Show ' + n.label + ' in the graph'
   const dot = el('span', 'cdot'); dot.style.background = nodeColor(n.type)
-  const name = el('span'); name.textContent = n.label
-  item.appendChild(dot); item.appendChild(name)
-  if (n.type === 'component-2one') { const tag = el('span', 'ctag'); tag.textContent = '2one'; item.appendChild(tag) }
-  item.addEventListener('click', () => { select(n); centerOn(n); scale = Math.max(scale, 1.3); alpha = Math.max(alpha, 0.5) })
-  compListEl.appendChild(item); compItems.push({ node: n, elm: item })
+  const name = el('span', 'comp-name'); name.textContent = n.label
+  jump.appendChild(dot); jump.appendChild(name)
+  if (n.type === 'component-2one') { const tag = el('span', 'ctag'); tag.textContent = '2one'; jump.appendChild(tag) }
+  // Jumping to a hidden component reveals it first, so the focus is never invisible.
+  jump.addEventListener('click', () => { if (hiddenComp.has(n.id)) setCompVisible(n, box, row, true); select(n); centerOn(n); scale = Math.max(scale, 1.3); alpha = Math.max(alpha, 0.5) })
+  row.appendChild(box); row.appendChild(jump)
+  compListEl.appendChild(row); compItems.push({ node: n, row, box })
 })
+const setAllComp = (vis: boolean) => compItems.forEach(({ node, row, box }) => setCompVisible(node, box, row, vis))
+document.getElementById('comp-all')!.addEventListener('click', () => { setAllComp(true); alpha = Math.max(alpha, 0.3) })
+document.getElementById('comp-none')!.addEventListener('click', () => setAllComp(false))
 compSearch.addEventListener('input', () => {
   const q = compSearch.value.trim().toLowerCase()
   let shown = 0
-  compItems.forEach(({ node, elm }) => { const hit = !q || node.label.toLowerCase().indexOf(q) >= 0; elm.classList.toggle('hidden', !hit); if (hit) shown++ })
+  compItems.forEach(({ node, row }) => { const hit = !q || node.label.toLowerCase().indexOf(q) >= 0; row.classList.toggle('hidden', !hit); if (hit) shown++ })
   document.getElementById('comp-count')!.textContent = q ? shown + '/' + compItems.length : String(compItems.length)
 })
 

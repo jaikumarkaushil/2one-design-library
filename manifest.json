@@ -34,7 +34,7 @@
       "tier": 0,
       "note": "The authority for \"the 2one way\" — machine-readable UX decisions with severity + precedence. A more specific 2one rule wins over the generic framework convention (rules → patterns → components → tokens → primitives → framework defaults).",
       "file": "rules/ux-rules.json",
-      "count": 26,
+      "count": 27,
       "version": "1.0.0",
       "severity_levels": [
         "forbidden",

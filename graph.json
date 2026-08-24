@@ -4,8 +4,8 @@
   "generated_for": "0.1.0",
   "ontology": "graph/ontology.json",
   "stats": {
-    "nodes": 279,
-    "edges": 806,
+    "nodes": 280,
+    "edges": 808,
     "by_node_type": {
       "a11y": 8,
       "template-block": 20,
@@ -20,7 +20,7 @@
       "package": 13,
       "token-radius": 7,
       "ramp": 21,
-      "rule": 26,
+      "rule": 27,
       "state": 10,
       "token-color": 34,
       "token-type": 10,
@@ -36,7 +36,7 @@
       "Intent": 11,
       "Package": 13,
       "Foundation": 72,
-      "Rule": 26,
+      "Rule": 27,
       "State": 10
     },
     "by_edge_type": {
@@ -49,7 +49,7 @@
       "derived_from": 25,
       "embodies": 5,
       "forbidden_with": 1,
-      "governed_by": 85,
+      "governed_by": 87,
       "has_contrast": 8,
       "inappropriate_for": 4,
       "overrides": 1,
@@ -65,11 +65,11 @@
     },
     "by_provenance": {
       "nodes": {
-        "explicit": 77,
+        "explicit": 78,
         "derived": 202
       },
       "edges": {
-        "explicit": 172,
+        "explicit": 174,
         "derived": 634
       }
     },
@@ -1665,6 +1665,21 @@
       "category": "accessibility",
       "statement": "A field error must set aria-invalid and link its message with aria-describedby, and show icon+text (see no-color-alone).",
       "rationale": "Screen readers only announce errors that are wired to the control.",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:filter-select-all",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Filters offer Select all + Deselect all",
+      "kind": "guideline",
+      "priority": "PREFERRED",
+      "severity": "should",
+      "tier": "interaction",
+      "category": "interaction",
+      "statement": "Any multi-select filter (a set of toggleable options that includes/excludes items) must provide Select all and Deselect all (or Clear) controls, so the whole set can be reset in one action instead of toggling every option by hand.",
+      "rationale": "Toggling a long filter option-by-option to include everything or start from empty is slow and error-prone; a bulk Select all / Deselect all is the expected, faster affordance and keeps every 2one filter consistent.",
       "source": "rules/ux-rules.json"
     },
     {
@@ -5738,6 +5753,12 @@
     },
     {
       "source": "component:checkbox",
+      "target": "rule:filter-select-all",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:checkbox",
       "target": "rule:focus-visible",
       "type": "governed_by",
       "prov": "explicit"
@@ -5973,6 +5994,12 @@
     {
       "source": "component:toggle",
       "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:toggle-group",
+      "target": "rule:filter-select-all",
       "type": "governed_by",
       "prov": "explicit"
     },

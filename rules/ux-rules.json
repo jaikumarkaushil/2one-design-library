@@ -143,6 +143,11 @@
     { "id": "mobile-sheet-over-dialog", "category": "interaction", "severity": "should", "label": "Prefer a Sheet over a Dialog on mobile",
       "statement": "On mobile (useIsMobile), present a Dialog's content as a Sheet. Render the trigger at every width; switch the presentation, not the availability.",
       "rationale": "A desktop-sized Dialog is cramped or unreachable on mobile; the Sheet is the reachable equivalent (docs/building-with-the-dls.md §19).",
-      "applies_to": ["component:dialog", "component:sheet"] }
+      "applies_to": ["component:dialog", "component:sheet"] },
+
+    { "id": "filter-select-all", "category": "interaction", "severity": "should", "label": "Filters offer Select all + Deselect all",
+      "statement": "Any multi-select filter (a set of toggleable options that includes/excludes items) must provide Select all and Deselect all (or Clear) controls, so the whole set can be reset in one action instead of toggling every option by hand.",
+      "rationale": "Toggling a long filter option-by-option to include everything or start from empty is slow and error-prone; a bulk Select all / Deselect all is the expected, faster affordance and keeps every 2one filter consistent.",
+      "applies_to": ["component:checkbox", "component:toggle-group"] }
   ]
 }

@@ -654,7 +654,7 @@
     },
     "rules": {
       "file": "rules/ux-rules.json",
-      "count": 32,
+      "count": 33,
       "version": "1.0.0",
       "severity_levels": [
         "forbidden",

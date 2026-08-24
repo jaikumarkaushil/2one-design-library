@@ -125,9 +125,9 @@ const NAV = [
   { grp: '', items: [['/', '← Dashboard', ''], ['/dls.html', 'What is a DLS?', '']] },
   { grp: 'Tier 1 · Brand', items: [['brand', 'Brand', '']] },
   { grp: 'Tier 2 · Foundation', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
-  { grp: 'Shadcn components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', '']] },
-  { grp: '2one components', items: [['mobile', 'Mobile · 2one', String(COUNT.twoOne)]] },
-  { grp: 'Tier 3 · Output', items: [['blocks', 'Blocks', String(COUNT.blocks)], ['marketing', 'Marketing', String(COUNT.marketing)], ['charts', 'Charts', String(COUNT.charts)]] },
+  { grp: 'Tier 3', items: [['blocks', 'Blocks', String(COUNT.blocks)], ['marketing', 'Marketing', String(COUNT.marketing)], ['charts', 'Charts', String(COUNT.charts)]] },
+  { grp: '2one Components', items: [['mobile', 'Mobile · 2one', String(COUNT.twoOne)]] },
+  { grp: 'Shadcn Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', '']] },
   { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
 ]
 

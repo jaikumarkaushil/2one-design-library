@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   Star, Bold, Italic, Underline, Search, Bell, Home, User, Rocket, CreditCard,
   LogOut, CircleAlert, Copy, Check, Sun, Moon,
+  Network, Accessibility, Sparkles, Globe, ArrowRight,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { toast } from 'sonner'
@@ -315,9 +316,33 @@ export function Showcase() {
 
             {/* OVERVIEW */}
             <section id="overview" className="g-section g-hero">
-              <div className="g-eyebrow">2one · design language system</div>
-              <h1>The 2one system, <span className="thin">built on shadcn/ui.</span></h1>
-              <p>Every component on this page is the real <span className="mono">@yokesh-2one/design-library</span> — the shadcn/ui set re-skinned to the 2one tokens. Grayscale, light + dark, pill buttons, Satoshi headings, Inter body.</p>
+              <div className="g-eyebrow">Design language system · delivered as a product</div>
+              <h1>Ship on-brand product &amp; marketing, <span className="thin">without the guesswork.</span></h1>
+              <p>2one is a design language system for <b className="text-foreground">product development and product marketing</b> — the components, tokens, brand, and the rules that bind them. A <b className="text-foreground">knowledge graph</b> makes the system opinionated and deterministic, so people <em>and</em> AI build interfaces that already feel like 2one.</p>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <Button asChild size="lg"><a href="/graph.html">Explore the knowledge graph <ArrowRight /></a></Button>
+                <Button asChild size="lg" variant="outline"><a href="/dls.html">Read the guide</a></Button>
+              </div>
+
+              {/* Differentiators — the key selling points, each with checkable evidence (honest, no hype) */}
+              <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {([
+                  [<Network />, 'Opinionated & deterministic', 'A knowledge graph of every token, component and rule — ask what a change touches before you ship it.', 'npm run what-uses'],
+                  [<Accessibility />, 'Accessible by default', 'Radix primitives + an APCA contrast audit that runs on every change, in light and dark.', 'npm run a11y'],
+                  [<Sparkles />, 'AI-legible', 'Machine-readable UX rules with severity + precedence, so AI composes the 2one language — it doesn’t invent one.', 'rules/ux-rules.json'],
+                  [<Globe />, 'Universal & one system', 'One grayscale token system, two audited themes, semantic HTML — the same product feel on every surface.', 'tokens/*.json'],
+                ] as [React.ReactNode, string, string, string][]).map(([icon, title, desc, ev]) => (
+                  <Card key={title}>
+                    <CardHeader>
+                      <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden>{icon}</div>
+                      <CardTitle className="pt-2 text-base">{title}</CardTitle>
+                      <CardDescription>{desc}</CardDescription>
+                    </CardHeader>
+                    <CardContent><Badge variant="outline" className="font-mono font-normal">{ev}</Badge></CardContent>
+                  </Card>
+                ))}
+              </div>
+
               <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 {([[String(COUNT.components), 'Components'], [String(COUNT.shadcn), 'shadcn primitives'], [String(COUNT.twoOne), '2one-authored'], ['1', 'Hue-free system']] as [string, string][]).map(([k, l]) => (
                   <Card key={l}>

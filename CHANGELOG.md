@@ -6,6 +6,11 @@ uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-24
+
+First tagged release. `0.1.0` was written up below but never tagged, so this is
+the first version a consumer can actually pin.
+
 ### Added
 - **Knowledge graph → AI decision engine.** The graph is now a semantic *decision*
   graph, not just a dependency graph. New authored decision layer
@@ -109,12 +114,29 @@ uses [Semantic Versioning](https://semver.org/).
 - Corrected the "removed `next-themes`" changelog claim — `next-themes` is a runtime
   dependency again (the exported `ThemeProvider` and `sonner` use it).
 
-### Changed
-- **Told the truth about the install path.** `@yokesh-2one/design-library` isn't on a
-  public registry yet, so rule #1 ("import from the package") in `README.md`, `AGENTS.md`,
-  `.cursorrules`, and `llms.txt` now points at the works-today path (local tarball / vendored
-  source) and marks registry install as "when published" — no more documenting an install
-  command that 404s.
+- **Told the truth about the install path.** The package is not on a public
+  registry, so `README.md`, `AGENTS.md`, `.cursorrules` and `llms.txt` document the
+  path that works today rather than an install command that 404s. A `prepare` hook
+  means `npm install github:yokesh-2one/2one-design-library#v0.2.0` builds a real
+  `dist/` on install — verified from a clean project.
+- **Scope renamed** `@yokesh-2one/design-library` → `@2one/design-library` across
+  the repo, before first publish, since the package name is a one-way door.
+- **Engine/payload seam.** Payload paths and rule parameters moved to
+  `dls.config.json`, payload prose to `dls.identity.json`, so the generators
+  contain no knowledge of which design system they are describing. Proven by
+  running the whole pipeline against a second, deliberately unlike payload
+  (`fixtures/acme`, `npm run test:fixture`) — which found seven bugs that all
+  reported success while doing the wrong thing.
+- **Output auditing** (`npx 2one check`) — 12 rules covering invented tokens,
+  foreign palettes and icon sets, the wordmark typeset as text, and imports the
+  package does not export. Grounded in `graph.json` and the generated export list,
+  so it catches a token that merely *sounds* like this system's vocabulary.
+- **W3C DTCG token export** (`tokens/tokens.dtcg.json`) — semantic tokens alias
+  their ramp step rather than duplicating the hex, so the relationship survives
+  into design tooling as a variable reference.
+- **Generated AI entry files** — `CLAUDE.md`, `GEMINI.md`, `.cursorrules` and
+  `.github/copilot-instructions.md` are produced from `manifest.json`, so they
+  cannot disagree with it. `check:meta` fails if they drift.
 
 ## [0.1.0] - 2026-08-12
 

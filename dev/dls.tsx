@@ -25,6 +25,7 @@ import {
   SidebarProvider, SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { Logo } from '@/components/logo'
+import brand from '../brand/brand.json'
 
 /* ---------------------------------------------------------
    Content — condensed from the DLS definitions doc. Three
@@ -385,6 +386,46 @@ export function Dls() {
               {TIER1_MODULES.map(([icon, title, desc]) => (
                 <ModuleCard key={title} icon={icon} title={title} desc={desc} />
               ))}
+            </div>
+
+            {/* The 2one brand, applied — the real Tier 1 assets, from brand/brand.json */}
+            <Separator className="my-8" />
+            <h3 className="text-lg font-semibold tracking-tight">The 2one brand, applied</h3>
+            <p className="g-lede">Tier 1 for 2one itself — pulled from <span className="mono">brand/brand.json</span>, the source every on-brand asset traces back to.</p>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader><CardTitle className="text-base">Mission · vision · tagline</CardTitle></CardHeader>
+                <CardContent className="grid gap-3 text-sm">
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Mission</div><p className="mt-1 text-foreground">{brand.mission}</p></div>
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Vision</div><p className="mt-1 text-foreground">{brand.vision}</p></div>
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Tagline</div><p className="mt-1 text-foreground">{brand.tagline}</p></div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle className="text-base">Voice · tone · personality</CardTitle><CardDescription>How the brand speaks — match this in any 2one-facing copy.</CardDescription></CardHeader>
+                <CardContent className="grid gap-3 text-sm">
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Voice</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.voice.descriptors.map((d) => <Badge key={d} variant="secondary">{d}</Badge>)}</div></div>
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Tone</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.tone.descriptors.map((d) => <Badge key={d} variant="secondary">{d}</Badge>)}</div></div>
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Personality</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.personality.map((d) => <Badge key={d} variant="outline">{d}</Badge>)}<Badge variant="outline">Archetype: {brand.archetype.name}</Badge></div></div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle className="text-base">Who it’s for</CardTitle><CardDescription>The personas the mission serves.</CardDescription></CardHeader>
+                <CardContent>
+                  <ul className="grid gap-2 text-sm">
+                    {brand.personas.map((p) => (
+                      <li key={p.id} className="flex items-start gap-2"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-foreground" aria-hidden /><span>{p.label}</span></li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle className="text-base">The logo</CardTitle><CardDescription>Two fills only — black on light, white on dark. Never recolour, rotate, or distort.</CardDescription></CardHeader>
+                <CardContent className="flex flex-wrap items-center gap-3">
+                  <div className="rounded-lg border bg-white p-4"><Logo variant="black" width={96} /></div>
+                  <div className="rounded-lg bg-neutral-950 p-4"><Logo variant="white" width={96} /></div>
+                </CardContent>
+              </Card>
             </div>
           </section>
 

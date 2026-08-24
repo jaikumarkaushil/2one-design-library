@@ -153,6 +153,20 @@
       </div>
     </section>
 
+    <!-- ALL COMPONENTS — jump straight to any component's node in the graph (closed by default) -->
+    <section class="pnl collapsed" id="pnl-components">
+      <button class="pnl-head" data-target="pnl-components" aria-expanded="false">
+        <svg class="ic chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        <span>All Components</span>
+        <span class="pnl-count" id="comp-count"></span>
+      </button>
+      <div class="pnl-body">
+        <input class="search" id="comp-search" placeholder="filter components…" autocomplete="off" spellcheck="false" />
+        <div class="pnl-label">Show on canvas <span class="mini-actions"><button class="link-btn" id="comp-all">All</button><button class="link-btn" id="comp-none">None</button></span></div>
+        <div class="comp-list" id="comp-list"></div>
+      </div>
+    </section>
+
     <!-- GRAPH CONTROLS — every control lives here, keeping the canvas clean (open by default) -->
     <section class="pnl" id="pnl-selection">
       <button class="pnl-head" data-target="pnl-selection" aria-expanded="true">
@@ -169,20 +183,6 @@
           <button class="btn" id="reset">Reset view</button>
         </div>
         <p class="pnl-cues">Dot size = number of connections · a ring marks a rule · select a node and the arrowheads point to whatever it uses.</p>
-      </div>
-    </section>
-
-    <!-- ALL COMPONENTS — jump straight to any component's node in the graph -->
-    <section class="pnl collapsed" id="pnl-components">
-      <button class="pnl-head" data-target="pnl-components" aria-expanded="false">
-        <svg class="ic chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        <span>All Components</span>
-        <span class="pnl-count" id="comp-count"></span>
-      </button>
-      <div class="pnl-body">
-        <input class="search" id="comp-search" placeholder="filter components…" autocomplete="off" spellcheck="false" />
-        <div class="pnl-label">Show on canvas <span class="mini-actions"><button class="link-btn" id="comp-all">All</button><button class="link-btn" id="comp-none">None</button></span></div>
-        <div class="comp-list" id="comp-list"></div>
       </div>
     </section>
   </aside>

@@ -145,6 +145,23 @@ function CodeBlock({ code }: { code: string }) {
   )
 }
 
+// Copy-a-link control — a pill button that copies the URL on click (no scrolling
+// code block, no overflow). Shows a "copied" state briefly.
+function CopyLinkButton({ url, label = 'Copy GitHub link' }: { url: string; label?: string }) {
+  const [done, setDone] = useState(false)
+  return (
+    <Button
+      variant="outline"
+      className="w-full justify-start gap-2 font-normal"
+      aria-label={done ? 'Link copied to clipboard' : label}
+      onClick={() => { navigator.clipboard?.writeText(url); setDone(true); setTimeout(() => setDone(false), 1400) }}
+    >
+      {done ? <Check className="size-4 shrink-0" /> : <Copy className="size-4 shrink-0" />}
+      <span className="truncate">{done ? 'Link copied' : label}</span>
+    </Button>
+  )
+}
+
 function Block({ title, meta, className = '', children }: { title: string; meta?: string; className?: string; children: React.ReactNode }) {
   const col = className.includes('col')
   return (
@@ -320,7 +337,7 @@ export function Showcase() {
                     <CardTitle className="flex items-center gap-2"><Badge variant="outline">1</Badge> Connect to the library</CardTitle>
                     <CardDescription>Give your AI the repo. It reads <span className="font-mono">manifest.json</span> first, then builds only from the system.</CardDescription>
                   </CardHeader>
-                  <CardContent className="min-w-0"><CodeBlock code={'https://github.com/yokesh-2one/2one-design-library'} /></CardContent>
+                  <CardContent className="min-w-0"><CopyLinkButton url="https://github.com/yokesh-2one/2one-design-library" /></CardContent>
                 </Card>
                 <Card>
                   <CardHeader>

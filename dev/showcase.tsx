@@ -213,12 +213,6 @@ export function Showcase() {
       <SidebarProvider>
         {/* App shell — the library's own Sidebar, not bespoke chrome */}
         <Sidebar>
-          <SidebarHeader>
-            <div className="flex items-center gap-2.5 px-2 py-1.5">
-              <Logo variant="black" width={52} className="dark:hidden" />
-              <Logo variant="white" width={52} className="hidden dark:block" />
-            </div>
-          </SidebarHeader>
           <SidebarContent>
             {NAV.map((g, i) => (
               <SidebarGroup key={i}>
@@ -240,6 +234,10 @@ export function Showcase() {
 
         <SidebarInset className="min-w-0">
           <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
+            <a href="/" className="flex items-center" aria-label="2one — dashboard">
+              <Logo variant="black" width={48} className="dark:hidden" />
+              <Logo variant="white" width={48} className="hidden dark:block" />
+            </a>
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-1 !h-5" />
             <Breadcrumb>

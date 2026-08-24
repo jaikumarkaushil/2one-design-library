@@ -174,3 +174,51 @@ function DetailsPanel({ children }: { children: React.ReactNode }) {
   return <aside className="w-80 shrink-0 border-l p-4">{children}</aside>   // inline on md+
 }
 ```
+
+## 20. Generated, not asserted — UI data comes from source
+Any **count, badge number, or list** shown in the UI must be **derived from the
+generated source** (`manifest.json` / `graph.json`), never hand-typed. The canary
+we hit: a sidebar badge read **198** while the graph actually held **213** —
+the literal froze the day it was typed and the repo moved on. Read the number,
+don't write it: `String(manifest.index.templates.charts.count)`,
+`String(graphData.nodes.length)`. This is rule 2 ("one token system, no
+hard-coded values") extended from colour to **every fact the UI states about
+itself**. Machine rule: `no-hardcoded-ui-data` (`rules/ux-rules.json`).
+
+## 21. Monospace is for code, not chrome
+Use the **mono** font only for **code blocks and literal commands/paths**
+(`npm run a11y`, `tokens/*.json`). Everything else — headers, labels, nav,
+prose — uses the UI font (Inter / Satoshi). A monospace header
+(`@yokesh-2one/design-library · shadcn · 2one-themed`) reads as a *dev sampler*,
+not a product, and quietly undercuts the whole SaaS feel. Machine rule:
+`mono-for-code-only`.
+
+## 22. Ship a product, not a sampler — pages, a short menu, a way home
+A single long "everything" page is a **sampler, not a product**. Split by
+**destination** — Dashboard, Components, Guide, Graph — each its own page. Keep
+the **global menu short** and destination-oriented; deep section lists belong
+**on the page**, not in the sidebar. A **content/reading page** (an explainer)
+doesn't need the app menu at all — a header with the **clickable logo + a
+breadcrumb back to the dashboard** is clearer. And every page needs an **obvious
+way home** (breadcrumbs + logo). Machine rules: `pages-over-scroll`,
+`content-page-chrome`.
+
+## 23. One system across every surface — even bespoke ones
+"One product" means **every** surface shares the logo, fonts, tokens and theme —
+*including* surfaces that can't be a React component shell, like a data-viz
+canvas. When the knowledge graph (`graph.html`) opted out of the shell it still
+had to opt **into** the system: the 2one wordmark (theme-adaptive via
+`currentColor`), Satoshi/Inter, and the DLS tokens for its chrome. A single
+off-system page breaks cohesion more than any missing feature. Machine rule:
+`one-system-all-surfaces`.
+
+## 24. Know your checks — and that a green build isn't a rendered page
+Different checks prove different things; know which one you're leaning on.
+`typecheck` proves types (and **note**: `noUnusedLocals` does **not** cover the
+`dev/` sampler — dead imports there won't fail it). The library `build` proves
+the package compiles. For a **multi-page app**, **`npm run build:site` is the
+definitive correctness check** — it fails on a dangling reference or a missing
+export that dev-mode HMR papers over. And none of these prove it *looks* right:
+when you can't screenshot (a hidden preview pane), fall back to **DOM /
+computed-style checks** — but treat "it builds" and "it renders correctly" as
+two separate claims.

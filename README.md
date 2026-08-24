@@ -33,7 +33,7 @@ slop," the generic output you get when the tool has no ground truth.
 | **58 components** | 54 [shadcn/ui](https://ui.shadcn.com) primitives re-skinned to 2one, plus `Toolbar`, `Logo`, `AppBar`, `BottomNavItem` |
 | **9 templates** | five sign-in screens, three sign-ups, a dashboard — plus marketing sections and 31 charts |
 | **Two themes** | light and dark, both grayscale, both contrast-audited |
-| **26 UX rules** | machine-readable, with severity and a conflict-precedence ladder |
+| **32 UX rules** | machine-readable, with severity and a conflict-precedence ladder |
 | **Brand** | logo with usage rules, plus voice, tone, and personas |
 
 ---

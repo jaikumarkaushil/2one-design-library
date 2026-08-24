@@ -4,8 +4,8 @@
   "generated_for": "0.2.0",
   "ontology": "graph/ontology.json",
   "stats": {
-    "nodes": 281,
-    "edges": 819,
+    "nodes": 287,
+    "edges": 824,
     "by_node_type": {
       "a11y": 8,
       "template-block": 20,
@@ -20,7 +20,7 @@
       "package": 13,
       "token-radius": 7,
       "ramp": 23,
-      "rule": 26,
+      "rule": 32,
       "state": 10,
       "token-color": 34,
       "token-type": 10,
@@ -36,7 +36,7 @@
       "Intent": 11,
       "Package": 13,
       "Foundation": 74,
-      "Rule": 26,
+      "Rule": 32,
       "State": 10
     },
     "by_edge_type": {
@@ -49,7 +49,7 @@
       "derived_from": 29,
       "embodies": 5,
       "forbidden_with": 1,
-      "governed_by": 85,
+      "governed_by": 90,
       "has_contrast": 16,
       "inappropriate_for": 4,
       "overrides": 1,
@@ -65,11 +65,11 @@
     },
     "by_provenance": {
       "nodes": {
-        "explicit": 77,
+        "explicit": 83,
         "derived": 204
       },
       "edges": {
-        "explicit": 172,
+        "explicit": 177,
         "derived": 647
       }
     },
@@ -1624,6 +1624,21 @@
       "source": "rules/ux-rules.json"
     },
     {
+      "id": "rule:content-page-chrome",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Content pages: header + breadcrumb, not the app menu",
+      "kind": "guideline",
+      "priority": "PREFERRED",
+      "severity": "should",
+      "tier": "layout",
+      "category": "layout",
+      "statement": "A content/reading page (an explainer, an article) uses a simple header with a clickable logo and a breadcrumb back to the dashboard — not the full app sidebar. Every page has an obvious way home.",
+      "rationale": "The app menu on a reading page is noise; a breadcrumb + logo is the clearer, product-standard way back (docs/building-with-the-dls.md §22).",
+      "source": "rules/ux-rules.json"
+    },
+    {
       "id": "rule:destructive-confirm",
       "type": "rule",
       "class": "Rule",
@@ -1681,6 +1696,21 @@
       "category": "accessibility",
       "statement": "A field error must set aria-invalid and link its message with aria-describedby, and show icon+text (see no-color-alone).",
       "rationale": "Screen readers only announce errors that are wired to the control.",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:filter-select-all",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Filters offer Select all + Deselect all",
+      "kind": "guideline",
+      "priority": "PREFERRED",
+      "severity": "should",
+      "tier": "interaction",
+      "category": "interaction",
+      "statement": "Any multi-select filter (a set of toggleable options that includes/excludes items) must provide Select all and Deselect all (or Clear) controls, so the whole set can be reset in one action instead of toggling every option by hand.",
+      "rationale": "Toggling a long filter option-by-option to include everything or start from empty is slow and error-prone; a bulk Select all / Deselect all is the expected, faster affordance and keeps every 2one filter consistent.",
       "source": "rules/ux-rules.json"
     },
     {
@@ -1804,6 +1834,21 @@
       "source": "rules/ux-rules.json"
     },
     {
+      "id": "rule:mono-for-code-only",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Monospace is for code, not chrome",
+      "kind": "guideline",
+      "priority": "PREFERRED",
+      "severity": "should",
+      "tier": "consistency",
+      "category": "consistency",
+      "statement": "Use the mono font only for code blocks and literal commands/paths. Product chrome, labels and prose use the UI font (Inter/Satoshi).",
+      "rationale": "Monospace in chrome reads as a developer sampler, not a product, and undercuts the SaaS feel (docs/building-with-the-dls.md §21).",
+      "source": "rules/ux-rules.json"
+    },
+    {
       "id": "rule:multi-theme-audit",
       "type": "rule",
       "class": "Rule",
@@ -1831,6 +1876,21 @@
       "category": "accessibility",
       "statement": "State (error, success, selected, active) must be carried by an icon and/or text — never colour alone. An invalid field needs an icon plus a message, not just a red border.",
       "rationale": "Colour-only state is invisible to colour-blind and low-vision users; it is a brand AND accessibility rule.",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:no-hardcoded-ui-data",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "UI counts and lists are generated, not hand-typed",
+      "kind": "constraint",
+      "priority": "MANDATORY",
+      "severity": "must",
+      "tier": "consistency",
+      "category": "consistency",
+      "statement": "Any count, badge number, or list shown in the UI derives from the generated source (manifest.json / graph.json) — never a hand-typed literal.",
+      "rationale": "Hand-typed numbers drift the moment the repo grows — a nav badge read 198 while the graph held 213. Deriving from source keeps the UI honest by construction (docs/building-with-the-dls.md §20).",
       "source": "rules/ux-rules.json"
     },
     {
@@ -1876,6 +1936,36 @@
       "category": "layout",
       "statement": "Use the 8px spacing scale via Tailwind utilities (gap-4, p-6, mt-6). No ad-hoc inline margins or off-scale pixel values.",
       "rationale": "Inconsistent gaps are the single most visible 'AI-generated' tell.",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:one-system-all-surfaces",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "One system across every surface — even bespoke ones",
+      "kind": "constraint",
+      "priority": "MANDATORY",
+      "severity": "must",
+      "tier": "consistency",
+      "category": "consistency",
+      "statement": "Every surface shares the logo, fonts, tokens and theme — including surfaces that cannot be a component shell (e.g. a data-viz canvas). A page that opts out of the shell still opts into the system.",
+      "rationale": "A single off-system page (different fonts, no logo, its own palette) breaks the 'one product' feel more than any missing feature (docs/building-with-the-dls.md §23).",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:pages-over-scroll",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Split a product into destination pages",
+      "kind": "guideline",
+      "priority": "PREFERRED",
+      "severity": "should",
+      "tier": "layout",
+      "category": "layout",
+      "statement": "A product is a set of destination pages (Dashboard, Components, Guide, Graph), not one endless scroll. Keep the global menu short and destination-oriented; deep section lists live on the page, not in the sidebar.",
+      "rationale": "One long everything-page is a sampler, not a product — it buries the hierarchy and the way around (docs/building-with-the-dls.md §22).",
       "source": "rules/ux-rules.json"
     },
     {
@@ -5675,8 +5765,20 @@
       "prov": "explicit"
     },
     {
+      "source": "component-2one:logo",
+      "target": "rule:one-system-all-surfaces",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
       "source": "component:alert-dialog",
       "target": "rule:destructive-confirm",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:breadcrumb",
+      "target": "rule:content-page-chrome",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -5773,6 +5875,12 @@
     {
       "source": "component:chart",
       "target": "rule:scan-what-you-render",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:checkbox",
+      "target": "rule:filter-select-all",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -5939,6 +6047,12 @@
       "prov": "explicit"
     },
     {
+      "source": "component:sidebar",
+      "target": "rule:content-page-chrome",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
       "source": "component:skeleton",
       "target": "rule:loading-state",
       "type": "governed_by",
@@ -6013,6 +6127,12 @@
     {
       "source": "component:toggle",
       "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:toggle-group",
+      "target": "rule:filter-select-all",
       "type": "governed_by",
       "prov": "explicit"
     },

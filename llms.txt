@@ -27,7 +27,7 @@ Before choosing a pattern, ask the system. It answers deterministically, so the
 same question gives the same answer every time.
 
 - https://raw.githubusercontent.com/yokesh-2one/2one-design-library/main/rules/ux-rules.json
-  26 machine-readable UX rules, each with a severity (`forbidden` → `must` → `should` → `may` → `avoid`)
+  32 machine-readable UX rules, each with a severity (`forbidden` → `must` → `should` → `may` → `avoid`)
   and a conflict-precedence ladder: accessibility → brand → consistency → interaction → layout → implementation.
   A specific 2one rule beats a generic convention. Validated by `npm run check:rules`.
 - `npm run graph:decide -- decide <intent> [--context <ctx>]`
@@ -125,12 +125,12 @@ library is in play before generating (see `instructions_for_ai.clarify_first`).
 | Exact colour / type / spacing | `tokens/*.json` — pull literal values, never approximate |
 | Impact of changing a token | `graph.json`, or `npm run what-uses -- <token>` in a clone |
 | A11y / contrast decisions | `tokens/colors.json` → `contrast`, `docs/accessibility.md` |
-| Consistent multi-screen output | `docs/building-with-the-dls.md` — the 16 consistency rules |
+| Consistent multi-screen output | `docs/building-with-the-dls.md` — the consistency rules |
 
 ## Components
 
 - Source: `src/components/ui/<name>.tsx` — 54 shadcn primitives, 2one-themed
-- 2one-only: `src/components/{logo,app-bar,bottom-nav-item}.tsx`
+- 2one-authored: `src/components/{logo,app-bar,bottom-nav-item}.tsx` + `src/components/ui/toolbar.tsx`
 - Names follow **shadcn**: `Input` (not TextField), `Select` (not Dropdown),
   `RadioGroup` (not RadioButton), `InputOTP` (not OtpField)
 - Blocks (templates, copy-paste not import): `src/blocks/` — `login-01`…`login-05`,

@@ -28,7 +28,8 @@
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden}
   body{display:grid;grid-template-rows:auto 1fr;height:100vh}
-  header{display:flex;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:var(--bg);z-index:5}
+  /* Match the app shell header (showcase.tsx): h-14, border-b, translucent bg + blur */
+  header{display:flex;align-items:center;gap:12px;height:56px;padding:0 16px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:5}
   .ic{width:15px;height:15px;flex:0 0 auto}
   .back{font-family:var(--sans);font-size:12px;color:var(--ink-2);text-decoration:none;border:1px solid var(--line);border-radius:var(--r-pill);padding:8px 12px;display:inline-flex;align-items:center;gap:6px}
   .back:hover{border-color:var(--line-2);color:var(--ink);background:var(--chip)}
@@ -49,6 +50,8 @@
   .btn:hover{border-color:var(--line-2);background:var(--chip)}
   .btn:focus-visible{outline:2px solid var(--line-2);outline-offset:2px}
   .icon-btn{display:inline-flex;align-items:center;justify-content:center;padding:8px;line-height:0;color:var(--ink)}
+  .theme-btn{display:inline-flex;align-items:center;gap:6px} /* icon + Light/Dark label, like the app ThemeToggle */
+  .theme-btn .ic{width:15px;height:15px}
   main{position:relative;overflow:hidden}
   canvas{display:block;width:100%;height:100%;cursor:grab}
   canvas.drag{cursor:grabbing}
@@ -59,6 +62,7 @@
   .pnl-head{width:100%;display:flex;align-items:center;gap:8px;padding:12px 16px;background:none;border:0;cursor:pointer;font-family:var(--heading);font-weight:700;font-size:14px;letter-spacing:-.01em;color:var(--ink);text-align:left}
   .pnl-head:hover{color:var(--ink-2)}
   .pnl-head .chev{color:var(--ink-3);transition:transform .15s ease}
+  .pnl-head .pnl-count{margin-left:auto;font-family:var(--sans);font-weight:500;font-size:11px;color:var(--ink-3)}
   .pnl.collapsed .chev{transform:rotate(-90deg)}
   .pnl.collapsed .pnl-body{display:none}
   .pnl-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
@@ -70,6 +74,20 @@
   .pnl-view{flex-direction:row;align-items:center;gap:8px}
   .pnl-view .btn{flex:1}
   .pnl-cues{margin:0;font-size:11px;color:var(--ink-3);line-height:1.55}
+  /* All Components list — a per-component visibility filter (checkbox) + jump (label) */
+  .comp-list{display:flex;flex-direction:column;gap:1px;max-height:min(46vh,340px);overflow-y:auto;margin:0 -8px;padding:2px 8px}
+  .comp-item{display:flex;align-items:center;gap:8px;border-radius:var(--r-field);padding:1px 4px}
+  .comp-item:hover{background:var(--chip)}
+  .comp-item.sel{background:var(--chip)}
+  .comp-item.sel .comp-name{font-weight:600}
+  .comp-item.off{opacity:.45}
+  .comp-item.off .comp-name{text-decoration:line-through}
+  .comp-item.hidden{display:none}
+  .comp-check{width:14px;height:14px;flex:0 0 auto;cursor:pointer;margin:0} /* accent-color set per-row to the node's colour */
+  .comp-jump{display:flex;align-items:center;gap:8px;flex:1;min-width:0;text-align:left;background:none;border:0;border-radius:var(--r-field);padding:5px 4px;cursor:pointer;font-family:var(--sans);font-size:12.5px;color:var(--ink)}
+  .comp-jump:hover .comp-name{text-decoration:underline}
+  .comp-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .comp-item .ctag{margin-left:auto;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);flex-shrink:0}
   /* Inspiration */
   .paint{margin:0}
   .paint img{width:100%;border-radius:var(--r-field);border:1px solid var(--line);display:block}
@@ -113,7 +131,7 @@
   <div class="title">2one × Astryx<span class="sub">knowledge graph</span></div>
   <div class="stats" id="stats"></div>
   <div class="grow"></div>
-  <button class="btn icon-btn" id="theme" aria-label="Toggle light and dark"></button>
+  <button class="btn theme-btn" id="theme" aria-label="Toggle light and dark"></button>
 </header>
 <main>
   <canvas id="c"></canvas>
@@ -133,6 +151,20 @@
         <p class="insp-text">The colors in this knowledge graph were <b>inspired by Japanese woodblock paintings</b> — a bonsai pine on a sea cliff beneath a red sun. Japanese prints are famous for their small and distinct palettes. every colour is already chosen to sit apart from the others.</p>
         <div class="pnl-label">Each family, eyedropped from the print</div>
         <div class="guide-legend" id="guide-legend"></div>
+      </div>
+    </section>
+
+    <!-- ALL COMPONENTS — jump straight to any component's node in the graph (closed by default) -->
+    <section class="pnl collapsed" id="pnl-components">
+      <button class="pnl-head" data-target="pnl-components" aria-expanded="false">
+        <svg class="ic chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        <span>All Components</span>
+        <span class="pnl-count" id="comp-count"></span>
+      </button>
+      <div class="pnl-body">
+        <input class="search" id="comp-search" placeholder="filter components…" autocomplete="off" spellcheck="false" />
+        <div class="pnl-label">Show on canvas <span class="mini-actions"><button class="link-btn" id="comp-all">All</button><button class="link-btn" id="comp-none">None</button></span></div>
+        <div class="comp-list" id="comp-list"></div>
       </div>
     </section>
 

@@ -25,6 +25,7 @@ import {
   SidebarProvider, SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { Logo } from '@/components/logo'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import brand from '../brand/brand.json'
 
 /* ---------------------------------------------------------
@@ -237,47 +238,24 @@ export function Dls() {
   }, [])
 
   return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarHeader>
-          <div className="flex items-center gap-2.5 px-2 py-1.5">
-            <Logo variant="black" width={52} className="dark:hidden" />
-            <Logo variant="white" width={52} className="hidden dark:block" />
-            <span className="text-xs leading-tight text-muted-foreground">design language<br />system</span>
-          </div>
-        </SidebarHeader>
-        <SidebarContent>
-          {NAV.map((g, i) => (
-            <SidebarGroup key={i}>
-              {g.grp && <SidebarGroupLabel>{g.grp}</SidebarGroupLabel>}
-              <SidebarMenu>
-                {(g.grp === 'Explore' ? EXPLORE_LINKS : g.items).map(([id, label]) => (
-                  <SidebarMenuItem key={id}>
-                    <SidebarMenuButton asChild isActive={active === id}>
-                      <a href={id.startsWith('/') ? id : `#${id}`}>{label}</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroup>
-          ))}
-        </SidebarContent>
-      </Sidebar>
+    <div className="min-h-svh bg-background">
+      <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b bg-background/85 px-4 backdrop-blur lg:px-6">
+        <a href="/" className="flex items-center gap-2.5" aria-label="2one — back to the dashboard">
+          <Logo variant="black" width={48} className="dark:hidden" />
+          <Logo variant="white" width={48} className="hidden dark:block" />
+        </a>
+        <Separator orientation="vertical" className="!h-5" />
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem><BreadcrumbLink href="/">Dashboard</BreadcrumbLink></BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem><BreadcrumbPage>What is a DLS?</BreadcrumbPage></BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <ThemeToggle className="ml-auto" />
+      </header>
 
-      <SidebarInset className="min-w-0">
-        <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
-          <SidebarTrigger />
-          <Separator orientation="vertical" className="mr-1 !h-5" />
-          <Button asChild variant="ghost" size="sm" className="gap-1.5">
-            <a href="/"><ArrowLeft className="size-4" /> Catalog</a>
-          </Button>
-          <span className="hidden font-mono text-xs text-muted-foreground sm:inline">
-            <b className="font-semibold text-foreground">what is a design language system?</b>
-          </span>
-          <ThemeToggle className="ml-auto" />
-        </header>
-
-        <div className="mx-auto w-full min-w-0 max-w-6xl px-6 pb-32 lg:px-10">
+      <div className="mx-auto w-full min-w-0 max-w-5xl px-6 pb-32 lg:px-10">
 
           {/* OVERVIEW / HERO */}
           <section id="overview" className="g-section g-hero">
@@ -530,7 +508,6 @@ export function Dls() {
             @yokesh-2one/design-library · design language system reference · light and audited dark.
           </footer>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
   )
 }

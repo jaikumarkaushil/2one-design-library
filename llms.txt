@@ -9,6 +9,11 @@
 - [Registry](registry.json): component set, theme map, conventions, overrides
 - [Brand](brand/brand.json): mission, voice, tone, personas (structured) — match this in copy
 
+## UX rules (the 2one way — resolve design decisions here first)
+- rules/ux-rules.json: machine-readable UX decisions with severity (forbidden/must/should/may/avoid) + conflict precedence (accessibility → brand → consistency → interaction → layout → implementation)
+- Authority order: 2one rules → 2one patterns → 2one components → 2one tokens → primitives → framework defaults (a specific 2one rule beats a generic convention)
+- Consumed by graph.json (rule: nodes + governed_by edges); validated by `npm run check:rules`. Query with `npm run what-uses -- <component>`.
+
 ## Machine-readable data
 - Tokens: tokens/colors.json (+ contrast data), tokens/typography.json, tokens/spacing.json
 - Regenerate: npm run tokens · npm run manifest · npm run validate · npm run a11y

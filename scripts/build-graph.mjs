@@ -114,28 +114,17 @@ if (existsSync(join(root, 'src/blocks/dashboard-plain')))
 for (const f of ls('src/blocks/marketing', (f) => f.endsWith('.tsx'))) addTemplate(`block:marketing-${baseName(f)}`, `marketing/${baseName(f)}`, 'template-block', ['src/blocks/marketing/' + f])
 for (const f of ls('src/blocks/charts', (f) => f.endsWith('.tsx'))) addTemplate(`chart:${baseName(f)}`, baseName(f), 'template-chart', ['src/blocks/charts/' + f])
 
-// ---- RULE nodes + governed_by ----
-const rule = (id, label, targets) => { addNode(`rule:${id}`, 'rule', label); for (const t of targets) addEdge(t, `rule:${id}`, 'governed_by') }
-rule('grayscale', 'Grayscale only — no brand hue', ['token:primary', 'token:secondary', 'token:muted', 'token:accent', 'token:background'])
-rule('validation-only', 'danger/success for validation only', ['token:destructive', 'token:success'])
-// no-color-alone governs the semantic tokens AND every interactive component (the
-// surfaces where state is shown) — enforced by validate.mjs against INTERACTIVE.
-rule('no-color-alone', 'Never convey state by colour alone', ['token:destructive', 'token:success', ...INTERACTIVE.map(compId)])
-rule('pill-buttons', 'Buttons are pills (radius-full)', ['component:button', 'radius:full'])
-rule('logo-untouchable', 'Logo: never recolour/rotate/distort', [compId('logo')])
-rule('one-primary', 'One primary action per view', ['component:button'])
-// build-consistency rules (docs/building-with-the-dls.md) — added from real build mistakes
-rule('build-from-library', 'Build from the library — never hand-roll parallel chrome', ['component:card', 'component:sidebar', 'component:button'])
-rule('tokens-only', 'Theme only through tokens — no hard-coded hex or second palette', ['token:background', 'token:primary', 'token:muted', 'token:border'])
-rule('one-spacing-scale', 'One 8px spacing scale — no ad-hoc inline margins', ['radius:md'])
-rule('one-container', 'One container language — every panel is a real Card', ['component:card'])
-rule('theming', 'Theme via ThemeProvider — light + audited dark, no hand-rolled palette', ['token:background'])
-rule('lucide-only', 'Icons: lucide only — no mixed icon libraries', ['component:button'])
-rule('width-by-content', 'Cap width by content type — reading cap for prose only; app layouts get a generous responsive cap or go fluid', [])
-rule('keep-tokens-alive', 'Reading a @theme token at runtime? Keep it alive — Tailwind tree-shakes unused ramp vars; safelist ramp utilities or prefer semantic tokens', ['token:accent', 'token:destructive', 'token:success'])
-rule('scan-what-you-render', 'Tailwind only keeps classes it can SEE — @source every folder you render; an arbitrary value (h-[250px]) used once is the canary', ['component:chart', 'component:card'])
-rule('fixed-vs-theme-color', 'Brand marks need a FIXED ground, not a theme token — the logo on bg-foreground vanishes in dark; make in-app marks theme-adaptive (.dark / currentColor)', [compId('logo')])
-rule('multi-theme-audit', 'Dark is not invert-and-ship — audit every rendered pair in BOTH themes and keep component colours token-driven so the audit matches the render', ['token:destructive', 'token:border', 'token:muted'])
+// ---- RULE nodes + governed_by (from the machine-readable UX-rules contract) ----
+// Single source of truth: rules/ux-rules.json (severity + category + precedence),
+// validated by scripts/check-rules.mjs. Each rule becomes a `rule:` node carrying
+// its severity/category, and a governed_by edge from every element it applies to.
+// `@interactive` expands to the interactive components (single source below).
+const uxRules = J('rules/ux-rules.json')
+const expandTargets = (arr = []) => arr.flatMap((t) => (t === '@interactive' ? INTERACTIVE.map(compId) : [t]))
+for (const r of uxRules.rules) {
+  addNode(`rule:${r.id}`, 'rule', r.label, { severity: r.severity, category: r.category, statement: r.statement })
+  for (const t of expandTargets(r.applies_to)) addEdge(t, `rule:${r.id}`, 'governed_by')
+}
 
 // ---- CONTRAST facts + has_contrast ----
 for (const p of colors.contrast.pairs) {

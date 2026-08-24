@@ -89,8 +89,36 @@ accessibility foundation (Radix primitives + a passing APCA audit, `npm run a11y
 12. Trust nothing stale: if `manifest.json` / `graph.json` are out of sync with source, say
     so and regenerate (`npm run build:meta`). Keep generated files current.
 
+## The 2one UX rules — how to resolve any design decision
+
+2one is a **product language, not a component toolbox**: prefer a strong default over
+exposing a choice. When you (or an AI agent) must decide *how* to build something, resolve
+it in this order — **the more specific 2one rule always wins over the generic framework
+convention**:
+
+```
+2one rules  →  2one patterns  →  2one components  →  2one tokens  →  primitives  →  framework defaults
+```
+
+The machine-readable decisions live in **[`rules/ux-rules.json`](rules/ux-rules.json)** — the
+single source of truth, consumed by the knowledge graph (each becomes a `rule:` node with
+`governed_by` edges) and validated by `npm run check:rules`. Each rule carries a **severity**
+and a **category**:
+
+- Severity: `forbidden` (never) · `must` (required) · `should` (strong default) · `may`
+  (escape hatch) · `avoid` (discouraged).
+- **Conflict precedence** (earlier wins): `accessibility → brand → consistency → interaction
+  → layout → implementation`. Accessibility is never traded for brand or aesthetics; within a
+  category, higher severity wins.
+
+Query them with the graph: `npm run what-uses -- <component>` lists the rules that govern it
+(the `governed_by` edges). Do not invent a 2one interaction pattern from scratch — assemble
+the decisions already encoded here.
+
 ## How this repo is organized
 
+- `rules/ux-rules.json` — the machine-readable UX-decision contract (severity + precedence);
+  the authority for "the 2one way". Prose lives in `docs/building-with-the-dls.md`.
 - `registry.json` — machine index: the component set, the token→variable theme
   map, naming conventions, and 2one overrides. Read this first.
 - `src/components/ui/` — 54 shadcn primitives (+ `Toolbar`), themed to 2one. **shadcn names**

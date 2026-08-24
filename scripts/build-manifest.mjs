@@ -23,6 +23,9 @@ const blocks = ls('src/blocks', (f) => f.endsWith('.tsx')).map(base)
 const dashboards = ls('src/blocks/dashboard-plain', (f) => f.endsWith('.tsx')).length ? ['dashboard-plain'] : []
 const marketing = ls('src/blocks/marketing', (f) => f.endsWith('.tsx')).map(base)
 const charts = ls('src/blocks/charts', (f) => f.endsWith('.tsx')).map(base)
+const uxRules = existsSync(join(root, 'rules/ux-rules.json'))
+  ? JSON.parse(readFileSync(join(root, 'rules/ux-rules.json'), 'utf8'))
+  : { rules: [], version: null, severity_levels: {}, precedence: { order: [] } }
 
 const manifest = {
   name: pkg.name,
@@ -64,6 +67,16 @@ const manifest = {
   },
 
   index: {
+    rules: {
+      tier: 0,
+      note: 'The authority for "the 2one way" — machine-readable UX decisions with severity + precedence. A more specific 2one rule wins over the generic framework convention (rules → patterns → components → tokens → primitives → framework defaults).',
+      file: 'rules/ux-rules.json',
+      count: uxRules.rules.length,
+      version: uxRules.version,
+      severity_levels: Object.keys(uxRules.severity_levels || {}),
+      precedence: uxRules.precedence?.order || [],
+      consumed_by: ['graph.json (rule: nodes + governed_by edges)', 'npm run check:rules'],
+    },
     brand: {
       tier: 1,
       structured: 'brand/brand.json',

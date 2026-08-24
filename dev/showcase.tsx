@@ -271,7 +271,6 @@ export function Showcase() {
                       <CardDescription>{desc}</CardDescription>
                     </CardHeader>
                     <CardContent className="mt-auto">
-                      <div className="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Verify</div>
                       <Badge variant="outline" className="font-mono font-normal">{ev}</Badge>
                     </CardContent>
                   </Card>

@@ -39,8 +39,9 @@ const inc = (id, type) => graph.edges.filter((e) => e.target === id && (!type ||
 
 // resolve a query string to a node id, optionally constrained to a class
 function resolve(q, klass) {
+  if (q == null) return null
   if (byId.has(q)) return q
-  const ql = q.toLowerCase()
+  const ql = String(q).toLowerCase()
   let m = graph.nodes.filter((n) => (!klass || n.class === klass) && (n.id.toLowerCase() === ql || n.label.toLowerCase() === ql))
   if (!m.length) m = graph.nodes.filter((n) => (!klass || n.class === klass) && (n.id.toLowerCase().includes(ql) || n.label.toLowerCase().includes(ql)))
   m.sort((a, b) => a.id.localeCompare(b.id))
@@ -149,6 +150,14 @@ const json = args.includes('--json')
 const ctxFlag = (() => { const i = args.indexOf('--context'); return i >= 0 ? args[i + 1] : null })()
 const pos = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--context')
 const cmd = pos[0]
+
+// Required positional args per command — fail with a clean usage line, never a stack trace.
+const NEEDS_ARG = { decide: 1, rules: 1, alternatives: 1, incompatible: 1, a11y: 1, states: 1, check: 2, why: 2 }
+if (NEEDS_ARG[cmd] && !pos[NEEDS_ARG[cmd]]) {
+  const shape = cmd === 'check' || cmd === 'why' ? '<source-id> <target-id>' : '<node-id-or-label>'
+  console.error(`Usage: graph-decide ${cmd} ${shape}${cmd === 'decide' ? ' [--context <ctx>]' : ''}`)
+  process.exit(1)
+}
 
 function print(obj) { console.log(JSON.stringify(obj, null, 2)) }
 

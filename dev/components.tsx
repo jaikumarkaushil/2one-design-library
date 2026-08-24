@@ -8,6 +8,7 @@ import { useTheme } from 'next-themes'
 import { toast } from 'sonner'
 import graphData from '../graph.json'
 import manifest from '../manifest.json'
+import brand from '../brand/brand.json'
 
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
@@ -122,9 +123,11 @@ const CHART_ITEMS = IX.templates.charts.items as string[]
 
 const NAV = [
   { grp: '', items: [['/', '← Dashboard', ''], ['/dls.html', 'What is a DLS?', '']] },
-  { grp: 'Tier 2 · Foundation', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', ''], ['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
+  { grp: 'Tier 1 · Brand', items: [['brand', 'Brand', '']] },
+  { grp: 'Tier 2 · Foundation', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
+  { grp: 'Shadcn components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', '']] },
+  { grp: '2one components', items: [['mobile', 'Mobile · 2one', String(COUNT.twoOne)]] },
   { grp: 'Tier 3 · Output', items: [['blocks', 'Blocks', String(COUNT.blocks)], ['marketing', 'Marketing', String(COUNT.marketing)], ['charts', 'Charts', String(COUNT.charts)]] },
-  { grp: 'Reference', items: [['index', 'All components', String(COUNT.components)]] },
   { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
 ]
 
@@ -234,6 +237,41 @@ export function Components() {
             <ThemeToggle className="ml-auto" />
           </header>
           <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">
+
+            {/* TIER 1 · BRAND */}
+            <section id="brand" className="g-section">
+              <div className="g-eyebrow">Tier 1 · Brand</div><h2>Brand foundation</h2>
+              <p className="g-lede">The strategic core — the “why” and “who” every asset traces back to, pulled from <span className="mono">brand/brand.json</span>. Full context lives on the <a className="underline underline-offset-2" href="/dls.html">DLS guide</a>.</p>
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card>
+                  <CardHeader><CardTitle className="text-base">Mission · vision · tagline</CardTitle></CardHeader>
+                  <CardContent className="grid gap-3 text-sm">
+                    <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Mission</div><p className="mt-1 text-foreground">{brand.mission}</p></div>
+                    <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Vision</div><p className="mt-1 text-foreground">{brand.vision}</p></div>
+                    <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Tagline</div><p className="mt-1 text-foreground">{brand.tagline}</p></div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader><CardTitle className="text-base">Voice · tone · personality</CardTitle><CardDescription>Match this in any 2one-facing copy.</CardDescription></CardHeader>
+                  <CardContent className="grid gap-3 text-sm">
+                    <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Voice</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.voice.descriptors.map((d) => <Badge key={d} variant="secondary">{d}</Badge>)}</div></div>
+                    <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Tone</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.tone.descriptors.map((d) => <Badge key={d} variant="secondary">{d}</Badge>)}</div></div>
+                    <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Personality</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.personality.map((d) => <Badge key={d} variant="outline">{d}</Badge>)}<Badge variant="outline">Archetype: {brand.archetype.name}</Badge></div></div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader><CardTitle className="text-base">Who it’s for</CardTitle></CardHeader>
+                  <CardContent><ul className="grid gap-2 text-sm">{brand.personas.map((p) => <li key={p.id} className="flex items-start gap-2"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-foreground" aria-hidden /><span>{p.label}</span></li>)}</ul></CardContent>
+                </Card>
+                <Card>
+                  <CardHeader><CardTitle className="text-base">The logo</CardTitle><CardDescription>Two fills only — black on light, white on dark. Never recolour, rotate, or distort.</CardDescription></CardHeader>
+                  <CardContent className="flex flex-wrap items-center gap-3">
+                    <div className="rounded-lg border bg-white p-4"><Logo variant="black" width={96} /></div>
+                    <div className="rounded-lg bg-neutral-950 p-4"><Logo variant="white" width={96} /></div>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
 
             {/* COLOUR */}
             <section id="color" className="g-section">
@@ -544,16 +582,6 @@ export function Components() {
               </div>
             </section>
 
-            {/* INDEX */}
-            <section id="index" className="g-section">
-              <div className="g-eyebrow">Reference</div><h2>All components</h2>
-              <p className="g-lede">Every export in the package — {COUNT.shadcn} shadcn primitives + {COUNT.twoOne} 2one-authored. Click any to open it in the <a className="underline underline-offset-2" href="/graph.html">knowledge graph</a>.</p>
-              <div className="g-index">
-                {GRAPH_COMPONENTS.map((c) => (
-                  <a key={c.id} className="chip" href={`/graph.html?node=${encodeURIComponent(c.id)}`} title={`${c.label} — open in the knowledge graph`}>{c.label}</a>
-                ))}
-              </div>
-            </section>
 
             <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">@yokesh-2one/design-library · shadcn/ui re-skinned to the 2one tokens · light + audited dark · rendered live from the real components.</footer>
           </div>

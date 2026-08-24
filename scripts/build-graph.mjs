@@ -23,7 +23,9 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { INTERACTIVE } from './interactive-components.mjs'
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+import { config as cfg } from './lib/config.mjs'
+
+const root = cfg.root
 const R = (p) => readFileSync(join(root, p), 'utf8')
 const J = (p) => JSON.parse(R(p))
 const ls = (rel, f = () => true) => existsSync(join(root, rel)) ? readdirSync(join(root, rel)).filter(f) : []

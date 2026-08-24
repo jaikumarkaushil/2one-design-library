@@ -1,6 +1,6 @@
 # Consuming the 2one DLS in your app
 
-The exact, end-to-end setup for using `@yokesh-2one/design-library` in a fresh
+The exact, end-to-end setup for using `@2one/design-library` in a fresh
 Vite + React + Tailwind v4 app. Following this verbatim yields a themed, pill-radius
 `Button` with working light/dark — and **no unstyled flash**.
 
@@ -48,7 +48,7 @@ Once published to GitHub Packages, add an `.npmrc` next to your `package.json`
 ```
 
 ```bash
-npm install @yokesh-2one/design-library react react-dom
+npm install @2one/design-library react react-dom
 ```
 
 ### C · Vendor the source (fallback)
@@ -66,8 +66,8 @@ at the package's `dist` with `@source`:
 ```css
 /* app.css */
 @import 'tailwindcss';
-@import '@yokesh-2one/design-library/styles';               /* 2one tokens, variables, fonts */
-@source '../node_modules/@yokesh-2one/design-library/dist'; /* scan the components' classes */
+@import '@2one/design-library/styles';               /* 2one tokens, variables, fonts */
+@source '../node_modules/@2one/design-library/dist'; /* scan the components' classes */
 ```
 
 > **If you skip the `@source` line, you get a silent failure:** the components render
@@ -88,7 +88,7 @@ Wrap your app so the audited `.dark` palette can activate (`<ThemeProvider>` add
 `.dark` class via `next-themes`; default is `light`):
 
 ```tsx
-import { ThemeProvider } from '@yokesh-2one/design-library'
+import { ThemeProvider } from '@2one/design-library'
 
 export function Root() {
   return (
@@ -102,7 +102,7 @@ export function Root() {
 ## 4 · Use a component
 
 ```tsx
-import { Button } from '@yokesh-2one/design-library'
+import { Button } from '@2one/design-library'
 
 export function Example() {
   return <Button>Continue</Button>   // renders as a pill (radius-full), 2one-themed
@@ -138,5 +138,5 @@ The package isn't on a public registry yet. Release checklist for when it is:
    `@import` in `dist/styles.css` (e.g. `tw-animate-css`) must be a **`dependency`**, not
    a devDependency, or the consumer's build can't resolve it.
 4. `npm publish` (scope points at GitHub Packages via `publishConfig.registry`).
-5. Confirm `npm view @yokesh-2one/design-library version` resolves, then flip the README /
+5. Confirm `npm view @2one/design-library version` resolves, then flip the README /
    AGENTS / `docs/consuming.md` wording from "not yet on a public registry" to published.

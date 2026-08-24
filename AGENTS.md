@@ -8,7 +8,7 @@ Gemini, Copilot).
 **If you are an AI agent, read [`manifest.json`](manifest.json) FIRST** — it is the
 machine-readable index plus the `instructions_for_ai` contract (answer only from repo
 content, cite the file, say when something isn't here — never guess). Then this guide,
-then [`registry.json`](registry.json).
+then the `system` section of the manifest (conventions, theme map, overrides).
 
 ## Invariants — generated or checked, never asserted by hand
 
@@ -146,7 +146,7 @@ the decisions already encoded here.
 
 - `rules/ux-rules.json` — the machine-readable UX-decision contract (severity + precedence);
   the authority for "the 2one way". Prose lives in `docs/building-with-the-dls.md`.
-- `registry.json` — machine index: the component set, the token→variable theme
+- `manifest.json` → `system` — conventions, the token→variable theme
   map, naming conventions, and 2one overrides. Read this first.
 - `src/components/ui/` — 54 shadcn primitives (+ `Toolbar`), themed to 2one. **shadcn names**
   (`Input`, `Select`, `RadioGroup`, `InputOTP`, `DropdownMenu`, …).
@@ -164,11 +164,9 @@ the decisions already encoded here.
 ## Rules for using / generating code
 
 1. **Import from the package**, don't copy source:
-   `import { Button } from '@yokesh-2one/design-library'`. The package builds locally
-   but is **not yet on a public registry** — until it's published, consume it via a
-   local `npm pack` tarball (or vendor the source). The exact, verified setup —
-   including the Tailwind `@source` line consumers keep missing — is in
-   [`docs/consuming.md`](docs/consuming.md).
+   `import { Button } from '@2one/design-library'`.
+   The exact, verified consumer setup — including the Tailwind `@source` line
+   consumers keep missing — is in [`docs/consuming.md`](docs/consuming.md).
 2. **Use shadcn names.** TextField → `Input`, Dropdown → `Select`,
    RadioButton → `RadioGroup`, OtpField → `InputOTP`.
 3. **Theme through the variables**, never hard-code color. Everything derives from
@@ -220,4 +218,4 @@ the earlier hand-built Figma-1:1 set (2026-08-10, user-directed).
 ## Source of truth chain
 
 shadcn/ui (components, MIT) + 2one tokens/brand (Figma *Mobile App Design System*,
-`YzxnyL6a69WCOw9U8WJqBo`) → this repo → `@yokesh-2one/design-library`.
+`YzxnyL6a69WCOw9U8WJqBo`) → this repo → `@2one/design-library`.

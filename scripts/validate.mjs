@@ -10,7 +10,9 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { INTERACTIVE } from './interactive-components.mjs'
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+import { config as cfg } from './lib/config.mjs'
+
+const root = cfg.root
 const load = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'))
 const errors = []
 const check = (cond, msg) => { if (!cond) errors.push(msg) }

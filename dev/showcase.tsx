@@ -145,19 +145,19 @@ function CodeBlock({ code }: { code: string }) {
   )
 }
 
-// Copy-a-link control — a pill button that copies the URL on click (no scrolling
-// code block, no overflow). Shows a "copied" state briefly.
-function CopyLinkButton({ url, label = 'Copy GitHub link' }: { url: string; label?: string }) {
+// Copy-only control — a pill button that copies `text` on click (no code block,
+// no scroll). Shows a "Copied" state briefly.
+function CopyButton({ text, label }: { text: string; label: string }) {
   const [done, setDone] = useState(false)
   return (
     <Button
       variant="outline"
       className="w-full justify-start gap-2 font-normal"
-      aria-label={done ? 'Link copied to clipboard' : label}
-      onClick={() => { navigator.clipboard?.writeText(url); setDone(true); setTimeout(() => setDone(false), 1400) }}
+      aria-label={done ? 'Copied to clipboard' : label}
+      onClick={() => { navigator.clipboard?.writeText(text); setDone(true); setTimeout(() => setDone(false), 1400) }}
     >
       {done ? <Check className="size-4 shrink-0" /> : <Copy className="size-4 shrink-0" />}
-      <span className="truncate">{done ? 'Link copied' : label}</span>
+      <span className="truncate">{done ? 'Copied' : label}</span>
     </Button>
   )
 }
@@ -311,7 +311,7 @@ export function Showcase() {
                     <CardDescription>Works today — no registry, no auth.</CardDescription>
                   </CardHeader>
                   <CardContent className="min-w-0">
-                    <CodeBlock code={'npm install\nnpm run dev'} />
+                    <CopyButton text={'npm install\nnpm run dev'} label="Copy install commands" />
                   </CardContent>
                 </Card>
                 <Card className="min-w-0">
@@ -320,7 +320,7 @@ export function Showcase() {
                     <CardDescription>React 19 · Tailwind v4.</CardDescription>
                   </CardHeader>
                   <CardContent className="min-w-0">
-                    <CodeBlock code={"import { Button } from '@yokesh-2one/design-library'\nimport '@yokesh-2one/design-library/styles'"} />
+                    <CopyButton text={"import { Button } from '@yokesh-2one/design-library'\nimport '@yokesh-2one/design-library/styles'"} label="Copy import" />
                   </CardContent>
                 </Card>
               </div>
@@ -337,7 +337,7 @@ export function Showcase() {
                     <CardTitle className="flex items-center gap-2"><Badge variant="outline">1</Badge> Connect to the library</CardTitle>
                     <CardDescription>Give your AI the repo. It reads <span className="font-mono">manifest.json</span> first, then builds only from the system.</CardDescription>
                   </CardHeader>
-                  <CardContent className="min-w-0"><CopyLinkButton url="https://github.com/yokesh-2one/2one-design-library" /></CardContent>
+                  <CardContent className="min-w-0"><CopyButton text="https://github.com/yokesh-2one/2one-design-library" label="Copy GitHub link" /></CardContent>
                 </Card>
                 <Card>
                   <CardHeader>

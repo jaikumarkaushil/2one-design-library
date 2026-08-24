@@ -346,7 +346,7 @@ document.getElementById('search')!.addEventListener('input', (e: any) => {
 document.getElementById('reset')!.addEventListener('click', () => { scale = 1; ox = 0; oy = 0; select(null); alpha = 0.6 })
 
 const tb = document.getElementById('theme')!
-function setT(t: string) { root.classList.toggle('dark', t === 'dark'); tb.innerHTML = lucide(t === 'dark' ? 'moon' : 'sun')
+function setT(t: string) { root.classList.toggle('dark', t === 'dark'); const isDark = t === 'dark'; tb.innerHTML = lucide(isDark ? 'sun' : 'moon') + '<span>' + (isDark ? 'Light' : 'Dark') + '</span>'
   Array.prototype.forEach.call(document.querySelectorAll('.chip'), (c: any) => paintSwatch(c.querySelector('.dot'), c.dataset.t))
   Array.prototype.forEach.call(document.querySelectorAll('.g-row'), (row: any) => { const t2 = row.dataset.t; if (t2) paintSwatch(row.querySelector('.g-dot'), t2) })
   Array.prototype.forEach.call(document.querySelectorAll('.comp-check'), (b: any) => { if (b.dataset.type) b.style.accentColor = nodeColor(b.dataset.type) })

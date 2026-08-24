@@ -192,7 +192,7 @@ function TopBarLogo() {
   const { state, isMobile } = useSidebar()
   if (state === 'expanded' && !isMobile) return null
   return (
-    <a href="/" className="flex items-center" aria-label="2one — dashboard">
+    <a href="/" className="flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="2one — dashboard">
       <Logo variant="black" width={46} className="dark:hidden" />
       <Logo variant="white" width={46} className="hidden dark:block" />
     </a>
@@ -215,7 +215,7 @@ export function Components() {
         {/* App shell — the library's own Sidebar, not bespoke chrome */}
         <Sidebar>
           <SidebarHeader>
-            <a href="/" className="flex items-center gap-2.5 px-2 py-1.5" aria-label="2one — dashboard">
+            <a href="/" className="flex items-center gap-2.5 px-2 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="2one — dashboard">
               <Logo variant="black" width={52} className="dark:hidden" />
               <Logo variant="white" width={52} className="hidden dark:block" />
             </a>

@@ -110,8 +110,8 @@ const GRAPH_COMPONENTS = (graphData.nodes as { id: string; type: string; label: 
 const IX = manifest.index
 const COUNT = {
   components: IX.components.count,
-  shadcn: IX.components.shadcn_primitives.length,
-  twoOne: IX.components.two_one_only.length,
+  shadcn: IX.components.primitives.length,
+  twoOne: IX.components.own.length,
   blocks: IX.templates.blocks.items.length,
   marketing: IX.templates.marketing.items.length,
   charts: IX.templates.charts.count,

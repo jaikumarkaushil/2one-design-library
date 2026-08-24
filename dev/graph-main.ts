@@ -370,12 +370,15 @@ document.getElementById('search')!.addEventListener('input', (e: any) => {
 document.getElementById('reset')!.addEventListener('click', () => { scale = 1; ox = 0; oy = 0; select(null); alpha = 0.6 })
 
 const tb = document.getElementById('theme')!
-function setT(t: string) { root.classList.toggle('dark', t === 'dark'); const isDark = t === 'dark'; tb.innerHTML = lucide(isDark ? 'sun' : 'moon') + '<span>' + (isDark ? 'Light' : 'Dark') + '</span>'
+function setT(t: string) { root.classList.toggle('dark', t === 'dark'); try { localStorage.setItem('theme', t) } catch {} const isDark = t === 'dark'; tb.innerHTML = lucide(isDark ? 'sun' : 'moon') + '<span>' + (isDark ? 'Light' : 'Dark') + '</span>'
   Array.prototype.forEach.call(document.querySelectorAll('.chip'), (c: any) => paintSwatch(c.querySelector('.dot'), c.dataset.t))
   Array.prototype.forEach.call(document.querySelectorAll('.g-row'), (row: any) => { const t2 = row.dataset.t; if (t2) paintSwatch(row.querySelector('.g-dot'), t2) })
   Array.prototype.forEach.call(document.querySelectorAll('.comp-check'), (b: any) => { if (b.dataset.type) b.style.accentColor = nodeColor(b.dataset.type) })
   if (selected) select(selected) }
-setT(matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light')
+// Honour the theme the app pages persist (localStorage 'theme', written by the
+// ThemeProvider) so navigating Dashboard → graph keeps the same theme; fall back
+// to the OS preference on a first, standalone visit.
+setT(localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'))
 tb.addEventListener('click', () => setT(theme() === 'dark' ? 'light' : 'dark'))
 
 document.getElementById('stats')!.textContent = GRAPH.stats.nodes + ' elements · ' + GRAPH.stats.edges + ' relationships'

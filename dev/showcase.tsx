@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   Star, Bold, Italic, Underline, Search, Bell, Home, User, Rocket, CreditCard,
   LogOut, CircleAlert, Copy, Check, Sun, Moon,
-  Network, Accessibility, Sparkles, Globe, ArrowRight,
+  Network, Accessibility, Sparkles, Globe, ArrowRight, Mail, ExternalLink,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { toast } from 'sonner'
@@ -121,12 +121,13 @@ const BLOCK_ITEMS = IX.templates.blocks.items as string[]
 const CHART_ITEMS = IX.templates.charts.items as string[]
 
 const NAV = [
-  { grp: '', items: [['overview', 'Overview', ''], ['use', 'How to use', ''], ['faq', 'FAQ', ''], ['playground', 'Theming', '']] },
-  { grp: 'Foundations', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
-  { grp: 'Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
-  { grp: 'Templates', items: [['blocks', 'Blocks', String(COUNT.blocks)], ['marketing', 'Marketing', String(COUNT.marketing)], ['charts', 'Charts', String(COUNT.charts)]] },
+  { grp: 'Dashboard', items: [['overview', 'Overview', ''], ['use', 'How to use', ''], ['playground', 'Theming', '']] },
+  { grp: 'Assets', items: [['/dls.html', 'What is a DLS?', '']] },
+  { grp: 'Tier 2 · Foundation', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', ''], ['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
+  { grp: 'Tier 3 · Output', items: [['blocks', 'Blocks', String(COUNT.blocks)], ['marketing', 'Marketing', String(COUNT.marketing)], ['charts', 'Charts', String(COUNT.charts)]] },
   { grp: 'Reference', items: [['index', 'All components', String(COUNT.components)]] },
-  { grp: 'Explore', items: [['/dls.html', 'What is a DLS?', ''], ['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
+  { grp: 'Knowledge graph', items: [['/graph.html', 'Explore the graph', String(COUNT.graphNodes)]] },
+  { grp: 'Help', items: [['faq', 'FAQ', ''], ['support', 'Support', '']] },
 ]
 
 
@@ -509,20 +510,6 @@ The final product must be consistent with the 2one brand foundation (voice, tone
               </div>
             </section>
 
-            {/* FAQ — a first-class guide section (like How to use), built from the Accordion */}
-            <section id="faq" className="g-section">
-              <div className="g-eyebrow">Reference</div><h2>FAQ</h2>
-              <p className="g-lede">The questions teams ask us when they first see the system — what it is, what you can build with it, how it’s licensed, and how an engagement works.</p>
-              <Accordion type="single" collapsible className="mt-6 w-full max-w-3xl">
-                {FAQS.map((f, i) => (
-                  <AccordionItem key={f.q} value={`faq-${i}`}>
-                    <AccordionTrigger className="text-left text-base">{f.q}</AccordionTrigger>
-                    <AccordionContent className="max-w-[68ch] text-muted-foreground">{f.a}</AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </section>
-
             {/* THEMING PLAYGROUND */}
             <section id="playground" className="g-section">
               <div className="g-eyebrow">Live</div><h2>Theming playground</h2>
@@ -847,6 +834,48 @@ The final product must be consistent with the 2one brand foundation (voice, tone
                 {GRAPH_COMPONENTS.map((c) => (
                   <a key={c.id} className="chip" href={`/graph.html?node=${encodeURIComponent(c.id)}`} title={`${c.label} — open in the knowledge graph`}>{c.label}</a>
                 ))}
+              </div>
+            </section>
+
+            {/* FAQ */}
+            <section id="faq" className="g-section">
+              <div className="g-eyebrow">Help</div><h2>FAQ</h2>
+              <p className="g-lede">The questions teams ask us when they first see the system — what it is, what you can build with it, how it’s licensed, and how an engagement works.</p>
+              <Accordion type="single" collapsible className="mt-6 w-full max-w-3xl">
+                {FAQS.map((f, i) => (
+                  <AccordionItem key={f.q} value={`faq-${i}`}>
+                    <AccordionTrigger className="text-left text-base">{f.q}</AccordionTrigger>
+                    <AccordionContent className="max-w-[68ch] text-muted-foreground">{f.a}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </section>
+
+            {/* SUPPORT */}
+            <section id="support" className="g-section">
+              <div className="g-eyebrow">Help</div><h2>Support</h2>
+              <p className="g-lede">Questions about the system, or want it built for your brand? We answer directly — with full transparency about what it does and doesn’t do today.</p>
+              <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden><Mail /></div>
+                    <CardTitle className="pt-2 text-base">Questions</CardTitle>
+                    <CardDescription>Email us and we’ll get back to you.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button asChild><a href="mailto:yokesh@2one.solutions">yokesh@2one.solutions <ArrowRight /></a></Button>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden><ExternalLink /></div>
+                    <CardTitle className="pt-2 text-base">Follow us</CardTitle>
+                    <CardDescription>Updates and what we’re shipping.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button asChild variant="outline"><a href="https://www.linkedin.com/company/2onesolutions" target="_blank" rel="noreferrer">2one Solutions on LinkedIn <ArrowRight /></a></Button>
+                  </CardContent>
+                </Card>
               </div>
             </section>
 

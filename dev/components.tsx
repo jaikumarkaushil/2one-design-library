@@ -47,7 +47,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader,
   SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem,
-  SidebarProvider, SidebarTrigger,
+  SidebarProvider, SidebarTrigger, useSidebar,
 } from '@/components/ui/sidebar'
 
 import { Logo } from '@/components/logo'
@@ -186,6 +186,19 @@ function ThemeToggle({ className = '' }: { className?: string }) {
   )
 }
 
+// The logo sits in the SidebarHeader when the menu is expanded; when collapsed
+// (or on mobile) it hops to the top bar next to the hamburger.
+function TopBarLogo() {
+  const { state, isMobile } = useSidebar()
+  if (state === 'expanded' && !isMobile) return null
+  return (
+    <a href="/" className="flex items-center" aria-label="2one — dashboard">
+      <Logo variant="black" width={46} className="dark:hidden" />
+      <Logo variant="white" width={46} className="hidden dark:block" />
+    </a>
+  )
+}
+
 export function Components() {
   const [active, setActive] = useState('overview')
 
@@ -201,6 +214,12 @@ export function Components() {
       <SidebarProvider>
         {/* App shell — the library's own Sidebar, not bespoke chrome */}
         <Sidebar>
+          <SidebarHeader>
+            <a href="/" className="flex items-center gap-2.5 px-2 py-1.5" aria-label="2one — dashboard">
+              <Logo variant="black" width={52} className="dark:hidden" />
+              <Logo variant="white" width={52} className="hidden dark:block" />
+            </a>
+          </SidebarHeader>
           <SidebarContent>
             {NAV.map((g, i) => (
               <SidebarGroup key={i}>
@@ -222,11 +241,8 @@ export function Components() {
 
         <SidebarInset className="min-w-0">
           <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
-            <a href="/" className="flex items-center" aria-label="2one — dashboard">
-              <Logo variant="black" width={48} className="dark:hidden" />
-              <Logo variant="white" width={48} className="hidden dark:block" />
-            </a>
             <SidebarTrigger />
+            <TopBarLogo />
             <Separator orientation="vertical" className="mr-1 !h-5" />
             <Breadcrumb>
               <BreadcrumbList>

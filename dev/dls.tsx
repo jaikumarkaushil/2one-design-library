@@ -255,7 +255,7 @@ export function Dls() {
         <ThemeToggle className="ml-auto" />
       </header>
 
-      <div className="mx-auto w-full min-w-0 max-w-5xl px-6 pb-32 lg:px-10">
+      <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">
 
           {/* OVERVIEW / HERO */}
           <section id="overview" className="g-section g-hero">

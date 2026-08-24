@@ -9,10 +9,13 @@ import {
   Monitor, Megaphone, FileText,
   // guiding principle
   UserRound, Bot,
+  // theming playground
+  Check, CircleAlert,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -33,7 +36,7 @@ import { Logo } from '@/components/logo'
 const NAV = [
   { grp: '', items: [['overview', 'What is a DLS?'], ['glance', 'The three tiers'], ['analogy', 'A working analogy']] },
   { grp: 'The three tiers', items: [['tier1', 'Tier 1 · Brand'], ['tier2', 'Tier 2 · Foundation'], ['tier3', 'Tier 3 · Output']] },
-  { grp: 'More', items: [['principle', 'The guiding principle'], ['inrepo', 'Where it lives here']] },
+  { grp: 'More', items: [['principle', 'The guiding principle'], ['inrepo', 'Where it lives here'], ['theming', 'Theming playground']] },
   { grp: 'Explore', items: [['/', 'Catalog']] as [string, string][], },
 ] as { grp: string; items: [string, string][] }[]
 
@@ -139,6 +142,83 @@ function ModuleCard({ icon, title, desc, subs }: { icon: React.ReactNode; title:
           <div className="flex flex-wrap gap-2">{subs.map((s) => <Badge key={s} variant="outline" className="font-normal">{s}</Badge>)}</div>
         </CardContent>
       )}
+    </Card>
+  )
+}
+
+/* ---------- Theming playground: APCA ported from scripts/apca-audit.mjs ---------- */
+function sRGBtoY(hex: string) {
+  const h = hex.replace('#', ''); const R = parseInt(h.slice(0, 2), 16), G = parseInt(h.slice(2, 4), 16), B = parseInt(h.slice(4, 6), 16)
+  const f = (v: number) => Math.pow(v / 255, 2.4); return 0.2126729 * f(R) + 0.7151522 * f(G) + 0.0721750 * f(B)
+}
+function apca(txt: string, bg: string) {
+  let t = sRGBtoY(txt), b = sRGBtoY(bg)
+  const bT = 0.022, bC = 1.414, dY = 0.0005, s = 1.14, lB = 0.027, lW = 0.027, lC = 0.1, nBG = 0.56, nT = 0.57, rT = 0.62, rB = 0.65
+  t = t > bT ? t : t + Math.pow(bT - t, bC); b = b > bT ? b : b + Math.pow(bT - b, bC)
+  if (Math.abs(b - t) < dY) return 0
+  let C: number
+  if (b > t) { const S = (Math.pow(b, nBG) - Math.pow(t, nT)) * s; C = S < lC ? 0 : S - lB }
+  else { const S = (Math.pow(b, rB) - Math.pow(t, rT)) * s; C = S > -lC ? 0 : S + lW }
+  return Math.round(C * 1000) / 10
+}
+const bestFg = (bg: string) => (Math.abs(apca('#ffffff', bg)) >= Math.abs(apca('#09090b', bg)) ? '#ffffff' : '#09090b')
+const PRESETS = ['#09090b', '#0057ff', '#15803d', '#7c3aed', '#db2777', '#ea580c']
+const THEME_VARS = ['--primary', '--primary-foreground', '--sidebar-primary', '--sidebar-primary-foreground', '--ring']
+
+function ThemingPlayground() {
+  const [color, setColor] = useState('#09090b')
+  useEffect(() => {
+    const cur = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim()
+    if (/^#[0-9a-f]{6}$/i.test(cur)) setColor(cur)
+  }, [])
+  const apply = (c: string) => {
+    setColor(c)
+    const f = bestFg(c), r = document.documentElement.style
+    r.setProperty('--primary', c); r.setProperty('--primary-foreground', f)
+    r.setProperty('--sidebar-primary', c); r.setProperty('--sidebar-primary-foreground', f); r.setProperty('--ring', c)
+  }
+  const reset = () => {
+    const r = document.documentElement.style
+    THEME_VARS.forEach((p) => r.removeProperty(p))
+    setColor(getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#09090b')
+  }
+  const fg = bestFg(color)
+  const lc = Math.abs(apca(fg, color))
+  const pass = lc >= 75
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Brand colour</CardTitle>
+        <CardDescription>Set <span className="mono">--primary</span> and the whole system recolors — buttons, links, focus, nav.</CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <input type="color" aria-label="Pick brand colour" value={color} onChange={(e) => apply(e.target.value)}
+            className="size-10 cursor-pointer rounded-md border bg-background p-0.5" />
+          <span className="mono text-sm">{color}</span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {PRESETS.map((p) => (
+              <button key={p} aria-label={`Use ${p}`} onClick={() => apply(p)}
+                className="size-6 rounded-full border" style={{ background: p }} />
+            ))}
+          </div>
+          <Button variant="outline" size="sm" onClick={reset} className="ml-auto">Reset</Button>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          {pass
+            ? <Badge variant="secondary" className="gap-1.5"><Check className="size-3.5" /> APCA Lc {lc.toFixed(1)} · pass</Badge>
+            : <Badge variant="destructive" className="gap-1.5"><CircleAlert className="size-3.5" /> APCA Lc {lc.toFixed(1)} · fail</Badge>}
+          <span className="text-muted-foreground">{pass ? 'label clears the Lc 75 threshold for button text.' : 'label is unreadable on this colour — pick a darker/lighter hue.'}</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 rounded-md border p-4">
+          <Button>Primary</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="outline">Outline</Button>
+          <Badge>Badge</Badge>
+          <a href="#theming" className="text-primary underline underline-offset-2 text-sm">A themed link</a>
+          <Input placeholder="Focus me" className="w-40" />
+        </div>
+      </CardContent>
     </Card>
   )
 }
@@ -396,6 +476,13 @@ export function Dls() {
               <Button asChild variant="outline" size="sm"><a href="/">← Back to the component catalog</a></Button>
               <Button asChild variant="outline" size="sm"><a href="/graph.html">Open the knowledge graph →</a></Button>
             </div>
+          </section>
+
+          {/* THEMING PLAYGROUND — one variable recolours the whole system, APCA-checked live */}
+          <section id="theming" className="g-section">
+            <div className="g-eyebrow">Live</div><h2>Theming playground</h2>
+            <p className="g-lede">Grayscale is the default, but the system is built to carry a brand colour. Set one variable — <span className="mono">--primary</span> — and the whole system recolours at once, with the APCA contrast check running live so an unreadable button never ships. This is exactly the change an AI makes when you ask it to “use our colour”.</p>
+            <div className="mt-6 max-w-2xl"><ThemingPlayground /></div>
           </section>
 
           <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">

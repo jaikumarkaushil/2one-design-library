@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   Star, Bold, Italic, Underline, Search, Bell, Home, User, Rocket, CreditCard,
   LogOut, CircleAlert, Copy, Check, Sun, Moon,
-  Network, Accessibility, Sparkles, Globe, ArrowRight, Mail, ExternalLink,
+  Network, Accessibility, Sparkles, Globe, ArrowRight, Mail, ExternalLink, BookOpen,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { toast } from 'sonner'
@@ -121,7 +121,7 @@ const BLOCK_ITEMS = IX.templates.blocks.items as string[]
 const CHART_ITEMS = IX.templates.charts.items as string[]
 
 const NAV = [
-  { grp: 'Dashboard', items: [['overview', 'Overview', ''], ['use', 'How to use', ''], ['playground', 'Theming', '']] },
+  { grp: 'Dashboard', items: [['overview', 'Overview', ''], ['use', 'How to use', '']] },
   { grp: 'Assets', items: [['/dls.html', 'What is a DLS?', '']] },
   { grp: 'Tier 2 · Foundation', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', ''], ['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', ''], ['mobile', 'Mobile · 2one', '']] },
   { grp: 'Tier 3 · Output', items: [['blocks', 'Blocks', String(COUNT.blocks)], ['marketing', 'Marketing', String(COUNT.marketing)], ['charts', 'Charts', String(COUNT.charts)]] },
@@ -182,84 +182,6 @@ function ThemeToggle({ className = '' }: { className?: string }) {
       {isDark ? <Sun /> : <Moon />}
       {isDark ? 'Light' : 'Dark'}
     </Button>
-  )
-}
-
-/* ---------- Theming playground: APCA ported from scripts/apca-audit.mjs ---------- */
-function sRGBtoY(hex: string) {
-  const h = hex.replace('#', ''); const R = parseInt(h.slice(0, 2), 16), G = parseInt(h.slice(2, 4), 16), B = parseInt(h.slice(4, 6), 16)
-  const f = (v: number) => Math.pow(v / 255, 2.4); return 0.2126729 * f(R) + 0.7151522 * f(G) + 0.0721750 * f(B)
-}
-function apca(txt: string, bg: string) {
-  let t = sRGBtoY(txt), b = sRGBtoY(bg)
-  const bT = 0.022, bC = 1.414, dY = 0.0005, s = 1.14, lB = 0.027, lW = 0.027, lC = 0.1, nBG = 0.56, nT = 0.57, rT = 0.62, rB = 0.65
-  t = t > bT ? t : t + Math.pow(bT - t, bC); b = b > bT ? b : b + Math.pow(bT - b, bC)
-  if (Math.abs(b - t) < dY) return 0
-  let C: number
-  if (b > t) { const S = (Math.pow(b, nBG) - Math.pow(t, nT)) * s; C = S < lC ? 0 : S - lB }
-  else { const S = (Math.pow(b, rB) - Math.pow(t, rT)) * s; C = S > -lC ? 0 : S + lW }
-  return Math.round(C * 1000) / 10
-}
-// auto-pick the label colour with the strongest contrast — the "contrasting label" guidance
-const bestFg = (bg: string) => (Math.abs(apca('#ffffff', bg)) >= Math.abs(apca('#09090b', bg)) ? '#ffffff' : '#09090b')
-const PRESETS = ['#09090b', '#0057ff', '#15803d', '#7c3aed', '#db2777', '#ea580c']
-const THEME_VARS = ['--primary', '--primary-foreground', '--sidebar-primary', '--sidebar-primary-foreground', '--ring']
-
-function ThemingPlayground() {
-  const [color, setColor] = useState('#09090b')
-  useEffect(() => {
-    const cur = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim()
-    if (/^#[0-9a-f]{6}$/i.test(cur)) setColor(cur)
-  }, [])
-  const apply = (c: string) => {
-    setColor(c)
-    const f = bestFg(c), r = document.documentElement.style
-    r.setProperty('--primary', c); r.setProperty('--primary-foreground', f)
-    r.setProperty('--sidebar-primary', c); r.setProperty('--sidebar-primary-foreground', f); r.setProperty('--ring', c)
-  }
-  const reset = () => {
-    const r = document.documentElement.style
-    THEME_VARS.forEach((p) => r.removeProperty(p))
-    setColor(getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#09090b')
-  }
-  const fg = bestFg(color)
-  const lc = Math.abs(apca(fg, color))
-  const pass = lc >= 75
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">Brand colour</CardTitle>
-        <CardDescription>Set <span className="mono">--primary</span> and the whole system recolors — buttons, links, focus, nav.</CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <input type="color" aria-label="Pick brand colour" value={color} onChange={(e) => apply(e.target.value)}
-            className="size-10 cursor-pointer rounded-md border bg-background p-0.5" />
-          <span className="mono text-sm">{color}</span>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {PRESETS.map((p) => (
-              <button key={p} aria-label={`Use ${p}`} onClick={() => apply(p)}
-                className="size-6 rounded-full border" style={{ background: p }} />
-            ))}
-          </div>
-          <Button variant="outline" size="sm" onClick={reset} className="ml-auto">Reset</Button>
-        </div>
-        <div className="flex flex-wrap items-center gap-2 text-sm">
-          {pass
-            ? <Badge variant="secondary" className="gap-1.5"><Check className="size-3.5" /> APCA Lc {lc.toFixed(1)} · pass</Badge>
-            : <Badge variant="destructive" className="gap-1.5"><CircleAlert className="size-3.5" /> APCA Lc {lc.toFixed(1)} · fail</Badge>}
-          <span className="text-muted-foreground">{pass ? 'label clears the Lc 75 threshold for button text.' : 'label is unreadable on this colour — pick a darker/lighter hue.'}</span>
-        </div>
-        <div className="flex flex-wrap items-center gap-3 rounded-md border p-4">
-          <Button>Primary</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="outline">Outline</Button>
-          <Badge>Badge</Badge>
-          <a href="#playground" className="text-primary underline underline-offset-2 text-sm">A themed link</a>
-          <Input placeholder="Focus me" className="w-40" />
-        </div>
-      </CardContent>
-    </Card>
   )
 }
 
@@ -324,6 +246,18 @@ export function Showcase() {
                 <Button asChild size="lg"><a href="/graph.html">Explore the knowledge graph <ArrowRight /></a></Button>
                 <Button asChild size="lg" variant="outline"><a href="/dls.html">Read the guide</a></Button>
               </div>
+
+              {/* DLS teaser — content + a way into the dedicated DLS page (which now hosts the theming playground) */}
+              <Card className="mt-8">
+                <CardHeader>
+                  <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden><BookOpen /></div>
+                  <CardTitle className="pt-2 text-base">New here? Start with the DLS</CardTitle>
+                  <CardDescription>A Design Language System is the shared kit — brand, tokens, components, and the rules that bind them. The guide explains the three tiers it’s built from and includes the live theming playground: set one brand colour and watch the whole system recolour, contrast-checked as you go.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild variant="outline"><a href="/dls.html">Open the DLS guide <ArrowRight /></a></Button>
+                </CardContent>
+              </Card>
 
               {/* Differentiators — the key selling points, each with checkable evidence (honest, no hype) */}
               <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -508,13 +442,6 @@ The final product must be consistent with the 2one brand foundation (voice, tone
                   </CardContent>
                 </Card>
               </div>
-            </section>
-
-            {/* THEMING PLAYGROUND */}
-            <section id="playground" className="g-section">
-              <div className="g-eyebrow">Live</div><h2>Theming playground</h2>
-              <p className="g-lede">Try your company colour. One variable carries the brand, so the whole system recolors at once — and the APCA check runs live so you never ship an unreadable button. This is exactly the change an AI makes when you say “make it our colour”.</p>
-              <div className="mt-6"><ThemingPlayground /></div>
             </section>
 
             {/* COLOUR */}

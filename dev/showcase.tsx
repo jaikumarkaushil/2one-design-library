@@ -264,13 +264,16 @@ export function Showcase() {
                   [<Sparkles />, 'AI-legible', 'Machine-readable UX rules with severity + precedence, so AI composes the 2one language — it doesn’t invent one.', 'rules/ux-rules.json'],
                   [<Globe />, 'Universal & one system', 'One grayscale token system, two audited themes, semantic HTML — the same product feel on every surface.', 'tokens/*.json'],
                 ] as [React.ReactNode, string, string, string][]).map(([icon, title, desc, ev]) => (
-                  <Card key={title}>
+                  <Card key={title} className="flex flex-col">
                     <CardHeader>
                       <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden>{icon}</div>
                       <CardTitle className="pt-2 text-base">{title}</CardTitle>
                       <CardDescription>{desc}</CardDescription>
                     </CardHeader>
-                    <CardContent><Badge variant="outline" className="font-mono font-normal">{ev}</Badge></CardContent>
+                    <CardContent className="mt-auto">
+                      <div className="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Verify</div>
+                      <Badge variant="outline" className="font-mono font-normal">{ev}</Badge>
+                    </CardContent>
                   </Card>
                 ))}
               </div>

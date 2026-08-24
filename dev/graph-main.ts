@@ -175,6 +175,9 @@ function centerOn(n: any) { ox = -n.x * scale; oy = -n.y * scale }
 
 function select(n: any) {
   selected = n
+  // keep the All Components list in sync with whatever is selected (DOM queried at
+  // call-time, so it is safe even though the list is built later during init)
+  Array.prototype.forEach.call(document.querySelectorAll('.comp-item'), (it: any) => it.classList.toggle('sel', !!n && it.dataset.id === n.id))
   // sync selection to the URL so a node is shareable / deep-linkable from the catalog
   history.replaceState(null, '', n ? '?node=' + encodeURIComponent(n.id) : location.pathname)
   const panel = document.getElementById('panel')!; panel.replaceChildren()
@@ -258,6 +261,31 @@ Array.prototype.forEach.call(document.querySelectorAll('.pnl-head'), (head: any)
     const pnl = head.closest('.pnl'); const open = !pnl.classList.toggle('collapsed')
     head.setAttribute('aria-expanded', String(open))
   })
+})
+
+// All Components — an index of every component that jumps to its node in the graph
+// (the reverse of the per-node "View in catalog" link: catalog list → graph position)
+const compListEl = document.getElementById('comp-list')!
+const compSearch = document.getElementById('comp-search') as HTMLInputElement
+const compNodes = nodes
+  .filter((n: any) => n.type === 'component' || n.type === 'component-2one')
+  .sort((a: any, b: any) => a.label.localeCompare(b.label))
+document.getElementById('comp-count')!.textContent = String(compNodes.length)
+const compItems: { node: any; elm: HTMLElement }[] = []
+compNodes.forEach((n: any) => {
+  const item = el('button', 'comp-item'); item.dataset.id = n.id; item.title = 'Show ' + n.label + ' in the graph'
+  const dot = el('span', 'cdot'); dot.style.background = nodeColor(n.type)
+  const name = el('span'); name.textContent = n.label
+  item.appendChild(dot); item.appendChild(name)
+  if (n.type === 'component-2one') { const tag = el('span', 'ctag'); tag.textContent = '2one'; item.appendChild(tag) }
+  item.addEventListener('click', () => { select(n); centerOn(n); scale = Math.max(scale, 1.3); alpha = Math.max(alpha, 0.5) })
+  compListEl.appendChild(item); compItems.push({ node: n, elm: item })
+})
+compSearch.addEventListener('input', () => {
+  const q = compSearch.value.trim().toLowerCase()
+  let shown = 0
+  compItems.forEach(({ node, elm }) => { const hit = !q || node.label.toLowerCase().indexOf(q) >= 0; elm.classList.toggle('hidden', !hit); if (hit) shown++ })
+  document.getElementById('comp-count')!.textContent = q ? shown + '/' + compItems.length : String(compItems.length)
 })
 
 // Inspiration image lives at dev/assets/painting.avif — degrade gracefully if absent

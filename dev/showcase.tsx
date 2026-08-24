@@ -200,7 +200,6 @@ export function Showcase() {
             <div className="flex items-center gap-2.5 px-2 py-1.5">
               <Logo variant="black" width={52} className="dark:hidden" />
               <Logo variant="white" width={52} className="hidden dark:block" />
-              <span className="text-xs leading-tight text-muted-foreground">design language<br />system</span>
             </div>
           </SidebarHeader>
           <SidebarContent>
@@ -226,9 +225,11 @@ export function Showcase() {
           <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-1 !h-5" />
-            <span className="text-sm text-muted-foreground">
-              <b className="font-semibold text-foreground">2one</b> Design Language System
-            </span>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem><BreadcrumbPage>Dashboard</BreadcrumbPage></BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
             <ThemeToggle className="ml-auto" />
           </header>
           <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">

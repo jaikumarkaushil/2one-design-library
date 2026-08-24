@@ -375,11 +375,73 @@ export function Showcase() {
               </div>
             </section>
 
-            {/* HOW TO USE — composed from the 2one library (Card / Badge / Button), token-driven, grayscale */}
+            {/* HOW TO USE THE APPLICATION — connect to the library + build with AI (from the 2one library, token-driven) */}
             <section id="use" className="g-section">
-              <div className="g-eyebrow">Start here</div><h2>How to use — build with AI</h2>
-              <p className="g-lede">Built to be read by AI. Point your assistant — Claude Code, Cursor, Copilot, Gemini — at the repo and say what you want. It builds from the real 2one components, colours and rules. No code required.</p>
+              <div className="g-eyebrow">Start here</div><h2>How to use the application</h2>
+              <p className="g-lede">A step-by-step way to connect an AI assistant to the 2one library and build with it. Point your assistant — Claude Code, Cursor, Copilot, Gemini — at the repo, have it read the system, then build from the real components, tokens and rules. No manual coding required.</p>
 
+              <div className="mt-2 grid gap-4 md:grid-cols-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">1</Badge> Connect to the library</CardTitle>
+                    <CardDescription>Give your AI the repo. It reads <span className="font-mono">manifest.json</span> first, then builds only from the system.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="min-w-0"><CodeBlock code={'https://github.com/yokesh-2one/2one-design-library'} /></CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">2</Badge> Ask for a summary first</CardTitle>
+                    <CardDescription>Have it report which components, tokens, brand foundations and templates exist — before it builds anything.</CardDescription>
+                  </CardHeader>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">3</Badge> Build with the prompt</CardTitle>
+                    <CardDescription>Fill the [brackets] in the prompt below and paste it. The assistant composes real 2one UI; you refine.</CardDescription>
+                  </CardHeader>
+                </Card>
+              </div>
+
+              <Card className="mt-4 min-w-0">
+                <CardHeader>
+                  <CardTitle className="text-base">The build prompt</CardTitle>
+                  <CardDescription>Copy it, fill in the [brackets], and paste it into your AI assistant.</CardDescription>
+                </CardHeader>
+                <CardContent className="min-w-0">
+                  <CodeBlock code={`Prompt for Building with the 2one Design Library
+
+I want to build [Product], used by [target users] to [why users want to use it].
+
+Workflow / Core Features:
+1. [Feature / workflow step 1]
+2. [Feature / workflow step 2]
+3. [Feature / workflow step 3]
+
+Design System Source
+Use the 2one Design Library, hosted at:
+https://github.com/yokesh-2one/2one-design-library
+
+Before building anything, read the repo and give me a brief summary of:
+- What components, tokens, and brand foundations are available
+- Any templates relevant to this specific build
+
+Component Rules
+- Use ShadCN components and templates as the primary UI library.
+- If no ShadCN equivalent exists for something this build needs, flag it explicitly instead of improvising a new style or component from scratch.
+- All colors, typography, iconography, and other visual elements must come from the 2one Design Library — do not introduce styles, colors, or components outside of it.
+
+Accuracy Rule
+Only answer questions and make design decisions based on what's actually in the repo. Do not hallucinate or assume components, tokens, or brand rules that aren't present — if something is unclear or missing, say so rather than guessing.
+
+Accessibility
+All components and layouts must meet the accessibility standards defined in the 2one Design Library (WCAG AA baseline, APCA contrast thresholds where specified). Never use color alone to convey state or information — pair it with an icon or other visual cue.
+
+Brand Consistency
+The final product must be consistent with the 2one brand foundation (voice, tone, personality, and visual identity) as defined in the repo.`} />
+                </CardContent>
+              </Card>
+
+              <div className="g-scale-label">More on building on brand</div>
               <div className="grid gap-4 md:grid-cols-2">
                 <Card>
                   <CardHeader>

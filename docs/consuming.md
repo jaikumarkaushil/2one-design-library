@@ -4,10 +4,9 @@ The exact, end-to-end setup for using `@2one/design-library` in a fresh
 Vite + React + Tailwind v4 app. Following this verbatim yields a themed, pill-radius
 `Button` with working light/dark — and **no unstyled flash**.
 
-> **Status:** the package builds locally but is **not yet on a public registry**.
-> Use path **A (local tarball)** today; path **B (registry)** is for when it's
-> published. Either way, the theme + Tailwind wiring in step 2 is identical and is
-> the part consumers most often get wrong.
+> **This package is distributed from the repository, not from a registry.**
+> Install it at a tag (path A). The theme + Tailwind wiring in step 2 is the
+> part consumers most often get wrong, whichever path you take.
 
 ## Requirements
 
@@ -21,34 +20,51 @@ you don't install them separately.
 
 ## 1 · Get the package
 
-### A · Local tarball (works today, no registry)
+### A · Install from the repo (the supported path)
 
-In a clone of this repo, build the library and pack it:
+No token, no registry account, nothing to build by hand.
 
-```bash
-npm install
-npm run build     # emits dist/ (ES + CJS + types + styles + fonts)
-npm pack          # → yokesh-2one-design-library-0.1.0.tgz
-```
-
-Then, in your app, install the tarball plus the React peers:
+**Starting from nothing** — the whole sequence:
 
 ```bash
-npm install /path/to/2one-design-library/yokesh-2one-design-library-0.1.0.tgz react react-dom
+npm create vite@latest my-app -- --template react-ts
+cd my-app
+npm install -D tailwindcss @tailwindcss/vite
+npm install github:yokesh-2one/2one-design-library
 ```
 
-### B · Registry install (when published)
+The Vite template already installs `react` and `react-dom`, so you do not add
+them again.
 
-Once published to GitHub Packages, add an `.npmrc` next to your `package.json`
-(GitHub Packages needs a token with `read:packages`, even for public repos):
-
-```ini
-@yokesh-2one:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
+**Adding to an app you already have:**
 
 ```bash
-npm install @2one/design-library react react-dom
+npm install github:yokesh-2one/2one-design-library react react-dom
+```
+
+A `prepare` hook builds `dist/` during install, so you get a real `dist/`
+without building anything by hand.
+
+This tracks `main`, so you always get the current system — which is what you
+want while the system is under active development. To freeze a version instead,
+append a tag: `#v0.2.0`. Re-run `npm install` to pick up changes.
+
+Tailwind v4 is a peer dependency, so npm installs it for you. You still need
+`@tailwindcss/vite` (or your bundler's Tailwind plugin) yourself, which is why
+it is in the sequence above.
+
+### B · Local tarball (offline, or no GitHub access)
+
+In a clone of this repo:
+
+```bash
+npm install && npm pack     # → 2one-design-library-0.2.0.tgz
+```
+
+Then in your app:
+
+```bash
+npm install /path/to/2one-design-library-0.2.0.tgz react react-dom
 ```
 
 ### C · Vendor the source (fallback)
@@ -111,6 +127,16 @@ export function Example() {
 
 ## Verify it worked
 
+Fastest check — run it in your app, not in the DLS repo:
+
+```bash
+npx 2one info      # version, component count, and the setup mistakes that fail silently
+npx 2one check src # audit your own code against the 2one rules (non-zero exit on a violation)
+```
+
+`info` reports the three setup failures by name, and tells you the `@source`
+path relative to *your* stylesheet rather than a guessed one. Then, by eye:
+
 - The `Button` is a **pill** (fully rounded), not a square browser button → step 2 worked.
 - Toggling the theme (via `next-themes`' `useTheme().setTheme('dark')`) flips the whole
   UI to the audited dark palette → step 3 worked.
@@ -127,16 +153,3 @@ export function Example() {
   until per-component subpath exports land. Run `npm run what-uses recharts` in the DLS
   repo to see exactly which components pull it.
 
-## Publishing this package (maintainers)
-
-The package isn't on a public registry yet. Release checklist for when it is:
-
-1. Bump `version` in `package.json` and update `CHANGELOG.md`.
-2. `npm run build:meta && npm run typecheck && npm run check:exports && npm run validate && npm run a11y && npm run build` — all green.
-3. `npm pack` and smoke-test the tarball against this guide (step 1A) in a blank app —
-   confirm a pill `Button` and working dark, **no unstyled flash**. Any runtime CSS
-   `@import` in `dist/styles.css` (e.g. `tw-animate-css`) must be a **`dependency`**, not
-   a devDependency, or the consumer's build can't resolve it.
-4. `npm publish` (scope points at GitHub Packages via `publishConfig.registry`).
-5. Confirm `npm view @2one/design-library version` resolves, then flip the README /
-   AGENTS / `docs/consuming.md` wording from "not yet on a public registry" to published.

@@ -68,18 +68,26 @@ well as people — see [`llms.txt`](llms.txt).
 
 ## Use it in your app
 
-**Today — install straight from the repo.** No token, no registry account:
+**Install straight from the repo.** No token, no registry account. Starting
+from nothing:
+
+```bash
+npm create vite@latest my-app -- --template react-ts
+cd my-app
+npm install -D tailwindcss @tailwindcss/vite
+npm install github:yokesh-2one/2one-design-library
+```
+
+Adding to an app you already have:
 
 ```bash
 npm install github:yokesh-2one/2one-design-library react react-dom
 ```
 
-The package builds itself on install, so you get the same `dist/` a published
-release would ship.
-
-> **Not yet on npm.** `npm install @2one/design-library` will 404 until the
-> `@2one` scope is claimed and `npm publish` is run — see
-> [Publishing](#publishing). Use the repo install above in the meantime.
+The package builds itself on install, so you get a real `dist/`. This tracks
+`main` — re-run `npm install` to pick up changes. To freeze a version instead,
+append a tag: `#v0.2.0`. Full setup, including the parts that fail silently:
+[`docs/consuming.md`](docs/consuming.md).
 
 Tailwind v4 is a peer dependency, so npm installs it for you. What npm *cannot*
 do is edit your stylesheet — these three lines are yours to add:
@@ -270,27 +278,6 @@ relative imports, which `tsc-alias` handles in the build. Don't drop that step.
 
 **Importing the barrel pulls heavy deps.** `Chart` drags in `recharts`. Subpath
 exports are planned.
-</details>
-
-<details>
-<summary><b id="publishing">Publishing to npm</b></summary>
-
-The package is **not on npm yet**, so `npm install @2one/design-library` 404s.
-Publishing is not a git operation — pushing or merging changes nothing here.
-npm and GitHub are separate registries.
-
-Three steps, in order:
-
-1. **Claim the scope.** Create the `2one` org at
-   [npmjs.com/org/create](https://www.npmjs.com/org/create), or publish under a
-   user scope. Nothing under `@2one` is currently published, but "unpublished"
-   is not the same as "available" — confirm at creation time.
-2. **`npm login`** as an account with publish rights on that scope.
-3. **`npm publish`** — `publishConfig.access` is already `public`, and the
-   `prepare` script rebuilds `dist/` first so the tarball can't ship stale code.
-
-Until then, the repo install above is the supported path. Verify what a consumer
-would actually receive with `npm pack --dry-run`.
 </details>
 
 <details>

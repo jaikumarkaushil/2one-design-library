@@ -20,7 +20,7 @@
 
   Exit code: 1 if any error-severity finding (or any finding with --warnings).
 */
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { join, relative, extname } from 'node:path'
 import { config as cfg } from './lib/config.mjs'
 
@@ -356,7 +356,10 @@ const walk = (p, acc = []) => {
   the payload's OWN blocks directory, so it belongs against `root`.
 */
 const resolveTarget = (t) => (t.startsWith('/') || /^[A-Za-z]:/.test(t) ? t : join(process.cwd(), t))
-const inputs = targets.length ? targets.map(resolveTarget) : [join(root, cfg.rel('blocks'))]
+// Default scan: the payload's own blocks AND page patterns — both are shipped
+// templates that must obey the rules, so anything invented there is audited too.
+const defaultDirs = [join(root, cfg.rel('blocks')), join(root, 'src/patterns')].filter((d) => existsSync(d))
+const inputs = targets.length ? targets.map(resolveTarget) : defaultDirs
 
 const files = inputs.flatMap((p) => {
   try {

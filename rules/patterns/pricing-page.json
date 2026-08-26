@@ -32,6 +32,12 @@
     "hard-coding prices so the billing toggle is decorative"
   ],
   "governed_by": ["one-primary", "no-color-alone", "tokens-only", "pill-buttons", "width-by-content"],
+  "assumptions": [
+    "Prices, plan names and feature rows are PLACEHOLDER 2one content — replace with the real offering.",
+    "The single primary action is the recommended (Team) plan's CTA; every other plan CTA is outline.",
+    "Annual billing shows an example −20% discount — wire it to real pricing.",
+    "Three tiers (Starter / Team / Enterprise); adjust the count to the real plans."
+  ],
   "references": {
     "shadcn_block": null,
     "note": "shadcn ships NO pricing/marketing/landing block — its canonical blocks are dashboard, sidebar, login and signup (https://ui.shadcn.com/blocks, checked 2026-08). So this pattern has no shadcn template to mirror and does not claim one. Its structure is composed from shadcn PRIMITIVES and existing 2one section blocks — every part traces to a real, in-repo source; nothing is invented.",

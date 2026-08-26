@@ -1,9 +1,14 @@
 /*
-  Anti-hallucination guard for PAGE PATTERNS (src/patterns + rules/patterns/*.json).
+  Integrity guard for PAGE PATTERNS (src/patterns + rules/patterns/*.json).
 
-  A pattern is only trustworthy if every part traces to something that actually
-  exists in the repo. This fails (exit 1) if a pattern spec:
+  Creativity is allowed — a pattern MAY invent a new composition — but whatever it
+  invents must (1) reference only real components/blocks, (2) obey every DLS rule,
+  and (3) surface its assumptions. Rule (2) is enforced by `npm run check:usage`,
+  whose default scan now includes src/patterns, so a created pattern is audited
+  against the design rules exactly like a block. This guard covers (1) and (3):
+  it fails (exit 1) if a pattern spec:
     - points at a src/patterns file that does not exist,
+    - declares no `assumptions` (creative choices must be clarified, not baked in),
     - has no `references` block (it must cite a shadcn block, OR shadcn
       primitives + 2one blocks — so it can't quietly invent structure),
     - references a component that is not a real component in the graph, or
@@ -43,6 +48,10 @@ for (const f of specs) {
   try { s = J(join(SPEC_DIR, f)) } catch (e) { errors.push(`${where}: invalid JSON (${e.message})`); continue }
 
   if (s.file && !existsSync(join(root, s.file))) errors.push(`${where}: file "${s.file}" does not exist`)
+
+  // Creative choices must be SURFACED, not silently baked in — so they can be clarified.
+  if (!Array.isArray(s.assumptions) || !s.assumptions.length)
+    errors.push(`${where}: missing "assumptions" — declare the creative choices (placeholder content, the primary action, tier counts) so they are clarified, not assumed`)
 
   const r = s.references
   if (!r || typeof r !== 'object') {

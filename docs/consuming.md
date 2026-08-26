@@ -5,8 +5,8 @@ Vite + React + Tailwind v4 app. Following this verbatim yields a themed, pill-ra
 `Button` with working light/dark — and **no unstyled flash**.
 
 > **This package is distributed from the repository, not from a registry.**
-> Install it at a tag (path A). The theme + Tailwind wiring in step 2 is the
-> part consumers most often get wrong, whichever path you take.
+> Install it straight from GitHub (path A). The theme + Tailwind wiring in
+> step 2 is the part consumers most often get wrong, whichever path you take.
 
 ## Requirements
 
@@ -47,7 +47,7 @@ without building anything by hand.
 
 This tracks `main`, so you always get the current system — which is what you
 want while the system is under active development. To freeze a version instead,
-append a tag: `#v0.2.0`. Re-run `npm install` to pick up changes.
+append a tag — e.g. `#v0.2.0`. Re-run `npm install` to pick up changes.
 
 Tailwind v4 is a peer dependency, so npm installs it for you. You still need
 `@tailwindcss/vite` (or your bundler's Tailwind plugin) yourself, which is why
@@ -58,14 +58,16 @@ it is in the sequence above.
 In a clone of this repo:
 
 ```bash
-npm install && npm pack     # → 2one-design-library-0.2.0.tgz
+npm install && npm pack     # prints the tarball filename it wrote
 ```
 
-Then in your app:
+Then in your app — the glob avoids naming a version that goes stale:
 
 ```bash
-npm install /path/to/2one-design-library-0.2.0.tgz react react-dom
+npm install /path/to/2one-design-library-*.tgz react react-dom
 ```
+
+This is a snapshot of whatever the clone was on, so re-pack after pulling.
 
 ### C · Vendor the source (fallback)
 

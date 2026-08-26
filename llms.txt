@@ -137,7 +137,7 @@ library is in play before generating (see `instructions_for_ai.clarify_first`).
   `signup-01`…`signup-03`, `dashboard-plain`, plus 31 chart examples
 - Distributed from the repository, not a registry:
   `npm install github:yokesh-2one/2one-design-library` — builds itself on install and
-  tracks `main`. Append `#v0.2.0` to freeze a version.
+  tracks `main`. Append a tag (e.g. `#v0.2.0`) to freeze a version.
 
 ## Theme
 

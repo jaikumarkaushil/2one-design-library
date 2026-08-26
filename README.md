@@ -86,7 +86,7 @@ npm install github:yokesh-2one/2one-design-library react react-dom
 
 The package builds itself on install, so you get a real `dist/`. This tracks
 `main` — re-run `npm install` to pick up changes. To freeze a version instead,
-append a tag: `#v0.2.0`. Full setup, including the parts that fail silently:
+append a tag — e.g. `#v0.2.0`. Full setup, including the parts that fail silently:
 [`docs/consuming.md`](docs/consuming.md).
 
 Tailwind v4 is a peer dependency, so npm installs it for you. What npm *cannot*

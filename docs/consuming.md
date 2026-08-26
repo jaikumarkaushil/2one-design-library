@@ -54,7 +54,7 @@ npm install /path/to/2one-design-library-0.2.0.tgz react react-dom
 `npm install @2one/design-library` will 404 — the `@2one` scope has not been
 claimed and nothing has been published. Use path A.
 
-### C · Vendor the source (fallback)
+### D · Vendor the source (fallback)
 
 If you can't install a package at all, copy `src/components/`, `src/lib/`,
 `src/styles/globals.css`, and `tokens/` into your app and import from your local
@@ -113,6 +113,16 @@ export function Example() {
 ```
 
 ## Verify it worked
+
+Fastest check — run it in your app, not in the DLS repo:
+
+```bash
+npx 2one info      # version, component count, and the setup mistakes that fail silently
+npx 2one check src # audit your own code against the 2one rules (non-zero exit on a violation)
+```
+
+`info` reports the three setup failures by name, and tells you the `@source`
+path relative to *your* stylesheet rather than a guessed one. Then, by eye:
 
 - The `Button` is a **pill** (fully rounded), not a square browser button → step 2 worked.
 - Toggling the theme (via `next-themes`' `useTheme().setTheme('dark')`) flips the whole

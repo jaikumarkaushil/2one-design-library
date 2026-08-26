@@ -358,7 +358,7 @@ const walk = (p, acc = []) => {
 const resolveTarget = (t) => (t.startsWith('/') || /^[A-Za-z]:/.test(t) ? t : join(process.cwd(), t))
 // Default scan: the payload's own blocks AND page patterns — both are shipped
 // templates that must obey the rules, so anything invented there is audited too.
-const defaultDirs = [join(root, cfg.rel('blocks')), join(root, 'src/patterns')].filter((d) => existsSync(d))
+const defaultDirs = [join(root, cfg.rel('blocks')), join(root, cfg.rel('patterns'))].filter((d) => existsSync(d))
 const inputs = targets.length ? targets.map(resolveTarget) : defaultDirs
 
 const files = inputs.flatMap((p) => {

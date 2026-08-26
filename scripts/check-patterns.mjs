@@ -23,29 +23,31 @@
   Run: npm run check:patterns
 */
 import { readFileSync, existsSync, readdirSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path'
+import { join } from 'node:path'
+import { config as cfg } from './lib/config.mjs'
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const J = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'))
-const ls = (rel) => (existsSync(join(root, rel)) ? readdirSync(join(root, rel)) : [])
+const root = cfg.root
+const ls = (abs) => (existsSync(abs) ? readdirSync(abs) : [])
 
-const SPEC_DIR = 'rules/patterns'
-const specs = ls(SPEC_DIR).filter((f) => f.endsWith('.json'))
+const specDir = cfg.path('patternSpecs')
+const SPEC_REL = cfg.rel('patternSpecs')
+const blocksDir = cfg.path('blocks')
+const specs = ls(specDir).filter((f) => f.endsWith('.json'))
 const errors = []
 
 // The single source of truth for "what components actually exist": the graph.
-const graph = existsSync(join(root, 'graph.json')) ? J('graph.json') : { nodes: [] }
+const graphPath = cfg.path('out.graph')
+const graph = existsSync(graphPath) ? JSON.parse(readFileSync(graphPath, 'utf8')) : { nodes: [] }
 const realComponents = new Set(
   graph.nodes.filter((n) => n.type === 'component' || n.type === 'component-2one').map((n) => n.id.split(':')[1])
 )
 const blockExists = (b) =>
-  existsSync(join(root, 'src/blocks', `${b}.tsx`)) || existsSync(join(root, 'src/blocks', b, 'page.tsx'))
+  existsSync(join(blocksDir, `${b}.tsx`)) || existsSync(join(blocksDir, b, 'page.tsx'))
 
 for (const f of specs) {
-  const where = `${SPEC_DIR}/${f}`
+  const where = `${SPEC_REL}/${f}`
   let s
-  try { s = J(join(SPEC_DIR, f)) } catch (e) { errors.push(`${where}: invalid JSON (${e.message})`); continue }
+  try { s = JSON.parse(readFileSync(join(specDir, f), 'utf8')) } catch (e) { errors.push(`${where}: invalid JSON (${e.message})`); continue }
 
   if (s.file && !existsSync(join(root, s.file))) errors.push(`${where}: file "${s.file}" does not exist`)
 
@@ -70,7 +72,7 @@ for (const f of specs) {
 
   // Every referenced 2one block must have a file.
   const blocks = [...(s.composes?.blocks || []), ...(r.two_one_blocks || [])]
-  for (const b of blocks) if (!blockExists(b)) errors.push(`${where}: 2one block "${b}" has no file under src/blocks/`)
+  for (const b of blocks) if (!blockExists(b)) errors.push(`${where}: block "${b}" has no file under ${cfg.rel('blocks')}/`)
 }
 
 if (errors.length) {

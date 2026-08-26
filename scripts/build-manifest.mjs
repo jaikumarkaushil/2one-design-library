@@ -108,10 +108,11 @@ const marketing = ls(join(blocksDir, 'marketing'), tsx).map(base)
 // with a machine-readable spec in rules/patterns/<name>.json (purpose / when-not /
 // composition / primary action / a11y / anti-patterns). Indexed here so an agent
 // finds a whole-page answer the same way it finds a component.
-const patternsDir = join(root, 'src/patterns')
+const patternsDir = cfg.path('patterns')
+const patternSpecsDir = cfg.path('patternSpecs')
 const patterns = ls(patternsDir, tsx).map(base)
-const patternSpecs = ls(join(root, 'rules/patterns'), (f) => f.endsWith('.json'))
-  .map((f) => { try { return JSON.parse(readFileSync(join(root, 'rules/patterns', f), 'utf8')) } catch { return null } })
+const patternSpecs = ls(patternSpecsDir, (f) => f.endsWith('.json'))
+  .map((f) => { try { return JSON.parse(readFileSync(join(patternSpecsDir, f), 'utf8')) } catch { return null } })
   .filter(Boolean)
 
 // The payload's machine-readable UX-rules contract, when it ships one. Indexed
@@ -219,9 +220,9 @@ const manifest = {
       marketing: { path: `${cfg.rel('blocks')}/marketing/`, items: marketing },
       charts: { path: `${cfg.rel('blocks')}/charts/`, count: charts.length, items: charts },
       patterns: {
-        path: 'src/patterns/',
-        specs: 'rules/patterns/',
-        note: 'Complete, opinionated PAGE compositions — the 2one answer for a whole screen. Adapt the content, keep the structure. Each carries a machine-readable spec and a graph node (pattern:<id>).',
+        path: `${cfg.rel('patterns')}/`,
+        specs: `${cfg.rel('patternSpecs')}/`,
+        note: `Complete, opinionated PAGE compositions — the ${cfg.name} answer for a whole screen. Adapt the content, keep the structure. Each carries a machine-readable spec and a graph node (pattern:<id>).`,
         items: patterns,
         spec: patternSpecs,
       },

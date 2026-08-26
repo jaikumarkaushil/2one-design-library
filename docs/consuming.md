@@ -4,10 +4,10 @@ The exact, end-to-end setup for using `@2one/design-library` in a fresh
 Vite + React + Tailwind v4 app. Following this verbatim yields a themed, pill-radius
 `Button` with working light/dark — and **no unstyled flash**.
 
-> **Status:** the package builds locally but is **not yet on a public registry**.
-> Use path **A (local tarball)** today; path **B (registry)** is for when it's
-> published. Either way, the theme + Tailwind wiring in step 2 is identical and is
-> the part consumers most often get wrong.
+> **Status:** the package is **not on a public registry**, but you do not need one.
+> Path **A (install from the repo at a tag)** works today with no token and no
+> registry account. Whichever path you take, the theme + Tailwind wiring in step 2
+> is identical and is the part consumers most often get wrong.
 
 ## Requirements
 
@@ -21,35 +21,38 @@ you don't install them separately.
 
 ## 1 · Get the package
 
-### A · Local tarball (works today, no registry)
+### A · Install from the repo, pinned to a tag (works today)
 
-In a clone of this repo, build the library and pack it:
-
-```bash
-npm install
-npm run build     # emits dist/ (ES + CJS + types + styles + fonts)
-npm pack          # → yokesh-2one-design-library-0.1.0.tgz
-```
-
-Then, in your app, install the tarball plus the React peers:
+No token, no registry account, nothing to build by hand:
 
 ```bash
-npm install /path/to/2one-design-library/yokesh-2one-design-library-0.1.0.tgz react react-dom
+npm install github:yokesh-2one/2one-design-library#v0.2.0 react react-dom
 ```
 
-### B · Registry install (when published)
+A `prepare` hook builds `dist/` during install, so you get exactly what a
+published release would ship. **Pin the tag.** Installing without `#v0.2.0`
+tracks `main`, which moves — the whole reason tags exist.
 
-Once published to GitHub Packages, add an `.npmrc` next to your `package.json`
-(GitHub Packages needs a token with `read:packages`, even for public repos):
+Tailwind v4 is a peer dependency, so npm installs it for you.
 
-```ini
-@yokesh-2one:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
+### B · Local tarball (offline, or no GitHub access)
+
+In a clone of this repo:
 
 ```bash
-npm install @2one/design-library react react-dom
+npm install && npm pack     # → 2one-design-library-0.2.0.tgz
 ```
+
+Then in your app:
+
+```bash
+npm install /path/to/2one-design-library-0.2.0.tgz react react-dom
+```
+
+### C · Registry install (not yet available)
+
+`npm install @2one/design-library` will 404 — the `@2one` scope has not been
+claimed and nothing has been published. Use path A.
 
 ### C · Vendor the source (fallback)
 

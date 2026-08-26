@@ -25,7 +25,11 @@
     "brand",
     "graph.json",
     "manifest.json",
-    "tokens"
+    "tokens",
+    "graph",
+    "rules",
+    "AGENTS.md",
+    "llms.txt"
   ],
   "sideEffects": [
     "**/*.css"

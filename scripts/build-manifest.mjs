@@ -104,6 +104,16 @@ const dashboards = ls(join(blocksDir, 'dashboard-plain'), tsx).length ? ['dashbo
 const charts = ls(join(blocksDir, 'charts'), tsx).map(base)
 const marketing = ls(join(blocksDir, 'marketing'), tsx).map(base)
 
+// Page patterns (Tier 3): complete, opinionated compositions in src/patterns, each
+// with a machine-readable spec in rules/patterns/<name>.json (purpose / when-not /
+// composition / primary action / a11y / anti-patterns). Indexed here so an agent
+// finds a whole-page answer the same way it finds a component.
+const patternsDir = join(root, 'src/patterns')
+const patterns = ls(patternsDir, tsx).map(base)
+const patternSpecs = ls(join(root, 'rules/patterns'), (f) => f.endsWith('.json'))
+  .map((f) => { try { return JSON.parse(readFileSync(join(root, 'rules/patterns', f), 'utf8')) } catch { return null } })
+  .filter(Boolean)
+
 // The payload's machine-readable UX-rules contract, when it ships one. Indexed
 // here so an agent finds the rules the same way it finds tokens — and so the
 // counts in the manifest cannot disagree with the rules file itself.
@@ -208,6 +218,13 @@ const manifest = {
       blocks: { path: `${cfg.rel('blocks')}/`, items: blocks.concat(dashboards) },
       marketing: { path: `${cfg.rel('blocks')}/marketing/`, items: marketing },
       charts: { path: `${cfg.rel('blocks')}/charts/`, count: charts.length, items: charts },
+      patterns: {
+        path: 'src/patterns/',
+        specs: 'rules/patterns/',
+        note: 'Complete, opinionated PAGE compositions — the 2one answer for a whole screen. Adapt the content, keep the structure. Each carries a machine-readable spec and a graph node (pattern:<id>).',
+        items: patterns,
+        spec: patternSpecs,
+      },
       recipes: 'recipes/',
     },
     ...(uxRules

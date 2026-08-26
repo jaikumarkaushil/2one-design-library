@@ -7,6 +7,7 @@
 
   "nodes": {
     "intent": [
+      { "id": "intent:present-pricing", "label": "Present pricing", "description": "Explain plans and convert a visitor to a paid plan.", "source": "src/patterns/pricing-page.tsx" },
       { "id": "intent:primary-action", "label": "Primary action", "description": "The single most important action in a view or section.", "source": "recipes/build-an-app.md" },
       { "id": "intent:low-emphasis-action", "label": "Low-emphasis action", "description": "A secondary/tertiary action that must not compete with the primary.", "source": "recipes/build-an-app.md" },
       { "id": "intent:destructive-action", "label": "Destructive action", "description": "An action that deletes or irreversibly changes data.", "source": "docs/accessibility.md" },
@@ -48,6 +49,7 @@
       { "id": "a11y:scrim-over-media", "label": "Scrim behind text over media", "description": "Never place text directly over media — lay a scrim behind it.", "source": "docs/accessibility.md" }
     ],
     "pattern": [
+      { "id": "pattern:pricing-page", "label": "Pricing page", "description": "Complete pricing-page composition: plans (Card + billing toggle + recommended) then comparison Table, FAQ and CTA. One primary action; included/excluded shown by icon + text.", "source": "src/patterns/pricing-page.tsx" },
       { "id": "pattern:form-submission", "label": "Form submission", "description": "Label + Input + validation message, one primary submit.", "source": "recipes/build-an-app.md" },
       { "id": "pattern:destructive-confirmation", "label": "Destructive confirmation", "description": "AlertDialog gating a destructive action, confirmed by a destructive button.", "source": "graph/decisions.json" },
       { "id": "pattern:authentication", "label": "Authentication", "description": "Sign-in / sign-up composed from Card + Label + Input + Button.", "source": "src/blocks/login-01.tsx" },
@@ -64,6 +66,17 @@
   },
 
   "edges": [
+    { "source": "intent:present-pricing", "target": "pattern:pricing-page", "type": "realized_by", "priority": "PREFERRED", "source_ref": "src/patterns/pricing-page.tsx" },
+    { "source": "pattern:pricing-page", "target": "component:card", "type": "preferred_composition", "source_ref": "src/patterns/pricing-page.tsx" },
+    { "source": "pattern:pricing-page", "target": "component:button", "type": "preferred_composition", "source_ref": "src/patterns/pricing-page.tsx" },
+    { "source": "pattern:pricing-page", "target": "component:badge", "type": "preferred_composition", "source_ref": "src/patterns/pricing-page.tsx" },
+    { "source": "pattern:pricing-page", "target": "component:tabs", "type": "preferred_composition", "source_ref": "src/patterns/pricing-page.tsx" },
+    { "source": "pattern:pricing-page", "target": "component:table", "type": "preferred_composition", "source_ref": "src/patterns/pricing-page.tsx" },
+    { "source": "pattern:pricing-page", "target": "rule:one-primary", "type": "governed_by", "source_ref": "rules/patterns/pricing-page.json" },
+    { "source": "pattern:pricing-page", "target": "rule:no-color-alone", "type": "governed_by", "source_ref": "rules/patterns/pricing-page.json" },
+    { "source": "pattern:pricing-page", "target": "rule:tokens-only", "type": "governed_by", "source_ref": "rules/patterns/pricing-page.json" },
+    { "source": "pattern:pricing-page", "target": "rule:pill-buttons", "type": "governed_by", "source_ref": "rules/patterns/pricing-page.json" },
+    { "source": "pattern:pricing-page", "target": "rule:width-by-content", "type": "governed_by", "source_ref": "rules/patterns/pricing-page.json" },
     { "source": "intent:primary-action", "target": "variant:button-primary", "type": "realized_by", "priority": "PREFERRED", "source_ref": "recipes/build-an-app.md" },
     { "source": "intent:low-emphasis-action", "target": "variant:button-ghost", "type": "realized_by", "priority": "PREFERRED", "source_ref": "src/components/ui/button.tsx" },
     { "source": "intent:destructive-action", "target": "pattern:destructive-confirmation", "type": "realized_by", "priority": "PREFERRED", "source_ref": "graph/decisions.json" },

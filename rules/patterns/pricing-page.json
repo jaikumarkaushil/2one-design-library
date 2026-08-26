@@ -1,0 +1,35 @@
+{
+  "id": "pattern:pricing-page",
+  "label": "Pricing page",
+  "tier": 3,
+  "kind": "page-pattern",
+  "file": "src/patterns/pricing-page.tsx",
+  "export": "PricingPage",
+  "purpose": "Present plans and convert a visitor into a paid plan.",
+  "when_to_use": "A dedicated page whose job is to explain and sell plans.",
+  "when_not_to_use": "A single price call-out inside another page — use the marketing/pricing section block instead.",
+  "composition": [
+    "Plans — tier Cards + a billing-period toggle; the recommended plan carries a Badge + border-foreground",
+    "Comparison — a feature-by-feature Table",
+    "FAQ — reuses the marketing/faq block",
+    "CTA — reuses the marketing/cta-banner block"
+  ],
+  "composes": {
+    "blocks": ["marketing/faq", "marketing/cta-banner"],
+    "components": ["card", "button", "badge", "tabs", "table"]
+  },
+  "primary_action": "Exactly one filled Button — the recommended plan's CTA. All other plan CTAs are outline.",
+  "responsive": "Plan cards are a 3-col grid at md+ and stack below; the comparison Table scrolls horizontally in an overflow-x-auto container.",
+  "accessibility": [
+    "included / not-included cells use an icon + sr-only text, never colour alone",
+    "each section is aria-labelledby its heading",
+    "the billing toggle is a Tabs (keyboard-navigable, roving focus)"
+  ],
+  "content": "Ships realistic 2one commercial copy (plan names, prices, feature rows) — adapt the CONTENT, keep the STRUCTURE.",
+  "anti_patterns": [
+    "two competing primary buttons across the plan cards",
+    "signalling 'included' by colour alone",
+    "hard-coding prices so the billing toggle is decorative"
+  ],
+  "governed_by": ["one-primary", "no-color-alone", "tokens-only", "pill-buttons", "width-by-content"]
+}

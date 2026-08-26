@@ -706,7 +706,23 @@
               "tokens-only",
               "pill-buttons",
               "width-by-content"
-            ]
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "shadcn ships NO pricing/marketing/landing block — its canonical blocks are dashboard, sidebar, login and signup (https://ui.shadcn.com/blocks, checked 2026-08). So this pattern has no shadcn template to mirror and does not claim one. Its structure is composed from shadcn PRIMITIVES and existing 2one section blocks — every part traces to a real, in-repo source; nothing is invented.",
+              "shadcn_primitives": [
+                "card",
+                "button",
+                "badge",
+                "tabs",
+                "table"
+              ],
+              "two_one_blocks": [
+                "marketing/faq",
+                "marketing/cta-banner"
+              ],
+              "checked_against": "https://ui.shadcn.com/blocks"
+            }
           }
         ]
       },

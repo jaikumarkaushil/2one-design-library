@@ -27,6 +27,7 @@ this list — never hand-maintain a fact a script could own.
 | Design decisions resolve deterministically (same graph → same answer) | decision Q→A cases over the graph | `npm run graph:test` |
 | The decision graph is semantically sound (ontology conformance, provenance files exist, no `preferred_over` cycles) | semantic validation | `npm run graph:validate` |
 | UX opinions are a machine-readable contract (severity + precedence), not just prose | `rules/ux-rules.json` → `rule:` graph nodes + structure/target validation | `npm run check:rules` |
+| Page patterns reference only REAL components/blocks — no invented structure; provenance cites a shadcn block, or shadcn primitives + 2one blocks | grounding guard: `rules/patterns/*.json` cross-checked against the graph | `npm run check:patterns` |
 | Types compile and the library builds | `tsc` + `vite` | `npm run typecheck` · `npm run build` |
 
 CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs all of these on every PR —

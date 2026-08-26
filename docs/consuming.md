@@ -20,7 +20,7 @@ you don't install them separately.
 
 ## 1 · Get the package
 
-### A · Install from the repo, pinned to a tag (the supported path)
+### A · Install from the repo (the supported path)
 
 No token, no registry account, nothing to build by hand.
 
@@ -30,7 +30,7 @@ No token, no registry account, nothing to build by hand.
 npm create vite@latest my-app -- --template react-ts
 cd my-app
 npm install -D tailwindcss @tailwindcss/vite
-npm install github:yokesh-2one/2one-design-library#v0.2.0
+npm install github:yokesh-2one/2one-design-library
 ```
 
 The Vite template already installs `react` and `react-dom`, so you do not add
@@ -39,12 +39,15 @@ them again.
 **Adding to an app you already have:**
 
 ```bash
-npm install github:yokesh-2one/2one-design-library#v0.2.0 react react-dom
+npm install github:yokesh-2one/2one-design-library react react-dom
 ```
 
-A `prepare` hook builds `dist/` during install, so you get the same output a
-release tarball would carry. **Pin the tag** — installing without `#v0.2.0`
-tracks `main`, which moves.
+A `prepare` hook builds `dist/` during install, so you get a real `dist/`
+without building anything by hand.
+
+This tracks `main`, so you always get the current system — which is what you
+want while the system is under active development. To freeze a version instead,
+append a tag: `#v0.2.0`. Re-run `npm install` to pick up changes.
 
 Tailwind v4 is a peer dependency, so npm installs it for you. You still need
 `@tailwindcss/vite` (or your bundler's Tailwind plugin) yourself, which is why

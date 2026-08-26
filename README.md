@@ -68,25 +68,26 @@ well as people — see [`llms.txt`](llms.txt).
 
 ## Use it in your app
 
-**Install straight from the repo, pinned to a tag.** No token, no registry
-account. Starting from nothing:
+**Install straight from the repo.** No token, no registry account. Starting
+from nothing:
 
 ```bash
 npm create vite@latest my-app -- --template react-ts
 cd my-app
 npm install -D tailwindcss @tailwindcss/vite
-npm install github:yokesh-2one/2one-design-library#v0.2.0
+npm install github:yokesh-2one/2one-design-library
 ```
 
 Adding to an app you already have:
 
 ```bash
-npm install github:yokesh-2one/2one-design-library#v0.2.0 react react-dom
+npm install github:yokesh-2one/2one-design-library react react-dom
 ```
 
-The package builds itself on install, so you get a real `dist/`. **Pin the
-tag** — without `#v0.2.0` you track `main`, which moves. Full setup, including
-the parts that fail silently: [`docs/consuming.md`](docs/consuming.md).
+The package builds itself on install, so you get a real `dist/`. This tracks
+`main` — re-run `npm install` to pick up changes. To freeze a version instead,
+append a tag: `#v0.2.0`. Full setup, including the parts that fail silently:
+[`docs/consuming.md`](docs/consuming.md).
 
 Tailwind v4 is a peer dependency, so npm installs it for you. What npm *cannot*
 do is edit your stylesheet — these three lines are yours to add:

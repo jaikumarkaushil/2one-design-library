@@ -4,10 +4,9 @@ The exact, end-to-end setup for using `@2one/design-library` in a fresh
 Vite + React + Tailwind v4 app. Following this verbatim yields a themed, pill-radius
 `Button` with working light/dark — and **no unstyled flash**.
 
-> **Status:** the package is **not on a public registry**, but you do not need one.
-> Path **A (install from the repo at a tag)** works today with no token and no
-> registry account. Whichever path you take, the theme + Tailwind wiring in step 2
-> is identical and is the part consumers most often get wrong.
+> **This package is distributed from the repository, not from a registry.**
+> Install it at a tag (path A). The theme + Tailwind wiring in step 2 is the
+> part consumers most often get wrong, whichever path you take.
 
 ## Requirements
 
@@ -21,19 +20,35 @@ you don't install them separately.
 
 ## 1 · Get the package
 
-### A · Install from the repo, pinned to a tag (works today)
+### A · Install from the repo, pinned to a tag (the supported path)
 
-No token, no registry account, nothing to build by hand:
+No token, no registry account, nothing to build by hand.
+
+**Starting from nothing** — the whole sequence:
+
+```bash
+npm create vite@latest my-app -- --template react-ts
+cd my-app
+npm install -D tailwindcss @tailwindcss/vite
+npm install github:yokesh-2one/2one-design-library#v0.2.0
+```
+
+The Vite template already installs `react` and `react-dom`, so you do not add
+them again.
+
+**Adding to an app you already have:**
 
 ```bash
 npm install github:yokesh-2one/2one-design-library#v0.2.0 react react-dom
 ```
 
-A `prepare` hook builds `dist/` during install, so you get exactly what a
-published release would ship. **Pin the tag.** Installing without `#v0.2.0`
-tracks `main`, which moves — the whole reason tags exist.
+A `prepare` hook builds `dist/` during install, so you get the same output a
+release tarball would carry. **Pin the tag** — installing without `#v0.2.0`
+tracks `main`, which moves.
 
-Tailwind v4 is a peer dependency, so npm installs it for you.
+Tailwind v4 is a peer dependency, so npm installs it for you. You still need
+`@tailwindcss/vite` (or your bundler's Tailwind plugin) yourself, which is why
+it is in the sequence above.
 
 ### B · Local tarball (offline, or no GitHub access)
 
@@ -49,12 +64,7 @@ Then in your app:
 npm install /path/to/2one-design-library-0.2.0.tgz react react-dom
 ```
 
-### C · Registry install (not yet available)
-
-`npm install @2one/design-library` will 404 — the `@2one` scope has not been
-claimed and nothing has been published. Use path A.
-
-### D · Vendor the source (fallback)
+### C · Vendor the source (fallback)
 
 If you can't install a package at all, copy `src/components/`, `src/lib/`,
 `src/styles/globals.css`, and `tokens/` into your app and import from your local
@@ -140,16 +150,3 @@ path relative to *your* stylesheet rather than a guessed one. Then, by eye:
   until per-component subpath exports land. Run `npm run what-uses recharts` in the DLS
   repo to see exactly which components pull it.
 
-## Publishing this package (maintainers)
-
-The package isn't on a public registry yet. Release checklist for when it is:
-
-1. Bump `version` in `package.json` and update `CHANGELOG.md`.
-2. `npm run build:meta && npm run typecheck && npm run check:exports && npm run validate && npm run a11y && npm run build` — all green.
-3. `npm pack` and smoke-test the tarball against this guide (step 1A) in a blank app —
-   confirm a pill `Button` and working dark, **no unstyled flash**. Any runtime CSS
-   `@import` in `dist/styles.css` (e.g. `tw-animate-css`) must be a **`dependency`**, not
-   a devDependency, or the consumer's build can't resolve it.
-4. `npm publish` (scope points at GitHub Packages via `publishConfig.registry`).
-5. Confirm `npm view @2one/design-library version` resolves, then flip the README /
-   AGENTS / `docs/consuming.md` wording from "not yet on a public registry" to published.

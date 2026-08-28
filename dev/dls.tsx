@@ -131,11 +131,17 @@ const ROWS: [string, string, string, string][] = [
   ['Tier 3', 'Design system', 'var(--tier-3)', 'The building blocks assembled into finished, shippable work — applications, websites, decks, and campaigns. This is what customers ultimately see.'],
 ]
 
+// Icon tile — the library pattern (size-10, bordered, muted ground, size-5 icon),
+// not a bespoke class, so it matches the feature cards across the app.
+function IconTile({ children }: { children: React.ReactNode }) {
+  return <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden>{children}</div>
+}
+
 function ModuleCard({ icon, title, desc, subs }: { icon: React.ReactNode; title: string; desc: string; subs?: string[] }) {
   return (
     <Card className="gap-3">
       <CardHeader>
-        <div className="dls-ico" aria-hidden>{icon}</div>
+        <IconTile>{icon}</IconTile>
         <CardTitle className="text-base">{title}</CardTitle>
         <CardDescription>{desc}</CardDescription>
       </CardHeader>
@@ -240,7 +246,7 @@ export function Dls() {
   return (
     <div className="min-h-svh bg-background">
       <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b bg-background/85 px-4 backdrop-blur lg:px-6">
-        <a href="/" className="flex items-center gap-2.5" aria-label="2one — back to the dashboard">
+        <a href="/" className="flex items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="2one — back to the dashboard">
           <Logo variant="black" width={48} className="dark:hidden" />
           <Logo variant="white" width={48} className="hidden dark:block" />
         </a>
@@ -255,7 +261,7 @@ export function Dls() {
         <ThemeToggle className="ml-auto" />
       </header>
 
-      <div className="mx-auto w-full min-w-0 max-w-5xl px-6 pb-32 lg:px-10">
+      <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">
 
           {/* OVERVIEW / HERO */}
           <section id="overview" className="g-section g-hero">
@@ -344,7 +350,7 @@ export function Dls() {
             </div>
             <Card className="mt-4">
               <CardContent className="flex items-start gap-3 pt-6 text-sm text-muted-foreground">
-                <span className="dls-ico" aria-hidden><FileText /></span>
+                <IconTile><FileText /></IconTile>
                 <p className="m-0">
                   An alternative analogy is construction. <b className="text-foreground">Tier 1</b> is the project brief — what is being built and for whom;
                   <b className="text-foreground"> Tier 2</b> is the materials and the building code; and <b className="text-foreground">Tier 3</b> is the finished, occupied building.
@@ -442,14 +448,14 @@ export function Dls() {
             <div className="dls-grid two">
               <Card>
                 <CardHeader>
-                  <div className="dls-ico" aria-hidden><UserRound /></div>
+                  <IconTile><UserRound /></IconTile>
                   <CardTitle className="text-base">A person can apply it</CardTitle>
                   <CardDescription>Every rule, token, and asset is documented in plain language, so a new team member can produce on-brand work without a designer present.</CardDescription>
                 </CardHeader>
               </Card>
               <Card>
                 <CardHeader>
-                  <div className="dls-ico" aria-hidden><Bot /></div>
+                  <IconTile><Bot /></IconTile>
                   <CardTitle className="text-base">An AI can build from it</CardTitle>
                   <CardDescription>Every element is labelled and structured, so an AI assistant can read the system and generate on-brand work directly — without inventing colours, fonts, or components.</CardDescription>
                 </CardHeader>
@@ -466,28 +472,28 @@ export function Dls() {
                 <div className="k">Tier 1 · Brand</div>
                 <div className="v">
                   <p>Brand strategy — mission, values, personality, and voice — is defined in <code>brand/brand.json</code> and <code>brand/BRAND.md</code>.</p>
-                  <div className="dls-subs"><span className="sub">brand/brand.json</span><span className="sub">brand/BRAND.md</span><span className="sub">brand/logo</span></div>
+                  <div className="flex flex-wrap gap-2">{['brand/brand.json', 'brand/BRAND.md', 'brand/logo'].map((s) => <Badge key={s} variant="outline" className="font-mono font-normal">{s}</Badge>)}</div>
                 </div>
               </div>
               <div className="dls-map-row">
                 <div className="k">Tier 2 · Foundation</div>
                 <div className="v">
                   <p>The building blocks — colour, typography, and spacing — are defined as tokens in <code>tokens/</code> and consumed by the components in <code>src/components/ui</code>.</p>
-                  <div className="dls-subs"><span className="sub">tokens/colors.json</span><span className="sub">tokens/typography.json</span><span className="sub">tokens/spacing.json</span><span className="sub">src/components/ui</span></div>
+                  <div className="flex flex-wrap gap-2">{['tokens/colors.json', 'tokens/typography.json', 'tokens/spacing.json', 'src/components/ui'].map((s) => <Badge key={s} variant="outline" className="font-mono font-normal">{s}</Badge>)}</div>
                 </div>
               </div>
               <div className="dls-map-row">
                 <div className="k">Tier 3 · Output</div>
                 <div className="v">
                   <p>The assembled, shippable pieces — pre-composed blocks, charts, and AI build recipes — live in <code>src/blocks</code> and <code>recipes/</code>.</p>
-                  <div className="dls-subs"><span className="sub">src/blocks</span><span className="sub">recipes/build-an-app.md</span><span className="sub">recipes/build-a-website.md</span></div>
+                  <div className="flex flex-wrap gap-2">{['src/blocks', 'recipes/build-an-app.md', 'recipes/build-a-website.md'].map((s) => <Badge key={s} variant="outline" className="font-mono font-normal">{s}</Badge>)}</div>
                 </div>
               </div>
               <div className="dls-map-row">
                 <div className="k">AI-legible layer</div>
                 <div className="v">
                   <p>A machine-readable index ties the system together. An AI assistant reads these files first, then builds only from the system.</p>
-                  <div className="dls-subs"><span className="sub">manifest.json</span><span className="sub">registry.json</span><span className="sub">graph.json</span></div>
+                  <div className="flex flex-wrap gap-2">{['manifest.json', 'registry.json', 'graph.json'].map((s) => <Badge key={s} variant="outline" className="font-mono font-normal">{s}</Badge>)}</div>
                 </div>
               </div>
             </div>

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { Menu } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { Slot } from "radix-ui"
 
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -258,7 +258,10 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, open, openMobile, isMobile } = useSidebar()
+  // Standard menu affordance: a hamburger to OPEN, an X to CLOSE — never the
+  // open icon while the menu is already open. Label + aria-expanded follow suit.
+  const isOpen = isMobile ? openMobile : open
 
   return (
     <Button
@@ -267,14 +270,15 @@ function SidebarTrigger({
       variant="ghost"
       size="icon"
       className={cn("size-7", className)}
+      aria-expanded={isOpen}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      <Menu />
-      <span className="sr-only">Toggle Sidebar</span>
+      {isOpen ? <X /> : <Menu />}
+      <span className="sr-only">{isOpen ? "Close menu" : "Open menu"}</span>
     </Button>
   )
 }

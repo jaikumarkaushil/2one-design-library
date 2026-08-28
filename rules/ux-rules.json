@@ -112,6 +112,11 @@
       "rationale": "A blank region reads as a bug; an empty state tells the user what to do next.",
       "applies_to": ["component:empty"] },
 
+    { "id": "menu-toggle-affordance", "category": "interaction", "severity": "must", "label": "Menu toggle shows open vs close",
+      "statement": "A toggle-able menu/sidebar shows a hamburger to open and an X (close) when it is open — never the open icon while already open. Reflect the state with aria-expanded and a matching label (Open menu / Close menu).",
+      "rationale": "Showing only the open affordance while the menu is open leaves no clear way to close it and misreports state to assistive tech. SidebarTrigger implements this.",
+      "applies_to": ["component:sidebar", "component:button"] },
+
     { "id": "one-spacing-scale", "category": "layout", "severity": "must", "label": "One 8px spacing scale",
       "statement": "Use the 8px spacing scale via Tailwind utilities (gap-4, p-6, mt-6). No ad-hoc inline margins or off-scale pixel values.",
       "rationale": "Inconsistent gaps are the single most visible 'AI-generated' tell.",

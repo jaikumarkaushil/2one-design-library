@@ -4,8 +4,8 @@
   "generated_for": "0.2.0",
   "ontology": "graph/ontology.json",
   "stats": {
-    "nodes": 305,
-    "edges": 889,
+    "nodes": 306,
+    "edges": 891,
     "by_node_type": {
       "a11y": 8,
       "template-block": 20,
@@ -21,7 +21,7 @@
       "package": 13,
       "token-radius": 7,
       "ramp": 21,
-      "rule": 33,
+      "rule": 34,
       "state": 10,
       "token-color": 36,
       "token-type": 10,
@@ -37,7 +37,7 @@
       "Intent": 19,
       "Package": 13,
       "Foundation": 74,
-      "Rule": 33,
+      "Rule": 34,
       "State": 10
     },
     "by_edge_type": {
@@ -50,7 +50,7 @@
       "derived_from": 30,
       "embodies": 6,
       "forbidden_with": 1,
-      "governed_by": 122,
+      "governed_by": 124,
       "has_contrast": 18,
       "inappropriate_for": 4,
       "overrides": 1,
@@ -66,11 +66,11 @@
     },
     "by_provenance": {
       "nodes": {
-        "explicit": 100,
+        "explicit": 101,
         "derived": 205
       },
       "edges": {
-        "explicit": 232,
+        "explicit": 234,
         "derived": 657
       }
     },
@@ -1970,6 +1970,21 @@
       "category": "consistency",
       "statement": "Use lucide-react for every icon. Do not mix a second icon set.",
       "rationale": "One icon library keeps weight, stroke, and metaphor consistent.",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:menu-toggle-affordance",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Menu toggle shows open vs close",
+      "kind": "constraint",
+      "priority": "MANDATORY",
+      "severity": "must",
+      "tier": "interaction",
+      "category": "interaction",
+      "statement": "A toggle-able menu/sidebar shows a hamburger to open and an X (close) when it is open — never the open icon while already open. Reflect the state with aria-expanded and a matching label (Open menu / Close menu).",
+      "rationale": "Showing only the open affordance while the menu is open leaves no clear way to close it and misreports state to assistive tech. SidebarTrigger implements this.",
       "source": "rules/ux-rules.json"
     },
     {
@@ -6044,6 +6059,12 @@
     },
     {
       "source": "component:button",
+      "target": "rule:menu-toggle-affordance",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:button",
       "target": "rule:no-color-alone",
       "type": "governed_by",
       "prov": "explicit"
@@ -6273,6 +6294,12 @@
     {
       "source": "component:sidebar",
       "target": "rule:content-page-chrome",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:sidebar",
+      "target": "rule:menu-toggle-affordance",
       "type": "governed_by",
       "prov": "explicit"
     },

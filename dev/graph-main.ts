@@ -15,7 +15,7 @@ const IC: Record<string, string> = {
 const lucide = (name: string, size = 15) => `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[name]}</svg>`
 
 // Node families — the ordered grouping shared by the filter chips AND the legend
-const FAMILY_ORDER = ['Identity', 'Governance', 'Renders on screen', 'Templates', 'Raw token values', 'External', 'Accessibility', 'Other']
+const FAMILY_ORDER = ['Identity', 'Governance', 'Reasoning', 'Renders on screen', 'Templates', 'Patterns', 'Raw token values', 'External', 'Accessibility', 'Other']
 
 // Categorical palette drawn from a Japanese ukiyo-e woodblock print (bonsai pine on a
 // sea cliff under a red sun). Each node family borrows a colour eyedropped from a region
@@ -35,12 +35,36 @@ const TYPES: Record<string, any> = {
   'token-type': { label: 'Type', light: '#6e97a3', dark: '#a6c4cd', family: 'Raw token values', src: 'the sea-foam' },
   'package': { label: 'Package', light: '#77736c', dark: '#a8a199', family: 'External', src: 'the weathered stone' },
   'contrast': { label: 'Contrast', light: '#15803d', dark: '#4ade80', semantic: true, family: 'Accessibility', src: 'kept green — it flags pass / fail' },
+  // Decision / reasoning layer — the semantic graph the AI reasons over. These extend
+  // the painting palette (they are not eyedropped from it) so the reasoning nodes are
+  // distinguishable rather than an undifferentiated grey.
+  'intent': { label: 'Intent', light: '#caa63d', dark: '#e3c25e', family: 'Reasoning', src: "the user's goal" },
+  'context': { label: 'Context', light: '#b5766a', dark: '#d29a8e', family: 'Reasoning', src: 'when it applies' },
+  'state': { label: 'State', light: '#6f6f9c', dark: '#9a9ad0', family: 'Reasoning', src: 'interaction state' },
+  'pattern': { label: 'Pattern', light: '#2f8f83', dark: '#5ec4b6', family: 'Patterns', src: 'a composed solution' },
+  'variant': { label: 'Variant', light: '#4d7ea8', dark: '#8bb5d6', family: 'Renders on screen', src: 'a component variant' },
+  'a11y': { label: 'Requirement', light: '#15803d', dark: '#4ade80', family: 'Accessibility', src: 'an a11y requirement' },
 }
 const REL: Record<string, any> = {
   composed_of: { out: 'Composed of', in: 'Used by' }, uses: { out: 'Uses', in: 'Used by' },
   derived_from: { out: 'Derived from', in: 'Source of' }, governed_by: { out: 'Governed by', in: 'Governs' },
   has_contrast: { out: 'Contrast', in: 'Contrast of' }, embodies: { out: 'Embodies', in: 'Embodied by' },
   serves: { out: 'Serves', in: 'Served by' }, depends_on: { out: 'Depends on', in: 'Depended on by' },
+  // decision / reasoning edges (the semantic layer)
+  preferred_for: { out: 'Preferred for', in: 'Preferred choice for' },
+  appropriate_for: { out: 'Appropriate for', in: 'Appropriate use' },
+  inappropriate_for: { out: 'Inappropriate for', in: 'Inappropriate use' },
+  preferred_over: { out: 'Preferred over', in: 'Superseded by' },
+  alternative_to: { out: 'Alternative to', in: 'Alternative' },
+  forbidden_with: { out: 'Forbidden with', in: 'Forbidden with' },
+  requires: { out: 'Requires', in: 'Required by' },
+  supports_state: { out: 'Supports state', in: 'State of' },
+  preferred_composition: { out: 'Preferred composition', in: 'Composed into' },
+  realized_by: { out: 'Realized by', in: 'Realizes' },
+  demonstrates: { out: 'Demonstrates', in: 'Demonstrated by' },
+  applies_when: { out: 'Applies when', in: 'Applies' },
+  overrides: { out: 'Overrides', in: 'Overridden by' },
+  specializes: { out: 'Specializes', in: 'Specialized by' },
 }
 
 const root = document.documentElement
@@ -346,12 +370,15 @@ document.getElementById('search')!.addEventListener('input', (e: any) => {
 document.getElementById('reset')!.addEventListener('click', () => { scale = 1; ox = 0; oy = 0; select(null); alpha = 0.6 })
 
 const tb = document.getElementById('theme')!
-function setT(t: string) { root.classList.toggle('dark', t === 'dark'); const isDark = t === 'dark'; tb.innerHTML = lucide(isDark ? 'sun' : 'moon') + '<span>' + (isDark ? 'Light' : 'Dark') + '</span>'
+function setT(t: string) { root.classList.toggle('dark', t === 'dark'); try { localStorage.setItem('theme', t) } catch {} const isDark = t === 'dark'; tb.innerHTML = lucide(isDark ? 'sun' : 'moon') + '<span>' + (isDark ? 'Light' : 'Dark') + '</span>'
   Array.prototype.forEach.call(document.querySelectorAll('.chip'), (c: any) => paintSwatch(c.querySelector('.dot'), c.dataset.t))
   Array.prototype.forEach.call(document.querySelectorAll('.g-row'), (row: any) => { const t2 = row.dataset.t; if (t2) paintSwatch(row.querySelector('.g-dot'), t2) })
   Array.prototype.forEach.call(document.querySelectorAll('.comp-check'), (b: any) => { if (b.dataset.type) b.style.accentColor = nodeColor(b.dataset.type) })
   if (selected) select(selected) }
-setT(matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light')
+// Honour the theme the app pages persist (localStorage 'theme', written by the
+// ThemeProvider) so navigating Dashboard → graph keeps the same theme; fall back
+// to the OS preference on a first, standalone visit.
+setT(localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'))
 tb.addEventListener('click', () => setT(theme() === 'dark' ? 'light' : 'dark'))
 
 document.getElementById('stats')!.textContent = GRAPH.stats.nodes + ' elements · ' + GRAPH.stats.edges + ' relationships'

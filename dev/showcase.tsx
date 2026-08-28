@@ -46,7 +46,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader,
   SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem,
-  SidebarProvider, SidebarTrigger,
+  SidebarProvider, SidebarTrigger, useSidebar,
 } from '@/components/ui/sidebar'
 
 import { Logo } from '@/components/logo'
@@ -198,6 +198,20 @@ function ThemeToggle({ className = '' }: { className?: string }) {
   )
 }
 
+// The logo sits in the SidebarHeader when the menu is expanded; when the menu is
+// collapsed (or on mobile, where it's an off-canvas sheet) it hops to the top bar
+// next to the hamburger — so the wordmark is always visible exactly once.
+function TopBarLogo() {
+  const { state, isMobile } = useSidebar()
+  if (state === 'expanded' && !isMobile) return null
+  return (
+    <a href="/" className="flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="2one — dashboard">
+      <Logo variant="black" width={46} className="dark:hidden" />
+      <Logo variant="white" width={46} className="hidden dark:block" />
+    </a>
+  )
+}
+
 export function Showcase() {
   const [active, setActive] = useState('overview')
 
@@ -214,10 +228,10 @@ export function Showcase() {
         {/* App shell — the library's own Sidebar, not bespoke chrome */}
         <Sidebar>
           <SidebarHeader>
-            <div className="flex items-center gap-2.5 px-2 py-1.5">
+            <a href="/" className="flex items-center gap-2.5 px-2 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="2one — dashboard">
               <Logo variant="black" width={52} className="dark:hidden" />
               <Logo variant="white" width={52} className="hidden dark:block" />
-            </div>
+            </a>
           </SidebarHeader>
           <SidebarContent>
             {NAV.map((g, i) => (
@@ -241,6 +255,7 @@ export function Showcase() {
         <SidebarInset className="min-w-0">
           <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
             <SidebarTrigger />
+            <TopBarLogo />
             <Separator orientation="vertical" className="mr-1 !h-5" />
             <Breadcrumb>
               <BreadcrumbList>

@@ -288,8 +288,11 @@ export function Showcase() {
                 </CardContent>
               </Card>
 
-              {/* Differentiators — the key selling points, each with checkable evidence (honest, no hype) */}
-              <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {/* Features — the key selling points, each with checkable evidence (honest, no hype) */}
+              <div className="g-eyebrow mt-14">Features</div>
+              <h2>What makes it different</h2>
+              <p className="g-lede">Each point below is a real capability with checkable evidence — no hype.</p>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {([
                   [<Network />, 'Opinionated & deterministic', 'A knowledge graph of every token, component and rule — ask what a change touches before you ship it.', 'npm run what-uses'],
                   [<Accessibility />, 'Accessible by default', 'Radix primitives + an APCA contrast audit that runs on every change, in light and dark.', 'npm run a11y'],
@@ -309,7 +312,9 @@ export function Showcase() {
                 ))}
               </div>
 
-              <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+              <div className="g-eyebrow mt-14">What&apos;s available</div>
+              <h2>The system at a glance</h2>
+              <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 {([[String(COUNT.components), 'Components'], [String(COUNT.shadcn), 'shadcn primitives'], [String(COUNT.twoOne), '2one-authored'], ['1', 'Hue-free system']] as [string, string][]).map(([k, l]) => (
                   <Card key={l}>
                     <CardHeader>
@@ -318,26 +323,6 @@ export function Showcase() {
                     </CardHeader>
                   </Card>
                 ))}
-              </div>
-              <div className="mt-4 grid gap-4 md:grid-cols-2">
-                <Card className="min-w-0">
-                  <CardHeader>
-                    <CardTitle className="text-base">Run it locally</CardTitle>
-                    <CardDescription>Works today — no registry, no auth.</CardDescription>
-                  </CardHeader>
-                  <CardContent className="min-w-0">
-                    <CopyButton text={'npm install\nnpm run dev'} label="Copy install commands" />
-                  </CardContent>
-                </Card>
-                <Card className="min-w-0">
-                  <CardHeader>
-                    <CardTitle className="text-base">Use in your app</CardTitle>
-                    <CardDescription>React 19 · Tailwind v4.</CardDescription>
-                  </CardHeader>
-                  <CardContent className="min-w-0">
-                    <CopyButton text={"import { Button } from '@yokesh-2one/design-library'\nimport '@yokesh-2one/design-library/styles'"} label="Copy import" />
-                  </CardContent>
-                </Card>
               </div>
             </section>
 
@@ -376,34 +361,45 @@ export function Showcase() {
                 <CardContent className="min-w-0">
                   <CodeBlock code={`Prompt for Building with the 2one Design Library
 
-I want to build [Product], used by [target users] to [why users want to use it].
+I want to build [Product], for [target users], to [the outcome they want].
 
-Workflow / Core Features:
-1. [Feature / workflow step 1]
-2. [Feature / workflow step 2]
-3. [Feature / workflow step 3]
+Core features / workflows:
+1. [Feature or workflow step]
+2. [Feature or workflow step]
+3. [Feature or workflow step]
 
-Design System Source
-Use the 2one Design Library, hosted at:
-https://github.com/yokesh-2one/2one-design-library
+Design system — read it first
+Use the 2one Design Library: https://github.com/yokesh-2one/2one-design-library
+Read manifest.json FIRST — it is the machine-readable index and the instructions_for_ai contract. Then, before building, summarise:
+- the components, tokens and brand foundations that exist
+- the templates relevant to this build (blocks, charts, page patterns, and Components for AI Interface if this is an assistant UI)
+Use the knowledge graph for decisions (which component fits an intent, what a change touches): node scripts/graph-decide.mjs and npm run what-uses.
 
-Before building anything, read the repo and give me a brief summary of:
-- What components, tokens, and brand foundations are available
-- Any templates relevant to this specific build
-
-Component Rules
-- Use ShadCN components and templates as the primary UI library.
-- If no ShadCN equivalent exists for something this build needs, flag it explicitly instead of improvising a new style or component from scratch.
-- All colors, typography, iconography, and other visual elements must come from the 2one Design Library — do not introduce styles, colors, or components outside of it.
-
-Accuracy Rule
-Only answer questions and make design decisions based on what's actually in the repo. Do not hallucinate or assume components, tokens, or brand rules that aren't present — if something is unclear or missing, say so rather than guessing.
+Build only from the system
+- Compose from the real 2one components, tokens and templates — never hand-roll a parallel component or style. If the library has no primitive for something, say so instead of inventing one.
+- Colour: grayscale foundation + one brand accent (--brand, #30A1FF) for emphasis only (links, focus, selection). danger/success only for validation state and data-trend deltas, always paired with an icon/arrow. Charts use the --chart-1..5 categorical palette. Never introduce another hue.
+- Icons: lucide only. Buttons are pills; one primary action per view.
+- Never convey state or a trend by colour alone — pair it with an icon or text.
 
 Accessibility
-All components and layouts must meet the accessibility standards defined in the 2one Design Library (WCAG AA baseline, APCA contrast thresholds where specified). Never use color alone to convey state or information — pair it with an icon or other visual cue.
+Meet the 2one accessibility bar: WCAG AA + the APCA thresholds the repo audits, in light and dark. Non-negotiable — it outranks brand and aesthetics.
 
-Brand Consistency
-The final product must be consistent with the 2one brand foundation (voice, tone, personality, and visual identity) as defined in the repo.`} />
+Accuracy
+Answer and decide only from what is actually in the repo, and cite the file. If a token, component or rule is not there, say so; never guess.
+
+After generating
+Run  npx 2one check <path>  and fix everything it reports (it exits non-zero on a violation). The final result must read as 2one — voice, tone, and visual identity.`} />
+                </CardContent>
+              </Card>
+
+              <Card className="mt-4 min-w-0">
+                <CardHeader>
+                  <CardTitle className="text-base">Run it locally</CardTitle>
+                  <CardDescription>Clone the repo and explore this catalog yourself — works today, no registry, no auth.</CardDescription>
+                </CardHeader>
+                <CardContent className="min-w-0">
+                  <CopyButton text={'npm install
+npm run dev'} label="Copy install commands" />
                 </CardContent>
               </Card>
             </section>

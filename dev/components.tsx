@@ -347,6 +347,108 @@ export function Components() {
               </div>
             </section>
 
+            {/* BLOCKS */}
+            <section id="blocks" className="g-section">
+              <div className="g-eyebrow">Templates</div><h2>Blocks</h2>
+              <p className="g-lede">Pre-composed, auto-themed forms built from the 2one components — ready to drop into an app.</p>
+              <div className="g-grid2">
+                <Block title="login-01" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login01 /></div></Block>
+                <Block title="login-02" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login02 /></div></Block>
+                <Block title="login-03" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login03 /></div></Block>
+                <Block title="login-04" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login04 /></div></Block>
+                <Block title="login-05" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login05 /></div></Block>
+                <Block title="signup-01" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Signup01 /></div></Block>
+                <Block title="signup-02" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Signup02 /></div></Block>
+                <Block title="signup-03" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Signup03 /></div></Block>
+              </div>
+              <Card className="mt-6 gap-4">
+                <CardHeader>
+                  <CardTitle className="text-base">dashboard-plain</CardTitle>
+                  <CardDescription>block · content only, no navigation</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[600px] overflow-auto rounded-lg border">
+                    <DashboardPlain />
+                  </div>
+                </CardContent>
+              </Card>
+              <div className="g-scale-label">All blocks</div>
+              <div className="g-index">
+                {BLOCK_ITEMS.map((b) => <span key={b} className="chip">{b}</span>)}
+              </div>
+            </section>
+
+            {/* MARKETING */}
+            <section id="marketing" className="g-section">
+              <div className="g-eyebrow">Templates</div><h2>Marketing</h2>
+              <p className="g-lede">Landing-page sections, built entirely from the library — grayscale, light + dark. Each is a full-bleed section; <code>marketing/page.tsx</code> composes them into a complete page.</p>
+              <div className="mt-6 flex flex-col gap-6">
+                {([
+                  ['hero', <MarketingHero />],
+                  ['logo-cloud', <MarketingLogoCloud />],
+                  ['feature-grid', <MarketingFeatureGrid />],
+                  ['stats', <MarketingStats />],
+                  ['testimonial', <MarketingTestimonial />],
+                  ['pricing', <MarketingPricing />],
+                  ['faq', <MarketingFaq />],
+                  ['client-faq', <MarketingClientFaq />],
+                  ['cta-banner', <MarketingCtaBanner />],
+                  ['footer', <MarketingFooter />],
+                ] as [string, React.ReactNode][]).map(([id, node]) => (
+                  <div key={id}>
+                    <div className="g-scale-label">{id}</div>
+                    <div className="overflow-hidden rounded-lg border">{node}</div>
+                  </div>
+                ))}
+                <div>
+                  <div className="g-scale-label">page — full landing page (composed)</div>
+                  <div className="h-[720px] overflow-auto rounded-lg border"><MarketingPage /></div>
+                </div>
+              </div>
+            </section>
+
+            {/* CHARTS */}
+            <section id="charts" className="g-section">
+              <div className="g-eyebrow">Templates · data viz</div><h2>Charts</h2>
+              <p className="g-lede">{COUNT.charts} chart templates across every type — an accent-led categorical palette (<code>--chart-1…5</code>), validated for colour-blind separation and contrast in light and dark. Data-viz is the one place hues are sanctioned; charts always carry a legend + labels so identity is never colour-alone. One of each type shown; the full set lives in <code>src/blocks/charts/</code>.</p>
+              <div className="g-grid2">
+                <ChartArea />
+                <ChartBarMultiple />
+                <ChartLineMultiple />
+                <ChartRadarDefault />
+                <ChartPieDonutText />
+                <ChartRadialStacked />
+              </div>
+              <div className="g-scale-label">All {COUNT.charts} charts</div>
+              <div className="g-index">
+                {CHART_ITEMS.map((c) => <span key={c} className="chip">{c}</span>)}
+              </div>
+            </section>
+
+            {/* MOBILE / 2ONE */}
+            <section id="mobile" className="g-section">
+              <div className="g-eyebrow">Components · 2one-only</div><h2>Mobile &amp; brand</h2>
+              <p className="g-lede">The three components shadcn has no equivalent for.</p>
+              <div className="g-grid2">
+                <Block title="AppBar" className="col">
+                  <div className="w-80 rounded-xl border overflow-hidden"><AppBar title="Sign in" onBack={() => {}} trailingSlot={<Avatar className="size-7"><AvatarFallback>Y</AvatarFallback></Avatar>} /></div>
+                </Block>
+                <Block title="BottomNavItem" className="col">
+                  <div className="flex w-80 rounded-xl border overflow-hidden">
+                    <BottomNavItem icon={<Home />} label="Home" selected />
+                    <BottomNavItem icon={<Search />} label="Search" />
+                    <BottomNavItem icon={<Bell />} label="Alerts" />
+                    <BottomNavItem icon={<User />} label="Profile" />
+                  </div>
+                </Block>
+                <Block title="Logo" meta="black on light / white on dark">
+                  {/* fixed grounds — the mark is demoed on its intended surface, not the page theme's */}
+                  <div className="rounded-lg border bg-white p-4"><Logo variant="black" width={120} /></div>
+                  <div className="rounded-lg bg-neutral-950 p-4"><Logo variant="white" width={120} /></div>
+                </Block>
+              </div>
+            </section>
+
             {/* ACTIONS */}
             <section id="actions" className="g-section">
               <div className="g-eyebrow">Components</div><h2>Actions</h2>
@@ -606,108 +708,6 @@ export function Components() {
                     <Pagination><PaginationContent><PaginationItem><PaginationPrevious href="#" /></PaginationItem><PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem><PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem><PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem><PaginationItem><PaginationNext href="#" /></PaginationItem></PaginationContent></Pagination>
                   </div>
                 </Block>
-              </div>
-            </section>
-
-            {/* MOBILE / 2ONE */}
-            <section id="mobile" className="g-section">
-              <div className="g-eyebrow">Components · 2one-only</div><h2>Mobile &amp; brand</h2>
-              <p className="g-lede">The three components shadcn has no equivalent for.</p>
-              <div className="g-grid2">
-                <Block title="AppBar" className="col">
-                  <div className="w-80 rounded-xl border overflow-hidden"><AppBar title="Sign in" onBack={() => {}} trailingSlot={<Avatar className="size-7"><AvatarFallback>Y</AvatarFallback></Avatar>} /></div>
-                </Block>
-                <Block title="BottomNavItem" className="col">
-                  <div className="flex w-80 rounded-xl border overflow-hidden">
-                    <BottomNavItem icon={<Home />} label="Home" selected />
-                    <BottomNavItem icon={<Search />} label="Search" />
-                    <BottomNavItem icon={<Bell />} label="Alerts" />
-                    <BottomNavItem icon={<User />} label="Profile" />
-                  </div>
-                </Block>
-                <Block title="Logo" meta="black on light / white on dark">
-                  {/* fixed grounds — the mark is demoed on its intended surface, not the page theme's */}
-                  <div className="rounded-lg border bg-white p-4"><Logo variant="black" width={120} /></div>
-                  <div className="rounded-lg bg-neutral-950 p-4"><Logo variant="white" width={120} /></div>
-                </Block>
-              </div>
-            </section>
-
-            {/* BLOCKS */}
-            <section id="blocks" className="g-section">
-              <div className="g-eyebrow">Templates</div><h2>Blocks</h2>
-              <p className="g-lede">Pre-composed, auto-themed forms built from the 2one components — ready to drop into an app.</p>
-              <div className="g-grid2">
-                <Block title="login-01" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login01 /></div></Block>
-                <Block title="login-02" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login02 /></div></Block>
-                <Block title="login-03" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login03 /></div></Block>
-                <Block title="login-04" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login04 /></div></Block>
-                <Block title="login-05" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login05 /></div></Block>
-                <Block title="signup-01" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Signup01 /></div></Block>
-                <Block title="signup-02" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Signup02 /></div></Block>
-                <Block title="signup-03" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Signup03 /></div></Block>
-              </div>
-              <Card className="mt-6 gap-4">
-                <CardHeader>
-                  <CardTitle className="text-base">dashboard-plain</CardTitle>
-                  <CardDescription>block · content only, no navigation</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[600px] overflow-auto rounded-lg border">
-                    <DashboardPlain />
-                  </div>
-                </CardContent>
-              </Card>
-              <div className="g-scale-label">All blocks</div>
-              <div className="g-index">
-                {BLOCK_ITEMS.map((b) => <span key={b} className="chip">{b}</span>)}
-              </div>
-            </section>
-
-            {/* MARKETING */}
-            <section id="marketing" className="g-section">
-              <div className="g-eyebrow">Templates</div><h2>Marketing</h2>
-              <p className="g-lede">Landing-page sections, built entirely from the library — grayscale, light + dark. Each is a full-bleed section; <code>marketing/page.tsx</code> composes them into a complete page.</p>
-              <div className="mt-6 flex flex-col gap-6">
-                {([
-                  ['hero', <MarketingHero />],
-                  ['logo-cloud', <MarketingLogoCloud />],
-                  ['feature-grid', <MarketingFeatureGrid />],
-                  ['stats', <MarketingStats />],
-                  ['testimonial', <MarketingTestimonial />],
-                  ['pricing', <MarketingPricing />],
-                  ['faq', <MarketingFaq />],
-                  ['client-faq', <MarketingClientFaq />],
-                  ['cta-banner', <MarketingCtaBanner />],
-                  ['footer', <MarketingFooter />],
-                ] as [string, React.ReactNode][]).map(([id, node]) => (
-                  <div key={id}>
-                    <div className="g-scale-label">{id}</div>
-                    <div className="overflow-hidden rounded-lg border">{node}</div>
-                  </div>
-                ))}
-                <div>
-                  <div className="g-scale-label">page — full landing page (composed)</div>
-                  <div className="h-[720px] overflow-auto rounded-lg border"><MarketingPage /></div>
-                </div>
-              </div>
-            </section>
-
-            {/* CHARTS */}
-            <section id="charts" className="g-section">
-              <div className="g-eyebrow">Templates · data viz</div><h2>Charts</h2>
-              <p className="g-lede">{COUNT.charts} chart templates across every type — an accent-led categorical palette (<code>--chart-1…5</code>), validated for colour-blind separation and contrast in light and dark. Data-viz is the one place hues are sanctioned; charts always carry a legend + labels so identity is never colour-alone. One of each type shown; the full set lives in <code>src/blocks/charts/</code>.</p>
-              <div className="g-grid2">
-                <ChartArea />
-                <ChartBarMultiple />
-                <ChartLineMultiple />
-                <ChartRadarDefault />
-                <ChartPieDonutText />
-                <ChartRadialStacked />
-              </div>
-              <div className="g-scale-label">All {COUNT.charts} charts</div>
-              <div className="g-index">
-                {CHART_ITEMS.map((c) => <span key={c} className="chip">{c}</span>)}
               </div>
             </section>
 

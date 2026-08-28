@@ -4,8 +4,8 @@
   "generated_for": "0.2.0",
   "ontology": "graph/ontology.json",
   "stats": {
-    "nodes": 303,
-    "edges": 878,
+    "nodes": 305,
+    "edges": 889,
     "by_node_type": {
       "a11y": 8,
       "template-block": 20,
@@ -16,8 +16,8 @@
       "context": 4,
       "contrast": 9,
       "element": 7,
-      "intent": 18,
-      "pattern": 4,
+      "intent": 19,
+      "pattern": 5,
       "package": 13,
       "token-radius": 7,
       "ramp": 21,
@@ -29,12 +29,12 @@
     },
     "by_class": {
       "AccessibilityRequirement": 8,
-      "Pattern": 62,
+      "Pattern": 63,
       "Brand": 8,
       "Component": 64,
       "Context": 4,
       "Evidence": 9,
-      "Intent": 18,
+      "Intent": 19,
       "Package": 13,
       "Foundation": 74,
       "Rule": 33,
@@ -50,14 +50,14 @@
       "derived_from": 30,
       "embodies": 6,
       "forbidden_with": 1,
-      "governed_by": 117,
+      "governed_by": 122,
       "has_contrast": 18,
       "inappropriate_for": 4,
       "overrides": 1,
-      "preferred_composition": 20,
+      "preferred_composition": 25,
       "preferred_for": 6,
       "preferred_over": 2,
-      "realized_by": 15,
+      "realized_by": 16,
       "requires": 14,
       "serves": 5,
       "specializes": 6,
@@ -66,11 +66,11 @@
     },
     "by_provenance": {
       "nodes": {
-        "explicit": 98,
+        "explicit": 100,
         "derived": 205
       },
       "edges": {
-        "explicit": 221,
+        "explicit": 232,
         "derived": 657
       }
     },
@@ -1245,6 +1245,15 @@
       "source": "docs/building-with-the-dls.md"
     },
     {
+      "id": "intent:present-pricing",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Present pricing",
+      "description": "Explain plans and convert a visitor to a paid plan.",
+      "source": "src/patterns/pricing-page.tsx"
+    },
+    {
       "id": "intent:primary-action",
       "type": "intent",
       "class": "Intent",
@@ -1378,6 +1387,15 @@
       "label": "Mobile side panel",
       "description": "A panel that renders inline on md+ and as a Sheet on mobile.",
       "source": "docs/building-with-the-dls.md"
+    },
+    {
+      "id": "pattern:pricing-page",
+      "type": "pattern",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Pricing page",
+      "description": "Complete pricing-page composition: plans (Card + billing toggle + recommended) then comparison Table, FAQ and CTA. One primary action; included/excluded shown by icon + text.",
+      "source": "src/patterns/pricing-page.tsx"
     },
     {
       "id": "persona:fintech",
@@ -6536,6 +6554,41 @@
       "evidence": "rules/assistant/typing-indicator.json"
     },
     {
+      "source": "pattern:pricing-page",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/pricing-page.json"
+    },
+    {
+      "source": "pattern:pricing-page",
+      "target": "rule:one-primary",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/pricing-page.json"
+    },
+    {
+      "source": "pattern:pricing-page",
+      "target": "rule:pill-buttons",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/pricing-page.json"
+    },
+    {
+      "source": "pattern:pricing-page",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/pricing-page.json"
+    },
+    {
+      "source": "pattern:pricing-page",
+      "target": "rule:width-by-content",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/pricing-page.json"
+    },
+    {
       "source": "radius:full",
       "target": "rule:pill-buttons",
       "type": "governed_by",
@@ -6973,6 +7026,41 @@
       "evidence": "docs/building-with-the-dls.md"
     },
     {
+      "source": "pattern:pricing-page",
+      "target": "component:badge",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/patterns/pricing-page.tsx"
+    },
+    {
+      "source": "pattern:pricing-page",
+      "target": "component:button",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/patterns/pricing-page.tsx"
+    },
+    {
+      "source": "pattern:pricing-page",
+      "target": "component:card",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/patterns/pricing-page.tsx"
+    },
+    {
+      "source": "pattern:pricing-page",
+      "target": "component:table",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/patterns/pricing-page.tsx"
+    },
+    {
+      "source": "pattern:pricing-page",
+      "target": "component:tabs",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/patterns/pricing-page.tsx"
+    },
+    {
       "source": "component:alert-dialog",
       "target": "intent:confirm-action",
       "type": "preferred_for",
@@ -7077,6 +7165,14 @@
       "prov": "explicit",
       "priority": "PREFERRED",
       "evidence": "src/components/ui/button.tsx"
+    },
+    {
+      "source": "intent:present-pricing",
+      "target": "pattern:pricing-page",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "src/patterns/pricing-page.tsx"
     },
     {
       "source": "intent:primary-action",

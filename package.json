@@ -4,6 +4,7 @@
   "type": "module",
   "description": "2one Design Language System — shadcn/ui components re-skinned to the 2one tokens (grayscale, light + audited dark, pill buttons, Satoshi + Inter).",
   "license": "MIT",
+  "private": true,
   "engines": {
     "node": ">=18"
   },
@@ -25,7 +26,11 @@
     "brand",
     "graph.json",
     "manifest.json",
-    "tokens"
+    "tokens",
+    "graph",
+    "rules",
+    "AGENTS.md",
+    "llms.txt"
   ],
   "sideEffects": [
     "**/*.css"
@@ -40,9 +45,10 @@
     "a11y:graph": "node scripts/audit-graph-colors.mjs",
     "tokens": "node scripts/build-tokens.mjs && node scripts/build-dtcg.mjs",
     "manifest": "node scripts/build-manifest.mjs && node scripts/build-ai-entries.mjs",
-    "validate": "node scripts/validate.mjs && node scripts/check-claims.mjs && node scripts/check-rules.mjs && node scripts/check-assistant.mjs",
+    "validate": "node scripts/validate.mjs && node scripts/check-claims.mjs && node scripts/check-rules.mjs && node scripts/check-patterns.mjs && node scripts/check-assistant.mjs",
     "check:claims": "node scripts/check-claims.mjs",
     "check:rules": "node scripts/check-rules.mjs",
+    "check:patterns": "node scripts/check-patterns.mjs",
     "check:assistant": "node scripts/check-assistant.mjs",
     "check:exports": "node scripts/check-exports.mjs",
     "check:usage": "node scripts/check-usage.mjs",
@@ -81,9 +87,6 @@
     "tsc-alias": "^1.9.1",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

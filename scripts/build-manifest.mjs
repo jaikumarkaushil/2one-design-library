@@ -104,6 +104,17 @@ const dashboards = ls(join(blocksDir, 'dashboard-plain'), tsx).length ? ['dashbo
 const charts = ls(join(blocksDir, 'charts'), tsx).map(base)
 const marketing = ls(join(blocksDir, 'marketing'), tsx).map(base)
 
+// Page patterns (Tier 3): complete, opinionated compositions in src/patterns, each
+// with a machine-readable spec in rules/patterns/<name>.json (purpose / when-not /
+// composition / primary action / a11y / anti-patterns). Indexed here so an agent
+// finds a whole-page answer the same way it finds a component.
+const patternsDir = cfg.path('patterns')
+const patternSpecsDir = cfg.path('patternSpecs')
+const patterns = ls(patternsDir, tsx).map(base)
+const patternSpecs = ls(patternSpecsDir, (f) => f.endsWith('.json'))
+  .map((f) => { try { return JSON.parse(readFileSync(join(patternSpecsDir, f), 'utf8')) } catch { return null } })
+  .filter(Boolean)
+
 // Assistant elements (Tier 3): complete, opinionated pieces for a single
 // AI-product interface state (reasoning, tool calls, refusals …), each in
 // src/assistant with a machine-readable spec in rules/assistant/<name>.json.
@@ -219,6 +230,13 @@ const manifest = {
       blocks: { path: `${cfg.rel('blocks')}/`, items: blocks.concat(dashboards) },
       marketing: { path: `${cfg.rel('blocks')}/marketing/`, items: marketing },
       charts: { path: `${cfg.rel('blocks')}/charts/`, count: charts.length, items: charts },
+      patterns: {
+        path: `${cfg.rel('patterns')}/`,
+        specs: `${cfg.rel('patternSpecs')}/`,
+        note: `Complete, opinionated PAGE compositions — the ${cfg.name} answer for a whole screen. Adapt the content, keep the structure. Each carries a machine-readable spec and a graph node (pattern:<id>).`,
+        items: patterns,
+        spec: patternSpecs,
+      },
       assistant: {
         path: `${cfg.rel('assistant')}/`,
         specs: `${cfg.rel('assistantSpecs')}/`,

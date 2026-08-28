@@ -38,6 +38,8 @@ const DEFAULTS = {
     components: 'src/components/ui',
     ownComponents: 'src/components',
     blocks: 'src/blocks',
+    patterns: 'src/patterns',
+    patternSpecs: 'rules/patterns',
     assistant: 'src/assistant',
     assistantSpecs: 'rules/assistant',
     barrel: 'src/index.ts',

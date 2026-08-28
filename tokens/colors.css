@@ -42,7 +42,7 @@
   --color-brand-700: #1670c9;  /* light-theme accent — clears APCA Lc 60 (text) / 15 (ring) on white */
   --color-brand-800: #12579c;  /* hover / pressed for the light accent */
 
-  /* danger / success — the validation-only hues */
+  /* danger / success — the validation + data-trend hues (paired with a direction cue) */
   --color-danger-500: #ef4444;
   --color-danger-600: #dc2626;
   --color-danger-700: #c81e1e; /* --destructive in the light theme; darker than 600 so the white button label clears APCA Lc 75 */

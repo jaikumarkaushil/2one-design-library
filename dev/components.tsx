@@ -696,7 +696,7 @@ export function Components() {
             {/* CHARTS */}
             <section id="charts" className="g-section">
               <div className="g-eyebrow">Templates · data viz</div><h2>Charts</h2>
-              <p className="g-lede">{COUNT.charts} chart templates across every type — grayscale by default (the <code>--chart-1…5</code> tokens map to the neutral ramp, no hues). One of each type shown; the full set lives in <code>src/blocks/charts/</code>.</p>
+              <p className="g-lede">{COUNT.charts} chart templates across every type — an accent-led categorical palette (<code>--chart-1…5</code>), validated for colour-blind separation and contrast in light and dark. Data-viz is the one place hues are sanctioned; charts always carry a legend + labels so identity is never colour-alone. One of each type shown; the full set lives in <code>src/blocks/charts/</code>.</p>
               <div className="g-grid2">
                 <ChartArea />
                 <ChartBarMultiple />

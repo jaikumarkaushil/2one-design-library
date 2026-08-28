@@ -5,7 +5,7 @@
   "ontology": "graph/ontology.json",
   "stats": {
     "nodes": 306,
-    "edges": 891,
+    "edges": 887,
     "by_node_type": {
       "a11y": 8,
       "ai-component": 7,
@@ -47,7 +47,7 @@
       "composed_of": 407,
       "demonstrates": 5,
       "depends_on": 78,
-      "derived_from": 30,
+      "derived_from": 26,
       "embodies": 6,
       "forbidden_with": 1,
       "governed_by": 124,
@@ -71,7 +71,7 @@
       },
       "edges": {
         "explicit": 234,
-        "derived": 657
+        "derived": 653
       }
     },
     "ontology_violations": 0
@@ -2232,14 +2232,14 @@
       "type": "rule",
       "class": "Rule",
       "prov": "explicit",
-      "label": "danger/success for validation only",
+      "label": "danger/success for state + data trends only",
       "kind": "constraint",
       "priority": "MANDATORY",
       "severity": "must",
       "tier": "brand",
       "category": "brand",
-      "statement": "Use danger and success colours only to express validation state (error/success) — never for emphasis, branding, or decoration.",
-      "rationale": "Reserving the only two hues for state keeps their meaning unambiguous.",
+      "statement": "Use danger and success colours only to express (a) validation state (error/success) and (b) data-trend deltas — growth/decline in metrics, KPIs and data-viz — and in BOTH cases always pair the hue with a direction arrow, icon or text so meaning never rests on colour alone. Never for emphasis, branding, or decoration.",
+      "rationale": "Reserving the two hues for state and trend keeps their meaning unambiguous; pairing each with a non-colour cue keeps it accessible (WCAG 1.4.1).",
       "source": "rules/ux-rules.json"
     },
     {
@@ -2407,7 +2407,7 @@
       "class": "Foundation",
       "prov": "derived",
       "label": "chart-1",
-      "hex": "#09090b"
+      "hex": "#1670c9"
     },
     {
       "id": "token:chart-2",
@@ -2415,7 +2415,7 @@
       "class": "Foundation",
       "prov": "derived",
       "label": "chart-2",
-      "hex": "#3f3f46"
+      "hex": "#eb6834"
     },
     {
       "id": "token:chart-3",
@@ -2423,7 +2423,7 @@
       "class": "Foundation",
       "prov": "derived",
       "label": "chart-3",
-      "hex": "#52525b"
+      "hex": "#1baf7a"
     },
     {
       "id": "token:chart-4",
@@ -2431,7 +2431,7 @@
       "class": "Foundation",
       "prov": "derived",
       "label": "chart-4",
-      "hex": "#a1a1aa"
+      "hex": "#eda100"
     },
     {
       "id": "token:chart-5",
@@ -2439,7 +2439,7 @@
       "class": "Foundation",
       "prov": "derived",
       "label": "chart-5",
-      "hex": "#d4d4d8"
+      "hex": "#e87ba4"
     },
     {
       "id": "token:destructive",
@@ -5799,31 +5799,7 @@
     },
     {
       "source": "token:chart-1",
-      "target": "ramp:neutral-950",
-      "type": "derived_from",
-      "prov": "derived"
-    },
-    {
-      "source": "token:chart-2",
-      "target": "ramp:neutral-700",
-      "type": "derived_from",
-      "prov": "derived"
-    },
-    {
-      "source": "token:chart-3",
-      "target": "ramp:neutral-600",
-      "type": "derived_from",
-      "prov": "derived"
-    },
-    {
-      "source": "token:chart-4",
-      "target": "ramp:neutral-400",
-      "type": "derived_from",
-      "prov": "derived"
-    },
-    {
-      "source": "token:chart-5",
-      "target": "ramp:neutral-300",
+      "target": "ramp:brand-700",
       "type": "derived_from",
       "prov": "derived"
     },

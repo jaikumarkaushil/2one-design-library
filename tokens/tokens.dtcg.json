@@ -126,19 +126,19 @@
       "$value": "#1670c9"
     },
     "chart-1": {
-      "$value": "{color.neutral.950}"
+      "$value": "#1670c9"
     },
     "chart-2": {
-      "$value": "{color.neutral.700}"
+      "$value": "#eb6834"
     },
     "chart-3": {
-      "$value": "{color.neutral.600}"
+      "$value": "#1baf7a"
     },
     "chart-4": {
-      "$value": "{color.neutral.400}"
+      "$value": "#eda100"
     },
     "chart-5": {
-      "$value": "{color.neutral.300}"
+      "$value": "#e87ba4"
     },
     "sidebar": {
       "$value": "{color.neutral.50}"
@@ -237,19 +237,19 @@
       "$value": "#7cc4ff"
     },
     "chart-1": {
-      "$value": "{color.neutral.50}"
+      "$value": "#3987e5"
     },
     "chart-2": {
-      "$value": "{color.neutral.300}"
+      "$value": "#d95926"
     },
     "chart-3": {
-      "$value": "{color.neutral.400}"
+      "$value": "#199e70"
     },
     "chart-4": {
-      "$value": "#71717a"
+      "$value": "#c98500"
     },
     "chart-5": {
-      "$value": "{color.neutral.600}"
+      "$value": "#d55181"
     },
     "sidebar": {
       "$value": "#131316"

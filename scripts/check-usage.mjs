@@ -320,7 +320,10 @@ const RULES = [
     severity: 'warn',
     why: 'Never signal state by colour alone — pair with an icon or text, plus aria-invalid (rule 5, non-negotiable).',
     test: ({ src, lines }) => {
-      const hasSignal = /aria-invalid|aria-describedby|FieldError|role=["']alert["']/.test(src)
+      // A non-colour signal can be validation semantics OR a trend direction cue
+      // (arrow/chevron) — a data delta coloured success/danger beside a
+      // TrendingDown/ArrowDown icon is not colour-alone (rule: validation-only).
+      const hasSignal = /aria-invalid|aria-describedby|FieldError|role=["']alert["']|Trending(?:Up|Down)|Arrow(?:Up|Down)|Chevron(?:Up|Down)/.test(src)
       if (hasSignal) return []
       return lines.flatMap((l, i) =>
         /\b(?:border|text|ring)-destructive\b/.test(l)

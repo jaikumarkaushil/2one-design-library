@@ -99,12 +99,16 @@
   --input: #dcdce0;
   --ring: #1670c9;                       /* brand accent focus ring — APCA Lc 74 (non-text ≥ 15) */
 
-  /* grayscale chart ramp — the system has no hues */
-  --chart-1: #09090b;
-  --chart-2: #3f3f46;
-  --chart-3: #52525b;
-  --chart-4: #a1a1aa;
-  --chart-5: #d4d4d8;
+  /* Categorical chart palette — data-viz layer (the one place hues are sanctioned,
+     like the knowledge-graph node dots). Accent-led (chart-1 = brand accent);
+     hues + order validated with the dataviz validator on the #ffffff surface:
+     adjacent CVD ΔE ≥ 8, normal-vision ΔE ≥ 15. Charts always carry a legend +
+     labels, satisfying the <3:1 relief rule for the lighter hues. */
+  --chart-1: #1670c9;   /* blue — brand accent */
+  --chart-2: #eb6834;   /* orange */
+  --chart-3: #1baf7a;   /* aqua */
+  --chart-4: #eda100;   /* yellow */
+  --chart-5: #e87ba4;   /* magenta */
 
   /* sidebar surface */
   --sidebar: #fafafa;
@@ -164,12 +168,15 @@
   --input: #606069;
   --ring: #7cc4ff;                       /* brand accent focus ring on dark — APCA Lc 67 (non-text ≥ 15) */
 
-  /* grayscale chart ramp — light on dark, no hues */
-  --chart-1: #fafafa;
-  --chart-2: #d4d4d8;
-  --chart-3: #a1a1aa;
-  --chart-4: #71717a;
-  --chart-5: #52525b;
+  /* Categorical chart palette on dark — its own steps (not a flip), validated on
+     the #18181b card surface: adjacent CVD ΔE ≥ 8, normal-vision ≥ 15, all ≥ 3:1.
+     brand-300/#30A1FF sit above the dark lightness band, so the lead is a
+     validated mid-blue in the accent family. */
+  --chart-1: #3987e5;   /* blue — accent family */
+  --chart-2: #d95926;   /* orange */
+  --chart-3: #199e70;   /* aqua */
+  --chart-4: #c98500;   /* yellow */
+  --chart-5: #d55181;   /* magenta */
 
   /* sidebar surface */
   --sidebar: #131316;

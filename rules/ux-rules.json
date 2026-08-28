@@ -27,9 +27,9 @@
       "rationale": "One accent used sparingly reads as brand; the same hue spent on primaries, hover surfaces, or bare state signals dilutes it and reintroduces the inconsistency the grayscale foundation removes.",
       "applies_to": ["token:brand", "token:ring"] },
 
-    { "id": "validation-only", "category": "brand", "severity": "must", "label": "danger/success for validation only",
-      "statement": "Use danger and success colours only to express validation state (error/success) — never for emphasis, branding, or decoration.",
-      "rationale": "Reserving the only two hues for state keeps their meaning unambiguous.",
+    { "id": "validation-only", "category": "brand", "severity": "must", "label": "danger/success for state + data trends only",
+      "statement": "Use danger and success colours only to express (a) validation state (error/success) and (b) data-trend deltas — growth/decline in metrics, KPIs and data-viz — and in BOTH cases always pair the hue with a direction arrow, icon or text so meaning never rests on colour alone. Never for emphasis, branding, or decoration.",
+      "rationale": "Reserving the two hues for state and trend keeps their meaning unambiguous; pairing each with a non-colour cue keeps it accessible (WCAG 1.4.1).",
       "applies_to": ["token:destructive", "token:success"] },
 
     { "id": "pill-buttons", "category": "brand", "severity": "must", "label": "Buttons are pills (radius-full)",

@@ -716,7 +716,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
               </ChartContainer>
               <Separator />
               <div className="grid gap-2">
-                <div className="flex gap-2 leading-none font-medium">
+                <div className="flex gap-2 leading-none font-medium text-success">
                   Trending up by 5.2% this month{" "}
                   <IconTrendingUp className="size-4" />
                 </div>

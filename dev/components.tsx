@@ -61,6 +61,7 @@ import {
 import { Logo } from '@/components/logo'
 import { AppBar } from '@/components/app-bar'
 import { BottomNavItem } from '@/components/bottom-nav-item'
+import { GlobalNav } from './global-nav'
 
 // blocks (templates)
 import { LoginForm as Login01 } from '@/blocks/login-01'
@@ -139,13 +140,11 @@ const BLOCK_ITEMS = IX.templates.blocks.items as string[]
 const CHART_ITEMS = IX.templates.charts.items as string[]
 
 const NAV = [
-  { grp: '', items: [['/', '← Dashboard', ''], ['/dls.html', 'What is a DLS?', '']] },
   { grp: 'Tier 1 · Brand', items: [['brand', 'Brand', '']] },
   { grp: 'Tier 2 · Foundation', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
   { grp: 'Tier 3', items: [['blocks', 'Blocks', String(COUNT.blocks)], ['marketing', 'Marketing', String(COUNT.marketing)], ['charts', 'Charts', String(COUNT.charts)]] },
   { grp: '2one Components', items: [['mobile', 'Mobile · 2one', String(COUNT.twoOne)]] },
   { grp: 'Shadcn Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['more', 'More', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', '']] },
-  { grp: 'Explore', items: [['/ai-components.html', 'Components for AI Interface', String((IX.templates as any).aiComponents?.count ?? 0)], ['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
 ]
 
 
@@ -238,6 +237,7 @@ export function Components() {
             </a>
           </SidebarHeader>
           <SidebarContent>
+            <GlobalNav current="/components.html" />
             {NAV.map((g, i) => (
               <SidebarGroup key={i}>
                 {g.grp && <SidebarGroupLabel>{g.grp}</SidebarGroupLabel>}

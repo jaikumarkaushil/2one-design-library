@@ -23,6 +23,7 @@ import {
   SidebarProvider, SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { Logo } from '@/components/logo'
+import { GlobalNav } from './global-nav'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import brand from '../brand/brand.json'
 
@@ -34,14 +35,11 @@ import brand from '../brand/brand.json'
    --------------------------------------------------------- */
 
 const NAV = [
-  { grp: '', items: [['overview', 'What is a DLS?'], ['glance', 'The three tiers'], ['analogy', 'A working analogy']] },
+  { grp: 'On this page', items: [['overview', 'What is a DLS?'], ['glance', 'The three tiers'], ['analogy', 'A working analogy']] },
   { grp: 'The three tiers', items: [['tier1', 'Tier 1 · Brand'], ['tier2', 'Tier 2 · Foundation'], ['tier3', 'Tier 3 · Output']] },
   { grp: 'More', items: [['principle', 'The guiding principle'], ['inrepo', 'Where it lives here']] },
-  { grp: 'Explore', items: [['/', 'Catalog']] as [string, string][], },
 ] as { grp: string; items: [string, string][] }[]
 
-// wire up the second Explore link separately (two external links)
-const EXPLORE_LINKS: [string, string][] = [['/', 'Component catalog'], ['/graph.html', 'Knowledge graph']]
 
 const TIER1_MODULES: [React.ReactNode, string, string][] = [
   [<Target />, 'Mission & Vision', 'The brand’s purpose today and its long-term aspiration — the reference point for every downstream decision.'],
@@ -165,24 +163,46 @@ export function Dls() {
   }, [])
 
   return (
-    <div className="min-h-svh bg-background">
-      <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b bg-background/85 px-4 backdrop-blur lg:px-6">
-        <a href="/" className="flex items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="2one — back to the dashboard">
-          <Logo variant="black" width={48} className="dark:hidden" />
-          <Logo variant="white" width={48} className="hidden dark:block" />
-        </a>
-        <Separator orientation="vertical" className="!h-5" />
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem><BreadcrumbLink href="/">Dashboard</BreadcrumbLink></BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem><BreadcrumbPage>What is a DLS?</BreadcrumbPage></BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <ThemeToggle className="ml-auto" />
-      </header>
-
-      <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarHeader>
+          <div className="flex items-center gap-2.5 px-2 py-1.5">
+            <Logo variant="black" width={52} className="dark:hidden" />
+            <Logo variant="white" width={52} className="hidden dark:block" />
+          </div>
+        </SidebarHeader>
+        <SidebarContent>
+          <GlobalNav current="/dls.html" />
+          {NAV.map((g, i) => (
+            <SidebarGroup key={i}>
+              {g.grp && <SidebarGroupLabel>{g.grp}</SidebarGroupLabel>}
+              <SidebarMenu>
+                {g.items.map(([id, label]) => (
+                  <SidebarMenuItem key={id}>
+                    <SidebarMenuButton asChild isActive={active === id}>
+                      <a href={id.startsWith('/') ? id : '#' + id}>{label}</a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+          ))}
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset className="min-w-0">
+        <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
+          <SidebarTrigger />
+          <Separator orientation="vertical" className="mr-1 !h-5" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem><BreadcrumbLink href="/">Dashboard</BreadcrumbLink></BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem><BreadcrumbPage>What is a DLS?</BreadcrumbPage></BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <ThemeToggle className="ml-auto" />
+        </header>
+        <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">
 
           {/* OVERVIEW / HERO */}
           <section id="overview" className="g-section g-hero">
@@ -429,6 +449,7 @@ export function Dls() {
             @yokesh-2one/design-library · design language system reference · light and audited dark.
           </footer>
         </div>
-      </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

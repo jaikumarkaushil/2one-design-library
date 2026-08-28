@@ -52,6 +52,7 @@ import {
 import { Logo } from '@/components/logo'
 import { AppBar } from '@/components/app-bar'
 import { BottomNavItem } from '@/components/bottom-nav-item'
+import { GlobalNav } from './global-nav'
 
 // blocks (templates)
 import { LoginForm as Login01 } from '@/blocks/login-01'
@@ -121,8 +122,7 @@ const BLOCK_ITEMS = IX.templates.blocks.items as string[]
 const CHART_ITEMS = IX.templates.charts.items as string[]
 
 const NAV = [
-  { grp: 'Dashboard', items: [['overview', 'Overview', ''], ['use', 'How to use', '']] },
-  { grp: 'Explore', items: [['/components.html', 'Components & assets', String(COUNT.components)], ['/ai-components.html', 'Components for AI Interface', String((manifest.index.templates as any).aiComponents?.count ?? 0)], ['/dls.html', 'What is a DLS?', ''], ['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
+  { grp: 'On this page', items: [['overview', 'Overview', ''], ['use', 'How to use', '']] },
   { grp: 'Help', items: [['faq', 'FAQ', ''], ['support', 'Support', '']] },
 ]
 
@@ -234,6 +234,7 @@ export function Showcase() {
             </a>
           </SidebarHeader>
           <SidebarContent>
+            <GlobalNav current="/" />
             {NAV.map((g, i) => (
               <SidebarGroup key={i}>
                 {g.grp && <SidebarGroupLabel>{g.grp}</SidebarGroupLabel>}

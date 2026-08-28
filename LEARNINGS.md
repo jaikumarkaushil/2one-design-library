@@ -34,6 +34,27 @@ improving instead of repeating them. Newest first.
 - **Dev showcase only rendered a subset** (50/58 components, 3/9 blocks). LESSON:
   a showcase that samples silently hides components from humans + AI; render all.
 
+### Bugs / gotchas from the 10-item overhaul
+- **Rename `element:` → `ai-component:` via sed missed the node-group KEY** `"element":`
+  (a quote sits between `element` and `:`, so `s/element:/.../` didn't match). Node-type
+  keys need a distinct edit from `id:` values.
+- **Consumer code that hand-builds ids must be renamed too.** `dev/ai-components.tsx`
+  ITEMS still used `element:*` ids after the rename, so `SPECS.get(id)` missed and the
+  governance chips silently vanished. Renames must sweep code that CONSTRUCTS ids, not
+  just definitions.
+- **The "What is a DLS?" page had no sidebar at all** (header-only), with dead `NAV` +
+  `EXPLORE_LINKS` consts — that was the nav inconsistency. Fixed by a shared
+  `dev/global-nav.tsx` (`GlobalNav`) rendered first in every page's sidebar, so the
+  top-level menu is identical everywhere; each page keeps its own in-page section group.
+- **Chart palette, dark band:** brand-300 (#7cc4ff) and even the identity #30A1FF sit
+  ABOVE the dark categorical lightness band (L 0.48–0.67) — both FAILED the validator.
+  Used the validated mid-blue #3987e5 as the dark lead. Compute, never eyeball.
+- **check-usage `color-only-state` false-positived on a trend-down** (text-destructive
+  with no aria-invalid). A trend arrow IS the non-colour cue, so the check now accepts
+  Trending/Arrow/Chevron icons as a valid signal — the checker must track the rule it enforces.
+- **Decision recorded:** data-viz is the sanctioned exception to grayscale (charts +
+  the knowledge-graph node dots); everywhere else stays grayscale + one accent.
+
 ### Gotchas (testing / tooling)
 - Non-composited Browser pane throttles CSS animations → Radix overlay exit
   never fires `animationend` → overlays look "stuck". Not a bug; use DOM state

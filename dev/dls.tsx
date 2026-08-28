@@ -23,7 +23,7 @@ import {
   SidebarProvider, SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { Logo } from '@/components/logo'
-import { GlobalNav } from './global-nav'
+import { TopNav } from './global-nav'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import brand from '../brand/brand.json'
 
@@ -172,7 +172,6 @@ export function Dls() {
           </div>
         </SidebarHeader>
         <SidebarContent>
-          <GlobalNav current="/dls.html" />
           {NAV.map((g, i) => (
             <SidebarGroup key={i}>
               {g.grp && <SidebarGroupLabel>{g.grp}</SidebarGroupLabel>}
@@ -193,13 +192,7 @@ export function Dls() {
         <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
           <SidebarTrigger />
           <Separator orientation="vertical" className="mr-1 !h-5" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem><BreadcrumbLink href="/">Dashboard</BreadcrumbLink></BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem><BreadcrumbPage>What is a DLS?</BreadcrumbPage></BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <TopNav current="/dls.html" />
           <ThemeToggle className="ml-auto" />
         </header>
         <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">

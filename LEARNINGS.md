@@ -61,3 +61,10 @@ improving instead of repeating them. Newest first.
   (`data-state`) as source of truth, disable animations to test unmount.
 - Radix menu-type triggers (Dropdown/Menubar/ContextMenu) open on pointerdown,
   not synthetic `.click()`. Test via keyboard or real pointer events.
+
+### Nav model (2026-08-28, follow-up)
+Two-tier navigation: the GLOBAL menu lives in the TOP HEADER on every page
+(`TopNav` from dev/global-nav.tsx, mirrored into the graph page's HTML header);
+the SIDEBAR is scoped to the current page's own sections (Overview → Overview/
+How to use; Components → the tiers; etc.). Better UX than repeating the global
+menu in every sidebar. `GlobalNav` (sidebar) was replaced by `TopNav` (header).

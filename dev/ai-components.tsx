@@ -16,7 +16,7 @@ import {
   Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Logo } from '@/components/logo'
-import { GlobalNav } from './global-nav'
+import { TopNav } from './global-nav'
 
 import { LoadingState } from '@/ai-components/loading-state'
 import { ThinkingIndicator } from '@/ai-components/thinking-indicator'
@@ -93,7 +93,6 @@ export function AIComponents() {
           </div>
         </SidebarHeader>
         <SidebarContent>
-          <GlobalNav current="/ai-components.html" />
           {NAV.map((g, i) => (
             <SidebarGroup key={i}>
               {g.grp && <SidebarGroupLabel>{g.grp}</SidebarGroupLabel>}
@@ -116,13 +115,7 @@ export function AIComponents() {
         <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
           <SidebarTrigger />
           <Separator orientation="vertical" className="mr-1 !h-5" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem><BreadcrumbLink href="/">Dashboard</BreadcrumbLink></BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem><BreadcrumbPage>Components for AI Interface</BreadcrumbPage></BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <TopNav current="/ai-components.html" />
           <ThemeToggle className="ml-auto" />
         </header>
 

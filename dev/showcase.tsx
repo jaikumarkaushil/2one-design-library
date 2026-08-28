@@ -52,7 +52,7 @@ import {
 import { Logo } from '@/components/logo'
 import { AppBar } from '@/components/app-bar'
 import { BottomNavItem } from '@/components/bottom-nav-item'
-import { GlobalNav } from './global-nav'
+import { TopNav } from './global-nav'
 
 // blocks (templates)
 import { LoginForm as Login01 } from '@/blocks/login-01'
@@ -234,7 +234,6 @@ export function Showcase() {
             </a>
           </SidebarHeader>
           <SidebarContent>
-            <GlobalNav current="/" />
             {NAV.map((g, i) => (
               <SidebarGroup key={i}>
                 {g.grp && <SidebarGroupLabel>{g.grp}</SidebarGroupLabel>}
@@ -258,11 +257,7 @@ export function Showcase() {
             <SidebarTrigger />
             <TopBarLogo />
             <Separator orientation="vertical" className="mr-1 !h-5" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem><BreadcrumbPage>Dashboard</BreadcrumbPage></BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <TopNav current="/" />
             <ThemeToggle className="ml-auto" />
           </header>
           <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">

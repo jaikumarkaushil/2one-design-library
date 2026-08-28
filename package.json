@@ -30,7 +30,9 @@
     "graph",
     "rules",
     "AGENTS.md",
-    "llms.txt"
+    "llms.txt",
+    "dls.config.json",
+    "dls.identity.json"
   ],
   "sideEffects": [
     "**/*.css"

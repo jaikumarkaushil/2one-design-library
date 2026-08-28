@@ -399,8 +399,7 @@ Run  npx 2one check <path>  and fix everything it reports (it exits non-zero on 
                   <CardDescription>Clone the repo and explore this catalog yourself — works today, no registry, no auth.</CardDescription>
                 </CardHeader>
                 <CardContent className="min-w-0">
-                  <CopyButton text={'npm install
-npm run dev'} label="Copy install commands" />
+                  <CopyButton text={'npm install\nnpm run dev'} label="Copy install commands" />
                 </CardContent>
               </Card>
             </section>

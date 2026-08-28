@@ -1,10 +1,10 @@
 {
-  "id": "element:typing-indicator",
+  "id": "ai-component:typing-indicator",
   "label": "Typing indicator",
   "tier": 3,
   "kind": "assistant-element",
   "category": "reasoning",
-  "file": "src/assistant/typing-indicator.tsx",
+  "file": "src/ai-components/typing-indicator.tsx",
   "export": "TypingIndicator",
   "purpose": "Signal that the assistant is composing, as presence rather than noise.",
   "when_to_use": "A lightweight 'the assistant is about to speak' cue when there is no named step and no tokens yet.",
@@ -25,7 +25,7 @@
   ],
   "governed_by": ["reduced-motion", "grayscale", "tokens-only"],
   "assumptions": [
-    "Atomic element: composed from tokens + the spacing scale, no shadcn primitive exists for it.",
+    "Atomic ai-component: composed from tokens + the spacing scale, no shadcn primitive exists for it.",
     "Mount/unmount is driven by the caller to reflect the real composing window."
   ],
   "references": {

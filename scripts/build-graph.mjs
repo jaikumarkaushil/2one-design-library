@@ -38,7 +38,7 @@ const decisions = J('graph/decisions.json')
 const TYPE_CLASS = {}
 for (const [cls, def] of Object.entries(ontology.node_classes)) for (const t of def.node_types) TYPE_CLASS[t] = cls
 const classOf = (type) => TYPE_CLASS[type] || 'Unknown'
-const AUTHORED_TYPES = new Set(['rule', 'brand', 'persona', 'intent', 'context', 'state', 'a11y', 'pattern', 'variant', 'element'])
+const AUTHORED_TYPES = new Set(['rule', 'brand', 'persona', 'intent', 'context', 'state', 'a11y', 'pattern', 'variant', 'ai-component'])
 const provOfType = (type) => (AUTHORED_TYPES.has(type) ? 'explicit' : 'derived')
 
 const nodes = new Map()

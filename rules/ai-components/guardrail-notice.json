@@ -1,10 +1,10 @@
 {
-  "id": "element:guardrail-notice",
+  "id": "ai-component:guardrail-notice",
   "label": "Guardrail notice",
   "tier": 3,
   "kind": "assistant-element",
   "category": "reasoning",
-  "file": "src/assistant/guardrail-notice.tsx",
+  "file": "src/ai-components/guardrail-notice.tsx",
   "export": "GuardrailNotice",
   "purpose": "Give a refusal its own shape, and offer the nearest thing the agent can do instead.",
   "when_to_use": "When the agent declines a request and a safe alternative exists.",

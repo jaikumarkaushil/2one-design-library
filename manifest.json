@@ -732,10 +732,10 @@
           }
         ]
       },
-      "assistant": {
-        "path": "src/assistant/",
-        "specs": "rules/assistant/",
-        "note": "Complete, opinionated pieces for a single assistant/AI-product interface state — the 2one answer for reasoning, tool calls, refusals and the rest. Adapt the content, keep the structure. Each carries a machine-readable spec and a graph node (element:<id>). Concept inspired by assistant-ui's Elements; composed only from real 2one primitives.",
+      "aiComponents": {
+        "path": "src/ai-components/",
+        "specs": "rules/ai-components/",
+        "note": "Complete, opinionated pieces for a single assistant/AI-product interface state — the 2one answer for reasoning, tool calls, refusals and the rest. Adapt the content, keep the structure. Each carries a machine-readable spec and a graph node (ai-component:<id>). Concept inspired by assistant-ui's Elements; composed only from real 2one primitives.",
         "count": 7,
         "items": [
           "guardrail-notice",
@@ -748,12 +748,12 @@
         ],
         "spec": [
           {
-            "id": "element:guardrail-notice",
+            "id": "ai-component:guardrail-notice",
             "label": "Guardrail notice",
             "tier": 3,
             "kind": "assistant-element",
             "category": "reasoning",
-            "file": "src/assistant/guardrail-notice.tsx",
+            "file": "src/ai-components/guardrail-notice.tsx",
             "export": "GuardrailNotice",
             "purpose": "Give a refusal its own shape, and offer the nearest thing the agent can do instead.",
             "when_to_use": "When the agent declines a request and a safe alternative exists.",
@@ -806,12 +806,12 @@
             }
           },
           {
-            "id": "element:loading-state",
+            "id": "ai-component:loading-state",
             "label": "Loading state",
             "tier": 3,
             "kind": "assistant-element",
             "category": "reasoning",
-            "file": "src/assistant/loading-state.tsx",
+            "file": "src/ai-components/loading-state.tsx",
             "export": "LoadingState",
             "purpose": "Hold the frame while the model has nothing to show yet, and hint at the shape of the answer coming.",
             "when_to_use": "The gap before the first token when no reasoning step can be named.",
@@ -858,12 +858,12 @@
             }
           },
           {
-            "id": "element:reasoning-effort",
+            "id": "ai-component:reasoning-effort",
             "label": "Reasoning effort",
             "tier": 3,
             "kind": "assistant-element",
             "category": "reasoning",
-            "file": "src/assistant/reasoning-effort.tsx",
+            "file": "src/ai-components/reasoning-effort.tsx",
             "export": "ReasoningEffort",
             "purpose": "Show how hard the model was told to think, and how much of that budget the run actually spent.",
             "when_to_use": "On surfaces that expose the effort/budget dial and want to report it back honestly.",
@@ -913,12 +913,12 @@
             }
           },
           {
-            "id": "element:reasoning-panel",
+            "id": "ai-component:reasoning-panel",
             "label": "Reasoning panel",
             "tier": 3,
             "kind": "assistant-element",
             "category": "reasoning",
-            "file": "src/assistant/reasoning-panel.tsx",
+            "file": "src/ai-components/reasoning-panel.tsx",
             "export": "ReasoningPanel",
             "purpose": "Stream a reasoning trace along a timeline, then settle it into a summary — available on demand without dominating the answer.",
             "when_to_use": "When the model's intermediate steps are worth showing but should stay secondary to the final answer.",
@@ -974,12 +974,12 @@
             }
           },
           {
-            "id": "element:streaming-text",
+            "id": "ai-component:streaming-text",
             "label": "Streaming text",
             "tier": 3,
             "kind": "assistant-element",
             "category": "reasoning",
-            "file": "src/assistant/streaming-text.tsx",
+            "file": "src/ai-components/streaming-text.tsx",
             "export": "StreamingText",
             "purpose": "Render an answer as it streams — the leading edge marked, the settled text readable as plain prose.",
             "when_to_use": "While assistant tokens are arriving and should be shown as they land.",
@@ -1022,12 +1022,12 @@
             }
           },
           {
-            "id": "element:thinking-indicator",
+            "id": "ai-component:thinking-indicator",
             "label": "Thinking indicator",
             "tier": 3,
             "kind": "assistant-element",
             "category": "reasoning",
-            "file": "src/assistant/thinking-indicator.tsx",
+            "file": "src/ai-components/thinking-indicator.tsx",
             "export": "ThinkingIndicator",
             "purpose": "Tell the user the agent is working right now — and on what — so a slow turn reads as progress, not a hang.",
             "when_to_use": "Between the send and the first streamed token, whenever a named step is known.",
@@ -1075,12 +1075,12 @@
             }
           },
           {
-            "id": "element:typing-indicator",
+            "id": "ai-component:typing-indicator",
             "label": "Typing indicator",
             "tier": 3,
             "kind": "assistant-element",
             "category": "reasoning",
-            "file": "src/assistant/typing-indicator.tsx",
+            "file": "src/ai-components/typing-indicator.tsx",
             "export": "TypingIndicator",
             "purpose": "Signal that the assistant is composing, as presence rather than noise.",
             "when_to_use": "A lightweight 'the assistant is about to speak' cue when there is no named step and no tokens yet.",
@@ -1108,7 +1108,7 @@
               "tokens-only"
             ],
             "assumptions": [
-              "Atomic element: composed from tokens + the spacing scale, no shadcn primitive exists for it.",
+              "Atomic ai-component: composed from tokens + the spacing scale, no shadcn primitive exists for it.",
               "Mount/unmount is driven by the caller to reflect the real composing window."
             ],
             "references": {

@@ -1,10 +1,10 @@
 {
-  "id": "element:reasoning-effort",
+  "id": "ai-component:reasoning-effort",
   "label": "Reasoning effort",
   "tier": 3,
   "kind": "assistant-element",
   "category": "reasoning",
-  "file": "src/assistant/reasoning-effort.tsx",
+  "file": "src/ai-components/reasoning-effort.tsx",
   "export": "ReasoningEffort",
   "purpose": "Show how hard the model was told to think, and how much of that budget the run actually spent.",
   "when_to_use": "On surfaces that expose the effort/budget dial and want to report it back honestly.",

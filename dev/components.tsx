@@ -145,7 +145,7 @@ const NAV = [
   { grp: 'Tier 3', items: [['blocks', 'Blocks', String(COUNT.blocks)], ['marketing', 'Marketing', String(COUNT.marketing)], ['charts', 'Charts', String(COUNT.charts)]] },
   { grp: '2one Components', items: [['mobile', 'Mobile · 2one', String(COUNT.twoOne)]] },
   { grp: 'Shadcn Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['more', 'More', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', '']] },
-  { grp: 'Explore', items: [['/assistant.html', 'Elements', String((IX.templates as any).assistant?.count ?? 0)], ['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
+  { grp: 'Explore', items: [['/ai-components.html', 'Components for AI Interface', String((IX.templates as any).aiComponents?.count ?? 0)], ['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
 ]
 
 

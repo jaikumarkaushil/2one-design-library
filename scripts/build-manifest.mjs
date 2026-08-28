@@ -117,13 +117,13 @@ const patternSpecs = ls(patternSpecsDir, (f) => f.endsWith('.json'))
 
 // Assistant elements (Tier 3): complete, opinionated pieces for a single
 // AI-product interface state (reasoning, tool calls, refusals …), each in
-// src/assistant with a machine-readable spec in rules/assistant/<name>.json.
+// src/ai-components with a machine-readable spec in rules/ai-components/<name>.json.
 // Indexed here so an agent finds a whole assistant-state answer the same way it
 // finds a component — with its grounding, governing rules and assumptions attached.
-const assistantDir = cfg.path('assistant')
+const assistantDir = cfg.path('aiComponents')
 const assistant = ls(assistantDir, tsx).map(base)
-const assistantSpecs = ls(cfg.path('assistantSpecs'), (f) => f.endsWith('.json'))
-  .map((f) => { try { return JSON.parse(readFileSync(join(cfg.path('assistantSpecs'), f), 'utf8')) } catch { return null } })
+const assistantSpecs = ls(cfg.path('aiComponentSpecs'), (f) => f.endsWith('.json'))
+  .map((f) => { try { return JSON.parse(readFileSync(join(cfg.path('aiComponentSpecs'), f), 'utf8')) } catch { return null } })
   .filter(Boolean)
 
 // The payload's machine-readable UX-rules contract, when it ships one. Indexed
@@ -237,10 +237,10 @@ const manifest = {
         items: patterns,
         spec: patternSpecs,
       },
-      assistant: {
-        path: `${cfg.rel('assistant')}/`,
-        specs: `${cfg.rel('assistantSpecs')}/`,
-        note: `Complete, opinionated pieces for a single assistant/AI-product interface state — the ${cfg.name} answer for reasoning, tool calls, refusals and the rest. Adapt the content, keep the structure. Each carries a machine-readable spec and a graph node (element:<id>). Concept inspired by assistant-ui's Elements; composed only from real ${cfg.name} primitives.`,
+      aiComponents: {
+        path: `${cfg.rel('aiComponents')}/`,
+        specs: `${cfg.rel('aiComponentSpecs')}/`,
+        note: `Complete, opinionated pieces for a single assistant/AI-product interface state — the ${cfg.name} answer for reasoning, tool calls, refusals and the rest. Adapt the content, keep the structure. Each carries a machine-readable spec and a graph node (ai-component:<id>). Concept inspired by assistant-ui's Elements; composed only from real ${cfg.name} primitives.`,
         count: assistant.length,
         items: assistant,
         spec: assistantSpecs,

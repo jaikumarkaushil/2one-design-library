@@ -1,10 +1,10 @@
 {
-  "id": "element:reasoning-panel",
+  "id": "ai-component:reasoning-panel",
   "label": "Reasoning panel",
   "tier": 3,
   "kind": "assistant-element",
   "category": "reasoning",
-  "file": "src/assistant/reasoning-panel.tsx",
+  "file": "src/ai-components/reasoning-panel.tsx",
   "export": "ReasoningPanel",
   "purpose": "Stream a reasoning trace along a timeline, then settle it into a summary — available on demand without dominating the answer.",
   "when_to_use": "When the model's intermediate steps are worth showing but should stay secondary to the final answer.",

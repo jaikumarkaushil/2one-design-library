@@ -1,10 +1,10 @@
 {
-  "id": "element:streaming-text",
+  "id": "ai-component:streaming-text",
   "label": "Streaming text",
   "tier": 3,
   "kind": "assistant-element",
   "category": "reasoning",
-  "file": "src/assistant/streaming-text.tsx",
+  "file": "src/ai-components/streaming-text.tsx",
   "export": "StreamingText",
   "purpose": "Render an answer as it streams — the leading edge marked, the settled text readable as plain prose.",
   "when_to_use": "While assistant tokens are arriving and should be shown as they land.",

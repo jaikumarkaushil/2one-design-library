@@ -1,10 +1,10 @@
 {
-  "id": "element:thinking-indicator",
+  "id": "ai-component:thinking-indicator",
   "label": "Thinking indicator",
   "tier": 3,
   "kind": "assistant-element",
   "category": "reasoning",
-  "file": "src/assistant/thinking-indicator.tsx",
+  "file": "src/ai-components/thinking-indicator.tsx",
   "export": "ThinkingIndicator",
   "purpose": "Tell the user the agent is working right now — and on what — so a slow turn reads as progress, not a hang.",
   "when_to_use": "Between the send and the first streamed token, whenever a named step is known.",

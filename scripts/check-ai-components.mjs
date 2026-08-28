@@ -1,5 +1,5 @@
 /*
-  Integrity guard for ASSISTANT ELEMENTS (src/assistant + rules/assistant/*.json).
+  Integrity guard for ASSISTANT ELEMENTS (src/ai-components + rules/assistant/*.json).
 
   An "element" is a single assistant-interface state (reasoning, a tool call, a
   refusal…) rendered as a composed 2one piece. The concept is inspired by
@@ -9,7 +9,7 @@
   assumptions.
 
   Rule-compliance (tokens, lucide, grayscale, one-primary, …) is enforced by
-  `npm run check:usage`, whose default scan includes src/assistant, so an element
+  `npm run check:usage`, whose default scan includes src/ai-components, so an element
   is audited exactly like a block. This guard covers grounding + provenance. It
   fails (exit 1) if an element spec:
     - points at a file/export that does not exist,
@@ -24,7 +24,7 @@
   the references note says so; grounding is about never INVENTING a source, not
   about forcing composition.
 
-  Run: npm run check:assistant
+  Run: npm run check:ai-components
 */
 import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -33,9 +33,9 @@ import { config as cfg } from './lib/config.mjs'
 const root = cfg.root
 const ls = (abs) => (existsSync(abs) ? readdirSync(abs) : [])
 
-const specDir = cfg.path('assistantSpecs')
-const SPEC_REL = cfg.rel('assistantSpecs')
-const srcDir = cfg.path('assistant')
+const specDir = cfg.path('aiComponentSpecs')
+const SPEC_REL = cfg.rel('aiComponentSpecs')
+const srcDir = cfg.path('aiComponents')
 const specs = ls(specDir).filter((f) => f.endsWith('.json'))
 const errors = []
 
@@ -47,13 +47,13 @@ const realComponents = new Set(
   graph.nodes.filter((n) => n.type === 'component' || n.type === 'component-2one').map((n) => n.id.split(':')[1])
 )
 const realRules = new Set(graph.nodes.filter((n) => n.type === 'rule').map((n) => n.id.split(':')[1]))
-const realElements = new Set(graph.nodes.filter((n) => n.type === 'element').map((n) => n.id))
+const realElements = new Set(graph.nodes.filter((n) => n.type === 'ai-component').map((n) => n.id))
 
 // Every element file must have a spec — an undocumented element is invisible to an agent.
 const specNames = new Set(specs.map((f) => f.replace(/\.json$/, '')))
 for (const f of ls(srcDir).filter((f) => f.endsWith('.tsx'))) {
   const name = f.replace(/\.tsx$/, '')
-  if (!specNames.has(name)) errors.push(`${cfg.rel('assistant')}/${f}: no spec at ${SPEC_REL}/${name}.json — every element must be documented`)
+  if (!specNames.has(name)) errors.push(`${cfg.rel('aiComponents')}/${f}: no spec at ${SPEC_REL}/${name}.json — every element must be documented`)
 }
 
 for (const f of specs) {
@@ -67,7 +67,7 @@ for (const f of specs) {
     errors.push(`${where}: export "${s.export}" not found in ${s.file}`)
 
   // spec ↔ graph coverage: the element must be a node in the graph
-  if (s.id && !realElements.has(s.id)) errors.push(`${where}: "${s.id}" has no node in the graph — add it to graph/decisions.json (nodes.element)`)
+  if (s.id && !realElements.has(s.id)) errors.push(`${where}: "${s.id}" has no node in the graph — add it to graph/decisions.json (nodes.ai-component)`)
 
   // creative + demo choices must be surfaced
   if (!Array.isArray(s.assumptions) || !s.assumptions.length)
@@ -97,9 +97,9 @@ for (const f of specs) {
 }
 
 if (errors.length) {
-  console.error('\n  ✗ check:assistant — an element references something that does not exist:\n')
+  console.error('\n  ✗ check:ai-components — an element references something that does not exist:\n')
   for (const e of errors) console.error(`    • ${e}`)
   console.error('')
   process.exit(1)
 }
-console.log(`\n  ✓ check:assistant — ${specs.length} element(s) grounded: every component, rule and graph node traces to a real repo source\n`)
+console.log(`\n  ✓ check:ai-components — ${specs.length} element(s) grounded: every component, rule and graph node traces to a real repo source\n`)

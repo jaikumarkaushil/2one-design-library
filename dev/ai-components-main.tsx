@@ -2,10 +2,10 @@ import { createRoot } from 'react-dom/client'
 import './theme-dev.css'
 import './showcase.css'
 import { ThemeProvider } from '../src/theme-provider'
-import { AssistantElements } from './assistant'
+import { AIComponents } from './ai-components'
 
 createRoot(document.getElementById('root')!).render(
   <ThemeProvider>
-    <AssistantElements />
+    <AIComponents />
   </ThemeProvider>,
 )

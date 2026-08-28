@@ -1,10 +1,10 @@
 {
-  "id": "element:loading-state",
+  "id": "ai-component:loading-state",
   "label": "Loading state",
   "tier": 3,
   "kind": "assistant-element",
   "category": "reasoning",
-  "file": "src/assistant/loading-state.tsx",
+  "file": "src/ai-components/loading-state.tsx",
   "export": "LoadingState",
   "purpose": "Hold the frame while the model has nothing to show yet, and hint at the shape of the answer coming.",
   "when_to_use": "The gap before the first token when no reasoning step can be named.",

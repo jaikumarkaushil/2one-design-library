@@ -8,6 +8,7 @@
     "edges": 891,
     "by_node_type": {
       "a11y": 8,
+      "ai-component": 7,
       "template-block": 20,
       "brand": 8,
       "template-chart": 31,
@@ -15,7 +16,6 @@
       "component": 55,
       "context": 4,
       "contrast": 9,
-      "element": 7,
       "intent": 19,
       "pattern": 5,
       "package": 13,
@@ -148,6 +148,69 @@
       "label": "Visible focus indicator",
       "description": "A focusable control must show a focus ring (Lc 15 non-text floor).",
       "source": "docs/accessibility.md"
+    },
+    {
+      "id": "ai-component:guardrail-notice",
+      "type": "ai-component",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Guardrail notice",
+      "description": "A refusal in its own (grayscale) shape, offering the nearest safe alternative. Reasoning category.",
+      "source": "src/ai-components/guardrail-notice.tsx"
+    },
+    {
+      "id": "ai-component:loading-state",
+      "type": "ai-component",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Loading state",
+      "description": "A pixel matrix + Skeleton holding the frame before the first token. Reasoning category.",
+      "source": "src/ai-components/loading-state.tsx"
+    },
+    {
+      "id": "ai-component:reasoning-effort",
+      "type": "ai-component",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Reasoning effort",
+      "description": "Effort level (label + segment shape) and budget spent vs allotted. Reasoning category.",
+      "source": "src/ai-components/reasoning-effort.tsx"
+    },
+    {
+      "id": "ai-component:reasoning-panel",
+      "type": "ai-component",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Reasoning panel",
+      "description": "A collapsible timeline of reasoning steps that settles into a summary. Reasoning category.",
+      "source": "src/ai-components/reasoning-panel.tsx"
+    },
+    {
+      "id": "ai-component:streaming-text",
+      "type": "ai-component",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Streaming text",
+      "description": "Answer tokens revealed over time; the leading edge carries the brand accent, then settles to ink. Reasoning category.",
+      "source": "src/ai-components/streaming-text.tsx"
+    },
+    {
+      "id": "ai-component:thinking-indicator",
+      "type": "ai-component",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Thinking indicator",
+      "description": "A live status line naming the current step, with elapsed time. Reasoning category.",
+      "source": "src/ai-components/thinking-indicator.tsx"
+    },
+    {
+      "id": "ai-component:typing-indicator",
+      "type": "ai-component",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Typing indicator",
+      "description": "Three grayscale dots signalling the assistant is composing. Reasoning category.",
+      "source": "src/ai-components/typing-indicator.tsx"
     },
     {
       "id": "block:dashboard-plain",
@@ -1119,69 +1182,6 @@
       "passes": true
     },
     {
-      "id": "element:guardrail-notice",
-      "type": "element",
-      "class": "Pattern",
-      "prov": "explicit",
-      "label": "Guardrail notice",
-      "description": "A refusal in its own (grayscale) shape, offering the nearest safe alternative. Reasoning category.",
-      "source": "src/assistant/guardrail-notice.tsx"
-    },
-    {
-      "id": "element:loading-state",
-      "type": "element",
-      "class": "Pattern",
-      "prov": "explicit",
-      "label": "Loading state",
-      "description": "A pixel matrix + Skeleton holding the frame before the first token. Reasoning category.",
-      "source": "src/assistant/loading-state.tsx"
-    },
-    {
-      "id": "element:reasoning-effort",
-      "type": "element",
-      "class": "Pattern",
-      "prov": "explicit",
-      "label": "Reasoning effort",
-      "description": "Effort level (label + segment shape) and budget spent vs allotted. Reasoning category.",
-      "source": "src/assistant/reasoning-effort.tsx"
-    },
-    {
-      "id": "element:reasoning-panel",
-      "type": "element",
-      "class": "Pattern",
-      "prov": "explicit",
-      "label": "Reasoning panel",
-      "description": "A collapsible timeline of reasoning steps that settles into a summary. Reasoning category.",
-      "source": "src/assistant/reasoning-panel.tsx"
-    },
-    {
-      "id": "element:streaming-text",
-      "type": "element",
-      "class": "Pattern",
-      "prov": "explicit",
-      "label": "Streaming text",
-      "description": "Answer tokens revealed over time; the leading edge carries the brand accent, then settles to ink. Reasoning category.",
-      "source": "src/assistant/streaming-text.tsx"
-    },
-    {
-      "id": "element:thinking-indicator",
-      "type": "element",
-      "class": "Pattern",
-      "prov": "explicit",
-      "label": "Thinking indicator",
-      "description": "A live status line naming the current step, with elapsed time. Reasoning category.",
-      "source": "src/assistant/thinking-indicator.tsx"
-    },
-    {
-      "id": "element:typing-indicator",
-      "type": "element",
-      "class": "Pattern",
-      "prov": "explicit",
-      "label": "Typing indicator",
-      "description": "Three grayscale dots signalling the assistant is composing. Reasoning category.",
-      "source": "src/assistant/typing-indicator.tsx"
-    },
-    {
       "id": "intent:authenticate",
       "type": "intent",
       "class": "Intent",
@@ -1224,7 +1224,7 @@
       "prov": "explicit",
       "label": "Hold the frame before first output",
       "description": "Keep the frame while the model has nothing to show yet.",
-      "source": "src/assistant/loading-state.tsx"
+      "source": "src/ai-components/loading-state.tsx"
     },
     {
       "id": "intent:low-emphasis-action",
@@ -1278,7 +1278,7 @@
       "prov": "explicit",
       "label": "Refuse with a safe alternative",
       "description": "Decline a request and offer the nearest thing the agent can do instead.",
-      "source": "src/assistant/guardrail-notice.tsx"
+      "source": "src/ai-components/guardrail-notice.tsx"
     },
     {
       "id": "intent:report-effort",
@@ -1287,7 +1287,7 @@
       "prov": "explicit",
       "label": "Report reasoning effort",
       "description": "Show how hard to think and how much of that budget was spent.",
-      "source": "src/assistant/reasoning-effort.tsx"
+      "source": "src/ai-components/reasoning-effort.tsx"
     },
     {
       "id": "intent:select-option",
@@ -1305,7 +1305,7 @@
       "prov": "explicit",
       "label": "Show the reasoning trace",
       "description": "Reveal the model's intermediate steps without dominating the answer.",
-      "source": "src/assistant/reasoning-panel.tsx"
+      "source": "src/ai-components/reasoning-panel.tsx"
     },
     {
       "id": "intent:signal-composing",
@@ -1314,7 +1314,7 @@
       "prov": "explicit",
       "label": "Signal the agent is composing",
       "description": "Lightweight presence cue that a reply is coming, with no named step.",
-      "source": "src/assistant/typing-indicator.tsx"
+      "source": "src/ai-components/typing-indicator.tsx"
     },
     {
       "id": "intent:signal-working",
@@ -1323,7 +1323,7 @@
       "prov": "explicit",
       "label": "Signal the agent is working",
       "description": "Tell the user the agent is working right now, and on what.",
-      "source": "src/assistant/thinking-indicator.tsx"
+      "source": "src/ai-components/thinking-indicator.tsx"
     },
     {
       "id": "intent:stream-answer",
@@ -1332,7 +1332,7 @@
       "prov": "explicit",
       "label": "Stream an answer",
       "description": "Show an assistant answer as its tokens arrive.",
-      "source": "src/assistant/streaming-text.tsx"
+      "source": "src/ai-components/streaming-text.tsx"
     },
     {
       "id": "intent:submit-form",
@@ -5992,6 +5992,181 @@
       "evidence": "graph/decisions.json"
     },
     {
+      "source": "ai-component:guardrail-notice",
+      "target": "rule:build-from-library",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/guardrail-notice.json"
+    },
+    {
+      "source": "ai-component:guardrail-notice",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/guardrail-notice.json"
+    },
+    {
+      "source": "ai-component:guardrail-notice",
+      "target": "rule:one-primary",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/guardrail-notice.json"
+    },
+    {
+      "source": "ai-component:guardrail-notice",
+      "target": "rule:pill-buttons",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/guardrail-notice.json"
+    },
+    {
+      "source": "ai-component:loading-state",
+      "target": "rule:loading-state",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/loading-state.json"
+    },
+    {
+      "source": "ai-component:loading-state",
+      "target": "rule:reduced-motion",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/loading-state.json"
+    },
+    {
+      "source": "ai-component:loading-state",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/loading-state.json"
+    },
+    {
+      "source": "ai-component:reasoning-effort",
+      "target": "rule:build-from-library",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/reasoning-effort.json"
+    },
+    {
+      "source": "ai-component:reasoning-effort",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/reasoning-effort.json"
+    },
+    {
+      "source": "ai-component:reasoning-effort",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/reasoning-effort.json"
+    },
+    {
+      "source": "ai-component:reasoning-panel",
+      "target": "rule:build-from-library",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/reasoning-panel.json"
+    },
+    {
+      "source": "ai-component:reasoning-panel",
+      "target": "rule:one-primary",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/reasoning-panel.json"
+    },
+    {
+      "source": "ai-component:reasoning-panel",
+      "target": "rule:reduced-motion",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/reasoning-panel.json"
+    },
+    {
+      "source": "ai-component:reasoning-panel",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/reasoning-panel.json"
+    },
+    {
+      "source": "ai-component:streaming-text",
+      "target": "rule:brand-accent",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/streaming-text.json"
+    },
+    {
+      "source": "ai-component:streaming-text",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/streaming-text.json"
+    },
+    {
+      "source": "ai-component:streaming-text",
+      "target": "rule:reduced-motion",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/streaming-text.json"
+    },
+    {
+      "source": "ai-component:streaming-text",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/streaming-text.json"
+    },
+    {
+      "source": "ai-component:thinking-indicator",
+      "target": "rule:build-from-library",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/thinking-indicator.json"
+    },
+    {
+      "source": "ai-component:thinking-indicator",
+      "target": "rule:loading-state",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/thinking-indicator.json"
+    },
+    {
+      "source": "ai-component:thinking-indicator",
+      "target": "rule:reduced-motion",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/thinking-indicator.json"
+    },
+    {
+      "source": "ai-component:thinking-indicator",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/thinking-indicator.json"
+    },
+    {
+      "source": "ai-component:typing-indicator",
+      "target": "rule:grayscale",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/typing-indicator.json"
+    },
+    {
+      "source": "ai-component:typing-indicator",
+      "target": "rule:reduced-motion",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/typing-indicator.json"
+    },
+    {
+      "source": "ai-component:typing-indicator",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/ai-components/typing-indicator.json"
+    },
+    {
       "source": "component-2one:logo",
       "target": "rule:fixed-vs-theme-color",
       "type": "governed_by",
@@ -6406,181 +6581,6 @@
       "prov": "explicit"
     },
     {
-      "source": "element:guardrail-notice",
-      "target": "rule:build-from-library",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/guardrail-notice.json"
-    },
-    {
-      "source": "element:guardrail-notice",
-      "target": "rule:no-color-alone",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/guardrail-notice.json"
-    },
-    {
-      "source": "element:guardrail-notice",
-      "target": "rule:one-primary",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/guardrail-notice.json"
-    },
-    {
-      "source": "element:guardrail-notice",
-      "target": "rule:pill-buttons",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/guardrail-notice.json"
-    },
-    {
-      "source": "element:loading-state",
-      "target": "rule:loading-state",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/loading-state.json"
-    },
-    {
-      "source": "element:loading-state",
-      "target": "rule:reduced-motion",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/loading-state.json"
-    },
-    {
-      "source": "element:loading-state",
-      "target": "rule:tokens-only",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/loading-state.json"
-    },
-    {
-      "source": "element:reasoning-effort",
-      "target": "rule:build-from-library",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/reasoning-effort.json"
-    },
-    {
-      "source": "element:reasoning-effort",
-      "target": "rule:no-color-alone",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/reasoning-effort.json"
-    },
-    {
-      "source": "element:reasoning-effort",
-      "target": "rule:tokens-only",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/reasoning-effort.json"
-    },
-    {
-      "source": "element:reasoning-panel",
-      "target": "rule:build-from-library",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/reasoning-panel.json"
-    },
-    {
-      "source": "element:reasoning-panel",
-      "target": "rule:one-primary",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/reasoning-panel.json"
-    },
-    {
-      "source": "element:reasoning-panel",
-      "target": "rule:reduced-motion",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/reasoning-panel.json"
-    },
-    {
-      "source": "element:reasoning-panel",
-      "target": "rule:tokens-only",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/reasoning-panel.json"
-    },
-    {
-      "source": "element:streaming-text",
-      "target": "rule:brand-accent",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/streaming-text.json"
-    },
-    {
-      "source": "element:streaming-text",
-      "target": "rule:no-color-alone",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/streaming-text.json"
-    },
-    {
-      "source": "element:streaming-text",
-      "target": "rule:reduced-motion",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/streaming-text.json"
-    },
-    {
-      "source": "element:streaming-text",
-      "target": "rule:tokens-only",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/streaming-text.json"
-    },
-    {
-      "source": "element:thinking-indicator",
-      "target": "rule:build-from-library",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/thinking-indicator.json"
-    },
-    {
-      "source": "element:thinking-indicator",
-      "target": "rule:loading-state",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/thinking-indicator.json"
-    },
-    {
-      "source": "element:thinking-indicator",
-      "target": "rule:reduced-motion",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/thinking-indicator.json"
-    },
-    {
-      "source": "element:thinking-indicator",
-      "target": "rule:tokens-only",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/thinking-indicator.json"
-    },
-    {
-      "source": "element:typing-indicator",
-      "target": "rule:grayscale",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/typing-indicator.json"
-    },
-    {
-      "source": "element:typing-indicator",
-      "target": "rule:reduced-motion",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/typing-indicator.json"
-    },
-    {
-      "source": "element:typing-indicator",
-      "target": "rule:tokens-only",
-      "type": "governed_by",
-      "prov": "explicit",
-      "evidence": "rules/assistant/typing-indicator.json"
-    },
-    {
       "source": "pattern:pricing-page",
       "target": "rule:no-color-alone",
       "type": "governed_by",
@@ -6913,67 +6913,67 @@
       "evidence": "tokens/colors.json"
     },
     {
-      "source": "element:guardrail-notice",
+      "source": "ai-component:guardrail-notice",
       "target": "component:alert",
       "type": "preferred_composition",
       "prov": "explicit",
-      "evidence": "src/assistant/guardrail-notice.tsx"
+      "evidence": "src/ai-components/guardrail-notice.tsx"
     },
     {
-      "source": "element:guardrail-notice",
+      "source": "ai-component:guardrail-notice",
       "target": "component:button",
       "type": "preferred_composition",
       "prov": "explicit",
-      "evidence": "src/assistant/guardrail-notice.tsx"
+      "evidence": "src/ai-components/guardrail-notice.tsx"
     },
     {
-      "source": "element:loading-state",
+      "source": "ai-component:loading-state",
       "target": "component:skeleton",
       "type": "preferred_composition",
       "prov": "explicit",
-      "evidence": "src/assistant/loading-state.tsx"
+      "evidence": "src/ai-components/loading-state.tsx"
     },
     {
-      "source": "element:reasoning-effort",
+      "source": "ai-component:reasoning-effort",
       "target": "component:badge",
       "type": "preferred_composition",
       "prov": "explicit",
-      "evidence": "src/assistant/reasoning-effort.tsx"
+      "evidence": "src/ai-components/reasoning-effort.tsx"
     },
     {
-      "source": "element:reasoning-effort",
+      "source": "ai-component:reasoning-effort",
       "target": "component:progress",
       "type": "preferred_composition",
       "prov": "explicit",
-      "evidence": "src/assistant/reasoning-effort.tsx"
+      "evidence": "src/ai-components/reasoning-effort.tsx"
     },
     {
-      "source": "element:reasoning-panel",
+      "source": "ai-component:reasoning-panel",
       "target": "component:button",
       "type": "preferred_composition",
       "prov": "explicit",
-      "evidence": "src/assistant/reasoning-panel.tsx"
+      "evidence": "src/ai-components/reasoning-panel.tsx"
     },
     {
-      "source": "element:reasoning-panel",
+      "source": "ai-component:reasoning-panel",
       "target": "component:collapsible",
       "type": "preferred_composition",
       "prov": "explicit",
-      "evidence": "src/assistant/reasoning-panel.tsx"
+      "evidence": "src/ai-components/reasoning-panel.tsx"
     },
     {
-      "source": "element:reasoning-panel",
+      "source": "ai-component:reasoning-panel",
       "target": "component:separator",
       "type": "preferred_composition",
       "prov": "explicit",
-      "evidence": "src/assistant/reasoning-panel.tsx"
+      "evidence": "src/ai-components/reasoning-panel.tsx"
     },
     {
-      "source": "element:thinking-indicator",
+      "source": "ai-component:thinking-indicator",
       "target": "component:spinner",
       "type": "preferred_composition",
       "prov": "explicit",
-      "evidence": "src/assistant/thinking-indicator.tsx"
+      "evidence": "src/ai-components/thinking-indicator.tsx"
     },
     {
       "source": "pattern:authentication",
@@ -7179,11 +7179,11 @@
     },
     {
       "source": "intent:hold-pending",
-      "target": "element:loading-state",
+      "target": "ai-component:loading-state",
       "type": "realized_by",
       "prov": "explicit",
       "priority": "PREFERRED",
-      "evidence": "src/assistant/loading-state.tsx"
+      "evidence": "src/ai-components/loading-state.tsx"
     },
     {
       "source": "intent:low-emphasis-action",
@@ -7211,19 +7211,19 @@
     },
     {
       "source": "intent:refuse-safely",
-      "target": "element:guardrail-notice",
+      "target": "ai-component:guardrail-notice",
       "type": "realized_by",
       "prov": "explicit",
       "priority": "PREFERRED",
-      "evidence": "src/assistant/guardrail-notice.tsx"
+      "evidence": "src/ai-components/guardrail-notice.tsx"
     },
     {
       "source": "intent:report-effort",
-      "target": "element:reasoning-effort",
+      "target": "ai-component:reasoning-effort",
       "type": "realized_by",
       "prov": "explicit",
       "priority": "PREFERRED",
-      "evidence": "src/assistant/reasoning-effort.tsx"
+      "evidence": "src/ai-components/reasoning-effort.tsx"
     },
     {
       "source": "intent:select-option",
@@ -7235,35 +7235,35 @@
     },
     {
       "source": "intent:show-reasoning",
-      "target": "element:reasoning-panel",
+      "target": "ai-component:reasoning-panel",
       "type": "realized_by",
       "prov": "explicit",
       "priority": "PREFERRED",
-      "evidence": "src/assistant/reasoning-panel.tsx"
+      "evidence": "src/ai-components/reasoning-panel.tsx"
     },
     {
       "source": "intent:signal-composing",
-      "target": "element:typing-indicator",
+      "target": "ai-component:typing-indicator",
       "type": "realized_by",
       "prov": "explicit",
       "priority": "PREFERRED",
-      "evidence": "src/assistant/typing-indicator.tsx"
+      "evidence": "src/ai-components/typing-indicator.tsx"
     },
     {
       "source": "intent:signal-working",
-      "target": "element:thinking-indicator",
+      "target": "ai-component:thinking-indicator",
       "type": "realized_by",
       "prov": "explicit",
       "priority": "PREFERRED",
-      "evidence": "src/assistant/thinking-indicator.tsx"
+      "evidence": "src/ai-components/thinking-indicator.tsx"
     },
     {
       "source": "intent:stream-answer",
-      "target": "element:streaming-text",
+      "target": "ai-component:streaming-text",
       "type": "realized_by",
       "prov": "explicit",
       "priority": "PREFERRED",
-      "evidence": "src/assistant/streaming-text.tsx"
+      "evidence": "src/ai-components/streaming-text.tsx"
     },
     {
       "source": "intent:submit-form",

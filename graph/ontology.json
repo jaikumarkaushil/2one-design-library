@@ -6,7 +6,7 @@
   "node_classes": {
     "Foundation": { "purpose": "Canonical design values.", "node_types": ["token-color", "ramp", "token-radius", "token-type"] },
     "Component":  { "purpose": "An implemented UI building block (Radix/shadcn primitive, a 2one-authored one, or a specific variant).", "node_types": ["component", "component-2one", "variant"] },
-    "Pattern":    { "purpose": "A composed, reusable solution: a template, chart, a named UX pattern, or an assistant-interface element (a single AI-product state).", "node_types": ["template-block", "template-chart", "pattern", "element"] },
+    "Pattern":    { "purpose": "A composed, reusable solution: a template, chart, a named UX pattern, or a component for an AI interface (a single AI-product state).", "node_types": ["template-block", "template-chart", "pattern", "ai-component"] },
     "Rule":       { "purpose": "A first-class design/UX law: constraint, guideline, or anti-pattern.", "node_types": ["rule"] },
     "Intent":     { "purpose": "A user goal / UX intent the system reasons from (e.g. submit a form).", "node_types": ["intent"] },
     "Context":    { "purpose": "A situation or platform that conditions a decision (mobile, confirmation flow).", "node_types": ["context"] },

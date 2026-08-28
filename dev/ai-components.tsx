@@ -17,19 +17,19 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Logo } from '@/components/logo'
 
-import { LoadingState } from '@/assistant/loading-state'
-import { ThinkingIndicator } from '@/assistant/thinking-indicator'
-import { TypingIndicator } from '@/assistant/typing-indicator'
-import { StreamingText } from '@/assistant/streaming-text'
-import { ReasoningPanel } from '@/assistant/reasoning-panel'
-import { ReasoningEffort } from '@/assistant/reasoning-effort'
-import { GuardrailNotice } from '@/assistant/guardrail-notice'
+import { LoadingState } from '@/ai-components/loading-state'
+import { ThinkingIndicator } from '@/ai-components/thinking-indicator'
+import { TypingIndicator } from '@/ai-components/typing-indicator'
+import { StreamingText } from '@/ai-components/streaming-text'
+import { ReasoningPanel } from '@/ai-components/reasoning-panel'
+import { ReasoningEffort } from '@/ai-components/reasoning-effort'
+import { GuardrailNotice } from '@/ai-components/guardrail-notice'
 
 // The spec layer is the point: each element carries its grounding + governing
 // rules in the manifest, so this page shows the MACHINE-LEGIBLE facts next to
 // the live demo rather than asserting them by hand.
 const SPECS = new Map(
-  (((manifest.index.templates as any).assistant?.spec ?? []) as any[]).map((s: any) => [s.id, s])
+  (((manifest.index.templates as any).aiComponents?.spec ?? []) as any[]).map((s: any) => [s.id, s])
 )
 
 type Item = { id: string; blurb: string; render: () => React.ReactNode }
@@ -71,7 +71,7 @@ function ThemeToggle({ className = '' }: { className?: string }) {
   )
 }
 
-export function AssistantElements() {
+export function AIComponents() {
   return (
     <SidebarProvider>
       <Sidebar>

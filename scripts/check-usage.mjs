@@ -359,7 +359,7 @@ const resolveTarget = (t) => (t.startsWith('/') || /^[A-Za-z]:/.test(t) ? t : jo
 // Default scan: the payload's own blocks AND its shipped template tiers (page
 // patterns + assistant elements) — all must obey the rules, so anything invented
 // there is audited too.
-const defaultDirs = [join(root, cfg.rel('blocks')), join(root, cfg.rel('patterns')), join(root, cfg.rel('assistant'))].filter((d) => existsSync(d))
+const defaultDirs = [join(root, cfg.rel('blocks')), join(root, cfg.rel('patterns')), join(root, cfg.rel('aiComponents'))].filter((d) => existsSync(d))
 const inputs = targets.length ? targets.map(resolveTarget) : defaultDirs
 
 const files = inputs.flatMap((p) => {

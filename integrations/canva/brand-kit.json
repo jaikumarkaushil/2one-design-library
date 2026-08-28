@@ -92,7 +92,8 @@
     "rules": "Never recolour, rotate, distort, or add effects. Never typeset the name as text in place of the mark."
   },
   "rules": [
-    "Grayscale only — never introduce a brand hue.",
+    "Grayscale foundation + one brand accent (--brand, identity #30A1FF) for emphasis only — no other decorative hue.",
+    "The brand accent renders through --brand (APCA-accessible brand-700 on light, brand-300 on dark), never the raw #30A1FF as text or as a fill behind a label; it never replaces the grayscale primary and is never the sole signal of state.",
     "danger/success are for validation state only, never decoration.",
     "Never convey state by colour alone — pair with an icon or text.",
     "Any colour-token change must pass `npm run a11y`."

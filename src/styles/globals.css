@@ -1,7 +1,9 @@
 /* =========================================================
    2one Design Language System — global theme
    shadcn/ui component contract mapped 1:1 onto the 2one tokens.
-   Grayscale, light + audited dark. Danger/success are the only hues.
+   Grayscale-founded, light + audited dark. A single brand accent
+   (#30A1FF, token --brand) carries emphasis (links/focus/selection);
+   danger/success are the validation-only hues.
    ========================================================= */
 @import 'tailwindcss';
 @import 'tw-animate-css';
@@ -47,8 +49,8 @@
 }
 
 /* -------- 2one token → shadcn variable mapping. `:root` is the light theme;
-   the `.dark` block below is the audited dark theme. Same grayscale system,
-   no brand hue in either. -------- */
+   the `.dark` block below is the audited dark theme. Same grayscale foundation
+   in both, plus the one brand accent (--brand) for emphasis. -------- */
 :root {
   --radius: 0.375rem; /* 6px — 2one radius-md; Button overrides to pill */
 
@@ -85,10 +87,17 @@
   --success: #15803d;                    /* success-600 — validation only (2one addition) */
   --success-foreground: #ffffff;
 
+  /* brand accent — the one 2one hue. Identity #30A1FF, rendered here as the
+     APCA-accessible brand-700 so accent TEXT/links clear Lc 60 on white and the
+     focus ring clears the Lc 15 non-text floor. Emphasis only — never a primary
+     fill, never the sole carrier of state. */
+  --brand: #1670c9;                      /* brand-700 (identity #30A1FF) — link/emphasis/focus */
+  --brand-foreground: #ffffff;           /* on-brand mark (checkbox tick / switch knob) — white on brand-700 clears APCA */
+
   --border: #dcdce0;                     /* a11y: darkened from neutral-200 #e4e4e7 to clear the APCA
                                             non-text floor Lc 15 (was 13.4 → 18) */
   --input: #dcdce0;
-  --ring: #a1a1aa;                       /* neutral-400 focus ring — APCA Lc 50 (non-text) */
+  --ring: #1670c9;                       /* brand accent focus ring — APCA Lc 74 (non-text ≥ 15) */
 
   /* grayscale chart ramp — the system has no hues */
   --chart-1: #09090b;
@@ -105,13 +114,14 @@
   --sidebar-accent: #f4f4f5;
   --sidebar-accent-foreground: #09090b;
   --sidebar-border: #dcdce0;             /* was #e4e4e7 — Lc 10.4 (below the 15 floor) on the sidebar */
-  --sidebar-ring: #a1a1aa;
+  --sidebar-ring: #1670c9;               /* brand accent focus ring on the sidebar surface */
 }
 
-/* -------- dark theme: the same grayscale system, inverted. No brand hue.
-   Derived from the neutral ramp (tokens/colors.json); audited by `npm run a11y`
-   (both light AND dark must clear their APCA thresholds). Toggle via a `.dark`
-   ancestor (ThemeProvider adds it) — the shadcn `dark:` utilities activate. -------- */
+/* -------- dark theme: the same grayscale foundation, inverted, plus the one
+   brand accent lightened for the dark ground (brand-300). Derived from the
+   neutral ramp (tokens/colors.json); audited by `npm run a11y` (both light AND
+   dark must clear their APCA thresholds). Toggle via a `.dark` ancestor
+   (ThemeProvider adds it) — the shadcn `dark:` utilities activate. -------- */
 .dark {
   --background: #09090b;                 /* neutral-950 ground */
   --foreground: #fafafa;                 /* neutral-50 */
@@ -143,10 +153,16 @@
   --success: #4ade80;                    /* success lightened for the dark ground; validation only */
   --success-foreground: #09090b;
 
+  /* brand accent on dark — brand-300 (identity #30A1FF lifted for the dark
+     ground). Accent TEXT/links clear Lc 60 on the ground and card; the focus
+     ring clears the Lc 15 non-text floor. Emphasis only. */
+  --brand: #7cc4ff;                      /* brand-300 — link/emphasis/focus on dark */
+  --brand-foreground: #09090b;           /* on-brand mark (tick / knob) — dark ink on the lighter brand-300 */
+
   --border: #606069;                     /* clears the Lc 15 non-text floor on EVERY surface it sits on —
                                             background, card AND the lighter muted/secondary (not just bg) */
   --input: #606069;
-  --ring: #a1a1aa;                       /* neutral-400 focus ring (non-text) */
+  --ring: #7cc4ff;                       /* brand accent focus ring on dark — APCA Lc 67 (non-text ≥ 15) */
 
   /* grayscale chart ramp — light on dark, no hues */
   --chart-1: #fafafa;
@@ -163,7 +179,7 @@
   --sidebar-accent: #27272a;
   --sidebar-accent-foreground: #fafafa;
   --sidebar-border: #606069;             /* was #27272a — Lc 0 (invisible) on the sidebar ground */
-  --sidebar-ring: #a1a1aa;
+  --sidebar-ring: #7cc4ff;               /* brand accent focus ring on the dark sidebar surface */
 }
 
 /* -------- expose the variables to Tailwind v4 utilities -------- */
@@ -187,6 +203,8 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

@@ -1,0 +1,40 @@
+{
+  "id": "element:streaming-text",
+  "label": "Streaming text",
+  "tier": 3,
+  "kind": "assistant-element",
+  "category": "reasoning",
+  "file": "src/assistant/streaming-text.tsx",
+  "export": "StreamingText",
+  "purpose": "Render an answer as it streams — the leading edge marked, the settled text readable as plain prose.",
+  "when_to_use": "While assistant tokens are arriving and should be shown as they land.",
+  "when_not_to_use": "For a finished answer (render it as static text) or before the first token (use Thinking/TypingIndicator).",
+  "composition": [
+    "Word spans revealed over time",
+    "The newest N words carry the brand accent, then transition to foreground",
+    "A blinking caret at the leading edge while streaming"
+  ],
+  "composes": { "components": [], "blocks": [] },
+  "responsive": "Flows as a paragraph; wraps to its container.",
+  "accessibility": [
+    "aria-live=polite + aria-busy while streaming so assistive tech follows the update",
+    "colour is emphasis only — every word settles to foreground, so meaning never rests on the accent (no-color-alone)",
+    "the whole text is shown at once under prefers-reduced-motion"
+  ],
+  "anti_patterns": [
+    "leaving text in the accent colour permanently — the accent marks the edge, not the content",
+    "using the accent as the only cue that text is still streaming (pair it with aria-busy + the caret)"
+  ],
+  "governed_by": ["brand-accent", "no-color-alone", "reduced-motion", "tokens-only"],
+  "assumptions": [
+    "Streaming is SIMULATED here by a timer over a fixed string — replace with the real token stream.",
+    "`accentWords` (3) is a presentation choice; tune to the streaming rate."
+  ],
+  "references": {
+    "shadcn_block": null,
+    "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference; no code is copied. Atomic text element — no shadcn primitive — built from DLS tokens (foreground + the --brand accent) only.",
+    "shadcn_primitives": [],
+    "dls_components": [],
+    "checked_against": "https://www.assistant-ui.com/elements"
+  }
+}

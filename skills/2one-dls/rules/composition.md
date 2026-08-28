@@ -91,7 +91,7 @@ wrong default for an application layout.
 
 Light and dark both ship, both APCA-audited. Switch with the exported
 `ThemeProvider` — it toggles the `.dark` class. Never hand-roll a third palette,
-a brand hue, or `data-*` dark hacks.
+a second hue, or `data-*` dark hacks — the one brand accent is `--brand`.
 
 Dark is not "invert and ship": every surface×text pair changes. If you alter any
 token, `npm run a11y` must pass in **both** themes. Keep component colours

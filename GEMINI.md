@@ -5,12 +5,12 @@ Read `manifest.json` **FIRST** — the machine-readable index of this repository
 and say explicitly when something is not here — never guess a brand fact.
 
 The 2one Design Language System: 58 components (shadcn/ui re-skinned to the 2one
-tokens), design tokens, and the brand. The system is grayscale (no brand hue), with a light and an audited dark theme, pill buttons, Satoshi headings and Inter body; danger/success are the only colours and are used for validation only.
+tokens), design tokens, and the brand. The system is grayscale-founded with a single brand accent (#30A1FF, used for emphasis — links, focus, selection), with a light and an audited dark theme, pill buttons, Satoshi headings and Inter body; danger/success are validation-only colours.
 
 **Non-negotiables**
 - Pull exact values from `tokens/*.json`. Never invent a colour, size, or token name.
 - The wordmark is an ASSET, never type. Use the `Logo` component, or inline `brand/logo/svg/*.svg`.
-- Grayscale only. `danger`/`success` are the only hues, for validation state only.
+- Grayscale foundation + one brand accent (`--brand`, identity #30A1FF) for emphasis only (links/focus/selection) — never a primary fill, never the sole signal of state. `danger`/`success` are validation-only hues.
 - Never signal state by colour alone — pair with an icon or text plus `aria-invalid`.
 - Icons: lucide only.
 - Themes: light + dark — switch via the exported `ThemeProvider`, never a third palette.

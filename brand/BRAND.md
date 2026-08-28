@@ -37,6 +37,20 @@ Open-minded, factual, experimenting
 ## Archetype
 Explorer — problem-solving, strategic
 
+## Brand accent colour
+2one is **grayscale-founded** — the neutral scale carries the structure, and
+primary actions stay near-black (light) or white (dark). The one brand colour is
+the accent:
+
+- **2one Blue — `#30A1FF`** (the identity hue). Used deliberately for **emphasis**:
+  links, the focus ring, and selection/active states — and for brand moments. It
+  never replaces the grayscale primary and is never the only signal of state.
+- In product, the accent renders through the `--brand` token as **APCA-accessible
+  steps** of the identity hue — `#1670c9` on light, `#7cc4ff` on dark — because
+  `#30A1FF` itself is too light to clear the contrast audit as text or as a solid
+  fill. The structured values live in `brand/brand.json → color.accent` and
+  `tokens/colors.json → ramps.brand`.
+
 ## Target Audiences / Personas
 - User-centered product leaders
 - Businesses — strategic & goal-oriented

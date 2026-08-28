@@ -1,0 +1,38 @@
+{
+  "id": "element:typing-indicator",
+  "label": "Typing indicator",
+  "tier": 3,
+  "kind": "assistant-element",
+  "category": "reasoning",
+  "file": "src/assistant/typing-indicator.tsx",
+  "export": "TypingIndicator",
+  "purpose": "Signal that the assistant is composing, as presence rather than noise.",
+  "when_to_use": "A lightweight 'the assistant is about to speak' cue when there is no named step and no tokens yet.",
+  "when_not_to_use": "When a step can be named (use ThinkingIndicator) or when tokens are streaming (use StreamingText).",
+  "composition": [
+    "Three grayscale dots on the spacing scale, pulsing on a stagger"
+  ],
+  "composes": { "components": [], "blocks": [] },
+  "responsive": "Inline; fixed intrinsic size.",
+  "accessibility": [
+    "role=status with an aria-label describing the meaning of the dots",
+    "dots are aria-hidden; the label carries the meaning",
+    "animation collapses to a static row under prefers-reduced-motion"
+  ],
+  "anti_patterns": [
+    "colouring the dots — a coloured indicator reads as state",
+    "using it in place of a named step when one is available"
+  ],
+  "governed_by": ["reduced-motion", "grayscale", "tokens-only"],
+  "assumptions": [
+    "Atomic element: composed from tokens + the spacing scale, no shadcn primitive exists for it.",
+    "Mount/unmount is driven by the caller to reflect the real composing window."
+  ],
+  "references": {
+    "shadcn_block": null,
+    "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference; no code is copied. This is an atomic element with no shadcn primitive — it is built from DLS tokens and the spacing scale only, which is why composes.components is empty.",
+    "shadcn_primitives": [],
+    "dls_components": [],
+    "checked_against": "https://www.assistant-ui.com/elements"
+  }
+}

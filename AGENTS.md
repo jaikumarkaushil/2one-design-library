@@ -170,12 +170,14 @@ the decisions already encoded here.
 2. **Use shadcn names.** TextField → `Input`, Dropdown → `Select`,
    RadioButton → `RadioGroup`, OtpField → `InputOTP`.
 3. **Theme through the variables**, never hard-code color. Everything derives from
-   `globals.css` (grayscale; `danger`/`success` only for validation).
+   `globals.css` (grayscale foundation + the one brand accent `--brand`;
+   `danger`/`success` only for validation).
 4. **Buttons are pills** (`rounded-full`) — the 2one signature override.
 5. **Light + audited dark.** Both themes ship in `globals.css` (`:root` + `.dark`);
    toggle with the exported `ThemeProvider` (adds a `.dark` class). Don't hand-roll
-   a third palette or a brand hue — both themes stay grayscale, and any token change
-   must pass `npm run a11y` (which audits **both** themes).
+   a third palette or a second hue — both themes stay grayscale-founded with the
+   single brand accent (`--brand`, identity `#30A1FF`, for emphasis only), and any
+   token change must pass `npm run a11y` (which audits **both** themes).
 6. **Icons:** lucide (`lucide-react`).
 7. **Accessibility is a build rule, not an afterthought** — see
    [`docs/accessibility.md`](docs/accessibility.md). In short: never convey state

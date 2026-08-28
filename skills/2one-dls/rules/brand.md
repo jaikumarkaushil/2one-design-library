@@ -50,31 +50,37 @@ sidebar. Swap by theme (`dark:hidden` / `hidden dark:block`) or paint with
 (`bg-white`, `bg-neutral-950`) — never a theme-relative surface, or the white
 mark disappears when `--background` flips.
 
-## Grayscale only `[foreign-palette]` `[hardcoded-color]`
+## Grayscale foundation + one accent `[foreign-palette]` `[hardcoded-color]`
 
-There is no brand hue. `danger` and `success` are the only hues and appear
-**only** on validation state — never decoration, never "success green" for a
-status chip that isn't a validation result.
+The system is grayscale-founded. There is exactly **one** brand hue — the accent
+`--brand` (identity `#30A1FF`) — and it is for **emphasis only**: links, the focus
+ring, selection/active indicators. It never fills a primary action (primary stays
+grayscale) and it is never the sole carrier of state. `danger` and `success` are
+the validation-only hues — never decoration, never "success green" for a status
+chip that isn't a validation result. A raw tailwind hue (`bg-blue-600`) or a
+hardcoded hex is still wrong: reach the accent through the token, never a literal.
 
 ❌ **Wrong**
 ```tsx
-<div className="bg-blue-600 text-white">…</div>
+<div className="bg-blue-600 text-white">…</div>   {/* raw hue, and a blue-filled block is not the accent's job */}
+<Button className="bg-blue-600">Save</Button>      {/* primary stays grayscale — accent never fills the primary */}
 <Badge className="bg-emerald-500">Active</Badge>
 <CheckIcon className="fill-green-500" />
-<div style={{ background: "#09090b" }}>…</div>
+<div style={{ background: "#30A1FF" }}>…</div>      {/* even the brand hex goes through the token, not a literal */}
 ```
 
 ✅ **Right**
 ```tsx
 <div className="bg-primary text-primary-foreground">…</div>
+<a className="text-brand underline">Learn more</a>   {/* the accent, for emphasis, via the token */}
+<Button>Save</Button>                                {/* grayscale primary pill */}
 <Badge variant="secondary">Active</Badge>
 <CheckIcon className="fill-current" />
-<div className="bg-foreground">…</div>
 ```
 
 Theme through the semantic tokens — `background`, `foreground`, `card`, `muted`,
-`muted-foreground`, `primary`, `border`, `ring`, `destructive`, `success`. Never
-a raw hex, never a second palette. Exact values: `tokens/colors.json`.
+`muted-foreground`, `primary`, `brand`, `border`, `ring`, `destructive`, `success`.
+Never a raw hex, never a second palette. Exact values: `tokens/colors.json`.
 
 ## Buttons are pills
 

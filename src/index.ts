@@ -2,7 +2,7 @@
    2one Design Language System: shadcn/ui components re-skinned to 2one tokens.
    Import styles once at your app root: '@2one/design-library/styles' */
 
-// theming — light + audited dark (grayscale; no brand hue)
+// theming — light + audited dark (grayscale-founded + one brand accent, --brand)
 export * from './theme-provider'
 
 // hooks — for the responsive-panel pattern (inline on md+, Sheet on mobile)

@@ -55,7 +55,7 @@ tokens), design tokens, and the brand. The system is ${identity}.
 **Non-negotiables**
 - Pull exact values from \`tokens/*.json\`. Never invent a colour, size, or token name.
 - ${logoRule.split('.')[0]}. Use the \`Logo\` component, or inline \`brand/logo/svg/*.svg\`.
-- Grayscale only. \`danger\`/\`success\` are the only hues, for validation state only.
+- Grayscale foundation + one brand accent (\`--brand\`, identity #30A1FF) for emphasis only (links/focus/selection) — never a primary fill, never the sole signal of state. \`danger\`/\`success\` are validation-only hues.
 - Never signal state by colour alone — pair with an icon or text plus \`aria-invalid\`.
 - Icons: ${icons} only.
 - Themes: ${themes} — switch via the exported \`ThemeProvider\`, never a third palette.

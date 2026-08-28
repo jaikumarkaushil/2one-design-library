@@ -1,0 +1,41 @@
+{
+  "id": "element:reasoning-panel",
+  "label": "Reasoning panel",
+  "tier": 3,
+  "kind": "assistant-element",
+  "category": "reasoning",
+  "file": "src/assistant/reasoning-panel.tsx",
+  "export": "ReasoningPanel",
+  "purpose": "Stream a reasoning trace along a timeline, then settle it into a summary — available on demand without dominating the answer.",
+  "when_to_use": "When the model's intermediate steps are worth showing but should stay secondary to the final answer.",
+  "when_not_to_use": "For a single 'thinking' cue (use ThinkingIndicator) or when the trace must never be shown to the user.",
+  "composition": [
+    "A ghost-Button disclosure trigger with a rotating chevron + step count",
+    "A left-ruled timeline of steps (title + detail) that stream in",
+    "A Separator and a settled summary once complete"
+  ],
+  "composes": { "components": ["collapsible", "button", "separator"], "blocks": [] },
+  "responsive": "Full width; the timeline indents from a single ruled edge at every width.",
+  "accessibility": [
+    "Collapsible manages aria-expanded + disclosure semantics",
+    "the ghost trigger is the only Button and is keyboard-operable with a visible focus ring",
+    "steps appear at once and the chevron does not animate under prefers-reduced-motion"
+  ],
+  "anti_patterns": [
+    "a second primary Button competing with the answer's action",
+    "leaving the panel open and streaming with no way to collapse it",
+    "rebuilding the disclosure by hand instead of using Collapsible"
+  ],
+  "governed_by": ["reduced-motion", "build-from-library", "tokens-only", "one-primary"],
+  "assumptions": [
+    "Steps and the summary are DEMO content — replace with the real reasoning trace.",
+    "The panel defaults to open for the demo; choose the default that fits the surface."
+  ],
+  "references": {
+    "shadcn_block": null,
+    "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference; no code is copied. shadcn has no reasoning/AI block, so the disclosure is composed from real DLS primitives (Collapsible + Button + Separator).",
+    "shadcn_primitives": ["collapsible", "button", "separator"],
+    "dls_components": ["collapsible", "button", "separator"],
+    "checked_against": "https://www.assistant-ui.com/elements"
+  }
+}

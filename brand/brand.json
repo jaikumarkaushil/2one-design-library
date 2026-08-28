@@ -15,6 +15,16 @@
   },
   "personality": ["Open-minded", "Factual", "Experimenting"],
   "archetype": { "name": "Explorer", "traits": ["problem-solving", "strategic"] },
+  "color": {
+    "note": "2one is grayscale-founded. The one brand colour is the accent below — used deliberately for emphasis, never as the whole surface.",
+    "accent": {
+      "name": "2one Blue",
+      "identity": "#30A1FF",
+      "role": "The single 2one brand accent. Grayscale carries the structure and primary actions; the accent adds emphasis to links, focus, and selection — and to brand moments. It never replaces the near-black/white primary and is never the only signal of state.",
+      "token": { "css": "--brand / --color-brand", "light": "#1670c9", "dark": "#7cc4ff" },
+      "accessibility": "#30A1FF is the identity hue. Because it is too light to clear the contrast audit as text or as a solid fill, the UI renders APCA-accessible steps of it — a darker blue on light (#1670c9) and a lighter blue on dark (#7cc4ff) — so every pair passes npm run a11y. See tokens/colors.json → ramps.brand and → contrast."
+    }
+  },
   "personas": [
     { "id": "product-leaders", "label": "User-centered product leaders" },
     { "id": "strategic-businesses", "label": "Businesses — strategic & goal-oriented" },

@@ -1,5 +1,5 @@
 {
-  "description": "2one's Design Language System: the brand foundation, design tokens, and component library that define how every 2one product, deck, and marketing asset should look, feel, and sound. It is the single, authoritative source of truth — structured to be both human-understandable and AI-legible so any AI vendor can answer brand/design questions and generate on-brand output without guessing. The system is grayscale (no brand hue), with a light and an audited dark theme, pill buttons, Satoshi headings and Inter body; danger/success are the only colours and are used for validation only.",
+  "description": "2one's Design Language System: the brand foundation, design tokens, and component library that define how every 2one product, deck, and marketing asset should look, feel, and sound. It is the single, authoritative source of truth — structured to be both human-understandable and AI-legible so any AI vendor can answer brand/design questions and generate on-brand output without guessing. The system is grayscale-founded with a single brand accent (#30A1FF, used for emphasis — links, focus, selection), with a light and an audited dark theme, pill buttons, Satoshi headings and Inter body; danger/success are validation-only colours.",
   "instructions_for_ai": {
     "read_first": "manifest.json (this file), then README.md and brand/brand.json",
     "no_hallucination": "This repository is the ONLY source of truth for 2one brand and design facts. Answer strictly from repo content.",
@@ -11,8 +11,8 @@
       "When generating any asset (UI, deck, marketing, comms), pull exact values from tokens/*.json and src/components — do not invent look-alike colours, sizes, or copy.",
       "On first contact, summarise to the user what the DLS contains and how to use it, using only this manifest + README.",
       "For any 2one-facing copy, match the brand voice in brand/brand.json (voice, tone, vocabulary).",
-      "Colour rules are non-negotiable: grayscale only; danger/success for validation only; never convey state by colour alone (pair with an icon/text). See tokens/colors.json → rules.",
-      "When BUILDING any UI, follow docs/building-with-the-dls.md — the consistency rules distilled from real build mistakes: (1) build FROM the library, never hand-roll parallel chrome; (2) one token system — no hard-coded hex or second palette; (3) one 8px spacing scale — no ad-hoc inline margins; (4) one container language — every panel a real Card, never nested; (5) light + audited dark via the exported ThemeProvider — no hand-rolled palette, no brand hue; (6) lucide icons only; (7) never signal state by colour alone; (8) cap width by content type — a reading cap is for prose only, app layouts get a generous responsive cap (max-w-7xl) or go fluid; (9) reading a @theme token at runtime (swatch/palette view) requires a live var — Tailwind tree-shakes unused ramp vars, so safelist the ramp utilities or prefer semantic tokens; (10) verify the render at ultrawide/laptop/mobile AND in both themes, not just the build; (11) Tailwind only keeps classes it can see — @source every folder you render (an arbitrary value used once is the canary); (12) brand marks need a FIXED ground, not a theme token, and in-app marks must be theme-adaptive; (13) dark is not invert-and-ship — re-audit every rendered pair in both themes and keep component colours token-driven so the audit matches the render."
+      "Colour rules are non-negotiable: a grayscale foundation with one brand accent (--brand, identity #30A1FF) used only for emphasis (links/focus/selection); danger/success for validation only; never convey state by colour alone (pair with an icon/text). See tokens/colors.json → rules.",
+      "When BUILDING any UI, follow docs/building-with-the-dls.md — the consistency rules distilled from real build mistakes: (1) build FROM the library, never hand-roll parallel chrome; (2) one token system — no hard-coded hex or second palette; (3) one 8px spacing scale — no ad-hoc inline margins; (4) one container language — every panel a real Card, never nested; (5) light + audited dark via the exported ThemeProvider — no hand-rolled palette; the one brand accent is #30A1FF (token --brand), for emphasis only; (6) lucide icons only; (7) never signal state by colour alone; (8) cap width by content type — a reading cap is for prose only, app layouts get a generous responsive cap (max-w-7xl) or go fluid; (9) reading a @theme token at runtime (swatch/palette view) requires a live var — Tailwind tree-shakes unused ramp vars, so safelist the ramp utilities or prefer semantic tokens; (10) verify the render at ultrawide/laptop/mobile AND in both themes, not just the build; (11) Tailwind only keeps classes it can see — @source every folder you render (an arbitrary value used once is the canary); (12) brand marks need a FIXED ground, not a theme token, and in-app marks must be theme-adaptive; (13) dark is not invert-and-ship — re-audit every rendered pair in both themes and keep component colours token-driven so the audit matches the render."
     ],
     "clarify_first": {
       "why": "Most off-brand output traces to an unstated assumption, not a missing token. Ask these BEFORE generating, then state the answers you are using. If the user says \"just pick\" or is evaluating, choose the default, name it explicitly, and continue — never block.",
@@ -81,7 +81,14 @@
         "dark"
       ],
       "switch": "the exported ThemeProvider (adds a .dark class, activating shadcn dark: utilities)",
-      "hues": "grayscale; danger + success are the only hues, reserved for validation state",
+      "hues": "grayscale foundation + one brand accent (#30A1FF, token --brand) for emphasis (links/focus/selection); danger + success are validation-only hues",
+      "accent": {
+        "identity": "#30A1FF",
+        "token": "--brand",
+        "light": "#1670c9",
+        "dark": "#7cc4ff",
+        "usage": "The single brand accent, for emphasis only — links, focus ring, selection/active indicators. Never replaces the grayscale primary and never the sole carrier of state. #30A1FF is the identity hue; the UI renders APCA-accessible steps of it (brand-700 on light, brand-300 on dark), audited by npm run a11y."
+      },
       "audited": "both themes pass the APCA audit (npm run a11y)",
       "fonts": {
         "heading": "Satoshi",
@@ -148,9 +155,10 @@
     ],
     "status": "Not yet in the 2one Figma scope. See guide-app/VERSIONLOG.md."
   },
-  "tokens_description": "2one colour tokens. Grayscale system — no brand hue. danger/success are the only hues and are reserved for validation state only.",
+  "tokens_description": "2one colour tokens. Grayscale-founded with a single brand accent (#30A1FF, token --brand) for emphasis only. danger/success are validation-only hues.",
   "token_rules": [
-    "Grayscale only — never introduce a brand hue.",
+    "Grayscale foundation + one brand accent (--brand, identity #30A1FF) for emphasis only — no other decorative hue.",
+    "The brand accent renders through --brand (APCA-accessible brand-700 on light, brand-300 on dark), never the raw #30A1FF as text or as a fill behind a label; it never replaces the grayscale primary and is never the sole signal of state.",
     "danger/success are for validation state only, never decoration.",
     "Never convey state by colour alone — pair with an icon or text.",
     "Any colour-token change must pass `npm run a11y`."

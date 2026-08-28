@@ -1,0 +1,39 @@
+{
+  "id": "element:thinking-indicator",
+  "label": "Thinking indicator",
+  "tier": 3,
+  "kind": "assistant-element",
+  "category": "reasoning",
+  "file": "src/assistant/thinking-indicator.tsx",
+  "export": "ThinkingIndicator",
+  "purpose": "Tell the user the agent is working right now — and on what — so a slow turn reads as progress, not a hang.",
+  "when_to_use": "Between the send and the first streamed token, whenever a named step is known.",
+  "when_not_to_use": "Once tokens are streaming — switch to StreamingText. For a purely decorative 'composing' cue with no step to name, use TypingIndicator.",
+  "composition": [
+    "A DLS Spinner (accent) or a resting dot",
+    "A named current step in foreground text",
+    "Elapsed time in tabular-nums"
+  ],
+  "composes": { "components": ["spinner"], "blocks": [] },
+  "responsive": "A single inline row; wraps naturally in a narrow column.",
+  "accessibility": [
+    "role=status + aria-live=polite so the step and time are announced without stealing focus",
+    "the label names the step in text — presence is never signalled by the spinner alone"
+  ],
+  "anti_patterns": [
+    "an unlabelled spinner that names no step",
+    "colouring the whole row to signal 'busy' — busy is not a state worth a hue"
+  ],
+  "governed_by": ["loading-state", "reduced-motion", "tokens-only", "build-from-library"],
+  "assumptions": [
+    "The label and elapsed time are DEMO values — wire them to the real run's current step and start time.",
+    "`running` is driven here by a timer; in production it reflects the runtime's in-flight state."
+  ],
+  "references": {
+    "shadcn_block": null,
+    "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference for this interface state; no code is copied. shadcn ships no assistant/AI-interface block, so this element is composed from a real DLS primitive (Spinner) plus tokens.",
+    "shadcn_primitives": ["spinner"],
+    "dls_components": ["spinner"],
+    "checked_against": "https://www.assistant-ui.com/elements"
+  }
+}

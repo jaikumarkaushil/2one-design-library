@@ -13,6 +13,7 @@ flagged with **⚠ BREAKING** and migration guidance.
 
 **Tier 2 — Design Foundation**
 - ✅ Colour tokens (grayscale ramps + semantic) with WCAG + APCA contrast data — `tokens/colors.json`
+- ✅ Brand accent `#30A1FF` (`--brand`) — the one brand hue, for emphasis (links/focus/selection); APCA-accessible steps derived per theme — `tokens/colors.css` → `ramps.brand`, `brand/brand.json` → `color.accent`
 - ✅ Typography tokens (Satoshi/Inter, full scale) — `tokens/typography.json`
 - ✅ Spacing + radius tokens — `tokens/spacing.json`
 - ✅ Theme (tokens → shadcn variables; light `:root` + audited dark `.dark`) — `src/styles/globals.css`, switched via the exported `ThemeProvider`

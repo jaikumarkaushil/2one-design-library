@@ -9,11 +9,13 @@ The 2one DLS is shadcn/ui re-skinned to 2one's tokens, plus the brand and a
 machine-readable contract. Output built with it should be indistinguishable from
 work 2one produced by hand — not "close to the brand," but built *from* it.
 
-**The system is grayscale.** No brand hue anywhere. Buttons are pills. Satoshi
-for headings, Inter for body. `danger` and `success` are the only hues and are
-reserved for validation state. If output looks like a typical SaaS page —
-gradient hero, coloured CTA, accent-tinted cards — the system is being ignored,
-not expressed.
+**The system is grayscale-founded with one brand accent.** Structure and primary
+actions stay grayscale; a single brand accent (`--brand`, identity `#30A1FF`)
+carries emphasis — links, the focus ring, selection — and nothing else. Buttons
+are pills. Satoshi for headings, Inter for body. `danger` and `success` are the
+validation-only hues. If output looks like a typical SaaS page — gradient hero, a
+blue-filled CTA, accent-tinted cards — the system is being ignored, not expressed:
+the accent is for emphasis, never the whole surface and never the primary fill.
 
 ## The loop
 

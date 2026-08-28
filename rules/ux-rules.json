@@ -17,10 +17,15 @@
     "@interactive": "Expands to every interactive/stateful component (scripts/interactive-components.mjs) — the surfaces where state is shown to the user."
   },
   "rules": [
-    { "id": "grayscale", "category": "brand", "severity": "must", "label": "Grayscale only — no brand hue",
-      "statement": "Theme the whole system in grayscale. There is no brand hue; the only chromatic tokens are danger and success.",
-      "rationale": "The hue-free constraint is what makes every 2one screen read as one system and keeps recolour/theming deterministic.",
+    { "id": "grayscale", "category": "brand", "severity": "must", "label": "Grayscale foundation — one brand accent, no other hues",
+      "statement": "Theme the system on a grayscale foundation. Structure and primary actions stay grayscale (near-black on light, white on dark). The only permitted hues are the single brand accent (--brand, identity #30A1FF) for emphasis and the danger/success validation colours — never any other decorative hue.",
+      "rationale": "A grayscale foundation with one disciplined accent is what makes every 2one screen read as one system and keeps recolour/theming deterministic; an open palette does not.",
       "applies_to": ["token:primary", "token:secondary", "token:muted", "token:accent", "token:background"] },
+
+    { "id": "brand-accent", "category": "brand", "severity": "should", "label": "The brand accent is for emphasis, never state or primary",
+      "statement": "Use the brand accent (--brand, identity #30A1FF) only for emphasis — links, the focus ring, and selection/active indicators. It never replaces the grayscale primary action, is never the sole carrier of state (pair it with text/icon, like any colour), and renders through the APCA-accessible token (--brand: brand-700 on light, brand-300 on dark), never the raw identity hex as text or as a solid fill behind a label.",
+      "rationale": "One accent used sparingly reads as brand; the same hue spent on primaries, hover surfaces, or bare state signals dilutes it and reintroduces the inconsistency the grayscale foundation removes.",
+      "applies_to": ["token:brand", "token:ring"] },
 
     { "id": "validation-only", "category": "brand", "severity": "must", "label": "danger/success for validation only",
       "statement": "Use danger and success colours only to express validation state (error/success) — never for emphasis, branding, or decoration.",

@@ -20,7 +20,7 @@
 
   Exit code: 1 if any error-severity finding (or any finding with --warnings).
 */
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { join, relative, extname } from 'node:path'
 import { config as cfg } from './lib/config.mjs'
 
@@ -356,7 +356,9 @@ const walk = (p, acc = []) => {
   the payload's OWN blocks directory, so it belongs against `root`.
 */
 const resolveTarget = (t) => (t.startsWith('/') || /^[A-Za-z]:/.test(t) ? t : join(process.cwd(), t))
-const inputs = targets.length ? targets.map(resolveTarget) : [join(root, cfg.rel('blocks'))]
+const inputs = targets.length
+  ? targets.map(resolveTarget)
+  : [join(root, cfg.rel('blocks')), join(root, cfg.rel('assistant'))].filter((d) => existsSync(d))
 
 const files = inputs.flatMap((p) => {
   try {

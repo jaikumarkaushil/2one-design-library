@@ -218,7 +218,7 @@ function ThemingPlayground() {
           <Button variant="outline">Outline</Button>
           <Badge>Badge</Badge>
           <a href="#theming" className="text-primary underline underline-offset-2 text-sm">A themed link</a>
-          <Input placeholder="Focus me" className="w-40" />
+          <Input placeholder="Focus me" aria-label="Focus demo" className="w-40" />
         </div>
       </CardContent>
     </Card>
@@ -500,7 +500,7 @@ export function Dls() {
           {/* THEMING PLAYGROUND — one variable recolours the whole system, APCA-checked live */}
           <section id="theming" className="g-section">
             <div className="g-eyebrow">Live</div><h2>Theming playground</h2>
-            <p className="g-lede">Grayscale is the default, but the system is built to carry a brand colour. Set one variable — <span className="mono">--primary</span> — and the whole system recolours at once, with the APCA contrast check running live so an unreadable button never ships. This is exactly the change an AI makes when you ask it to “use our colour”.</p>
+            <p className="g-lede">2one is grayscale-founded with one brand accent — <span className="mono">#30A1FF</span> (<span className="mono">--brand</span>) — used for emphasis. The system is also built to recolour on demand: set one variable — <span className="mono">--primary</span> — and the whole system recolours at once, with the APCA contrast check running live so an unreadable button never ships. This is exactly the change an AI makes when you ask it to “use our colour”.</p>
             <div className="mt-6 max-w-2xl"><ThemingPlayground /></div>
           </section>
 

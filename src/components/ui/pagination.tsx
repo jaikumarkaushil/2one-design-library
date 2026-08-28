@@ -58,6 +58,9 @@ function PaginationLink({
           variant: isActive ? "outline" : "ghost",
           size,
         }),
+        // active page: brand accent on the outline + label (state also carried by
+        // aria-current="page", so this is never colour-alone)
+        isActive && "border-brand text-brand",
         className
       )}
       {...props}

@@ -6,6 +6,41 @@ uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- **Brand accent — `#30A1FF`.** The system gains a single brand accent (the first
+  brand hue), used for emphasis only: links, the focus ring, and selection/active
+  indicators. Introduced as the `brand` ramp ([`tokens/colors.css`](tokens/colors.css))
+  and the semantic `--brand` token ([`src/styles/globals.css`](src/styles/globals.css)),
+  exposed to Tailwind as `--color-brand` (`text-brand`, `border-brand`, `ring-brand`).
+  Recorded as a brand fact in [`brand/brand.json`](brand/brand.json) → `color.accent`.
+- **New UX rule `brand-accent`** ([`rules/ux-rules.json`](rules/ux-rules.json)):
+  the accent is for emphasis only — never the primary fill, never the sole carrier
+  of state — bringing the machine-readable rule count to 33.
+- **Accent wired into the idiomatic surfaces** (primary stays grayscale): the
+  `link` button variant, the checked state of `Checkbox` / `RadioGroup` / `Switch`,
+  the active `Tabs` (line variant) underline, and the active `Sidebar` item's
+  left-bar now render the brand accent. Added `--brand-foreground` (the tick/knob on
+  a brand fill) with its own audited pair.
+
+### Changed
+- **Colour foundation is now three explicit levels: Primary (neutral) · Accent
+  (brand, #30A1FF) · Semantic (danger/success).** The vestigial grayscale `accent`
+  ramp (a duplicate of `neutral`, imported from shadcn/Figma and used nowhere) was
+  removed; the ramps are now `neutral`, `brand`, `danger`, `success`. shadcn's
+  semantic `--accent`/`--accent-foreground` hover-surface tokens remain in
+  `globals.css` as a component concern (not a brand colour level).
+- **`grayscale` is now "grayscale foundation + one brand accent".** The system is
+  no longer strictly hue-free: structure and primary actions stay grayscale, and the
+  one accent (`--brand`) carries emphasis. The `grayscale` rule, the token rules, and
+  the docs/manifest/AI-entry copy were updated to match; `danger`/`success` remain
+  validation-only.
+- **Focus ring is now the brand accent.** `--ring` / `--sidebar-ring` render the
+  accent (`#1670c9` light, `#7cc4ff` dark) instead of neutral grey.
+- **Accessibility:** `#30A1FF` is too light to clear the APCA audit as text or as a
+  solid fill, so `--brand` renders APCA-accessible steps of the identity hue
+  (`brand-700 #1670c9` on light, `brand-300 #7cc4ff` on dark). The `npm run a11y`
+  matrix gains brand-accent-text pairs, audited in both themes.
+
 ## [0.2.0] - 2026-08-24
 
 First tagged release. `0.1.0` was written up below but never tagged, so this is

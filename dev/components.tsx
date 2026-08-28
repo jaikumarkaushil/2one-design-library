@@ -44,6 +44,14 @@ import { Spinner } from '@/components/ui/spinner'
 import { Toaster } from '@/components/ui/sonner'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/components/ui/command'
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from '@/components/ui/context-menu'
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarTrigger } from '@/components/ui/menubar'
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { Calendar } from '@/components/ui/calendar'
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader,
   SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem,
@@ -56,8 +64,13 @@ import { BottomNavItem } from '@/components/bottom-nav-item'
 
 // blocks (templates)
 import { LoginForm as Login01 } from '@/blocks/login-01'
+import { LoginForm as Login02 } from '@/blocks/login-02'
 import { LoginForm as Login03 } from '@/blocks/login-03'
+import { LoginForm as Login04 } from '@/blocks/login-04'
+import { LoginForm as Login05 } from '@/blocks/login-05'
 import { SignupForm as Signup01 } from '@/blocks/signup-01'
+import { SignupForm as Signup02 } from '@/blocks/signup-02'
+import { SignupForm as Signup03 } from '@/blocks/signup-03'
 import { DashboardPlain } from '@/blocks/dashboard-plain/page'
 import { ChartAreaInteractive as ChartArea } from '@/blocks/charts/chart-area-interactive'
 import { ChartBarMultiple } from '@/blocks/charts/chart-bar-multiple'
@@ -81,8 +94,12 @@ import { MarketingPage } from '@/blocks/marketing/page'
 // Foundation swatches derive colour + label from the live @theme tokens
 // (--color-<ramp>-<step> in tokens/colors.css), so this section can never
 // drift from the real theme — change a token and the swatch follows.
+// The 2one colour foundation — three levels: PRIMARY (neutral), ACCENT (brand),
+// SEMANTIC (danger/success). There is no grayscale "accent" ramp.
 const NEUTRAL = ['50', '100', '200', '300', '400', '600', '700', '800', '950']
-const ACCENT = ['50', '100', '200', '300', '600', '700', '800', '950']
+// brand = the ACCENT level. 500 is the identity (#30A1FF); 700/300 are the
+// APCA-accessible steps the UI renders (light/dark).
+const BRAND = ['50', '100', '300', '500', '700', '800']
 const SEM = ['danger-500', 'danger-600', 'success-600']
 const TYPE: [string, string, string][] = [['display', 'text-display', '76 / 103'], ['h1', 'text-h1', '62 / 84'], ['h2', 'text-h2', '48 / 65'], ['h3', 'text-h3', '40 / 54'], ['h4', 'text-h4', '32 / 43'], ['h5', 'text-h5', '26 / 35'], ['h6', 'text-h6', '20 / 27'], ['base', 'text-base', '16 · body'], ['sm', 'text-sm', '14 · UI'], ['xs', 'text-xs', '12 · small']]
 const RADII = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', 'full']
@@ -127,8 +144,8 @@ const NAV = [
   { grp: 'Tier 2 · Foundation', items: [['color', 'Colour', ''], ['type', 'Typography', ''], ['radius', 'Radius', '']] },
   { grp: 'Tier 3', items: [['blocks', 'Blocks', String(COUNT.blocks)], ['marketing', 'Marketing', String(COUNT.marketing)], ['charts', 'Charts', String(COUNT.charts)]] },
   { grp: '2one Components', items: [['mobile', 'Mobile · 2one', String(COUNT.twoOne)]] },
-  { grp: 'Shadcn Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', '']] },
-  { grp: 'Explore', items: [['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
+  { grp: 'Shadcn Components', items: [['actions', 'Actions', ''], ['forms', 'Forms', ''], ['overlays', 'Overlays', ''], ['more', 'More', ''], ['data', 'Data display', ''], ['feedback', 'Feedback', ''], ['navigation', 'Navigation', '']] },
+  { grp: 'Explore', items: [['/assistant.html', 'Elements', String((IX.templates as any).assistant?.count ?? 0)], ['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
 ]
 
 
@@ -279,17 +296,17 @@ export function Components() {
             {/* COLOUR */}
             <section id="color" className="g-section">
               <div className="g-eyebrow">Foundations</div><h2>Colour</h2>
-              <p className="g-lede">Grayscale by design — no brand hue. <b>danger</b> and <b>success</b> are the only colours, reserved for validation.</p>
+              <p className="g-lede">Three levels. <b>Primary</b> — the neutral grayscale ramp (structure &amp; primary actions). <b>Accent</b> — the one brand hue, <b>#30A1FF</b> (<span className="mono">--brand</span>), for emphasis: links, focus, selection. <b>Semantic</b> — <b>danger</b> / <b>success</b>, reserved for validation only. (shadcn's own <span className="mono">--accent</span> hover surface is a component token, not a brand level.)</p>
               {/* Safelist: Tailwind v4 tree-shakes @theme vars no utility references.
                   The swatches read var(--color-<ramp>-<step>) at runtime, so we force
                   those vars into :root by naming every ramp utility here (literal names
                   only — Tailwind can't see interpolated class names). Kept hidden. */}
-              <div className="hidden bg-neutral-50 bg-neutral-100 bg-neutral-200 bg-neutral-300 bg-neutral-400 bg-neutral-600 bg-neutral-700 bg-neutral-800 bg-neutral-950 bg-accent-50 bg-accent-100 bg-accent-200 bg-accent-300 bg-accent-600 bg-accent-700 bg-accent-800 bg-accent-950 bg-danger-500 bg-danger-600 bg-success-600" aria-hidden />
-              <div className="g-scale-label">neutral</div>
+              <div className="hidden bg-neutral-50 bg-neutral-100 bg-neutral-200 bg-neutral-300 bg-neutral-400 bg-neutral-600 bg-neutral-700 bg-neutral-800 bg-neutral-950 bg-brand-50 bg-brand-100 bg-brand-300 bg-brand-500 bg-brand-700 bg-brand-800 bg-danger-500 bg-danger-600 bg-success-600" aria-hidden />
+              <div className="g-scale-label">primary · neutral</div>
               <Swatches items={NEUTRAL} prefix="neutral-" />
-              <div className="g-scale-label">accent</div>
-              <Swatches items={ACCENT} prefix="accent-" />
-              <div className="g-scale-label">semantic</div>
+              <div className="g-scale-label">accent · brand (#30A1FF — the one brand hue)</div>
+              <Swatches items={BRAND} prefix="brand-" />
+              <div className="g-scale-label">semantic (validation only)</div>
               <Swatches items={SEM} prefix="" />
             </section>
 
@@ -372,7 +389,7 @@ export function Components() {
                   </div>
                 </Block>
                 <Block title="Textarea" className="col">
-                  <Textarea placeholder="Write a message…" className="w-full" />
+                  <Textarea placeholder="Write a message…" aria-label="Message" className="w-full" />
                 </Block>
                 <Block title="Checkbox · Radio · Switch" className="col">
                   <label className="flex items-center gap-2 text-sm"><Checkbox defaultChecked /> Remember me</label>
@@ -388,7 +405,7 @@ export function Components() {
                     <SelectContent><SelectItem value="in">India</SelectItem><SelectItem value="us">United States</SelectItem><SelectItem value="de">Germany</SelectItem></SelectContent>
                   </Select>
                 </Block>
-                <Block title="Slider" className="col"><Slider defaultValue={[40]} max={100} step={1} className="w-64" /></Block>
+                <Block title="Slider" className="col"><Slider defaultValue={[40]} max={100} step={1} aria-label="Value" className="w-64" /></Block>
                 <Block title="InputOTP" className="col"><OtpDemo /></Block>
               </div>
             </section>
@@ -419,6 +436,96 @@ export function Components() {
                   <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription>This cannot be undone.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction>Delete</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
                 </AlertDialog>
               </Block>
+            </section>
+
+            {/* MORE COMPONENTS */}
+            <section id="more" className="g-section">
+              <div className="g-eyebrow">Components</div><h2>More</h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                <Block title="Command" meta="⌘K-style palette">
+                  <Command className="max-w-sm rounded-lg border">
+                    <CommandInput placeholder="Search…" />
+                    <CommandList>
+                      <CommandEmpty>No results.</CommandEmpty>
+                      <CommandGroup heading="Suggestions">
+                        <CommandItem><Search /> Search docs</CommandItem>
+                        <CommandItem><User /> Profile</CommandItem>
+                        <CommandSeparator />
+                        <CommandItem><CreditCard /> Billing</CommandItem>
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </Block>
+                <Block title="Context menu" meta="right-click the area">
+                  <ContextMenu>
+                    <ContextMenuTrigger className="flex h-24 w-full items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+                      Right-click here
+                    </ContextMenuTrigger>
+                    <ContextMenuContent>
+                      <ContextMenuItem><User /> Profile</ContextMenuItem>
+                      <ContextMenuItem><CreditCard /> Billing</ContextMenuItem>
+                      <ContextMenuSeparator />
+                      <ContextMenuItem><LogOut /> Log out</ContextMenuItem>
+                    </ContextMenuContent>
+                  </ContextMenu>
+                </Block>
+                <Block title="Menubar">
+                  <Menubar>
+                    <MenubarMenu>
+                      <MenubarTrigger>File</MenubarTrigger>
+                      <MenubarContent><MenubarItem>New</MenubarItem><MenubarItem>Open</MenubarItem><MenubarSeparator /><MenubarItem>Save</MenubarItem></MenubarContent>
+                    </MenubarMenu>
+                    <MenubarMenu>
+                      <MenubarTrigger>Edit</MenubarTrigger>
+                      <MenubarContent><MenubarItem>Undo</MenubarItem><MenubarItem>Redo</MenubarItem></MenubarContent>
+                    </MenubarMenu>
+                  </Menubar>
+                </Block>
+                <Block title="Navigation menu">
+                  <NavigationMenu>
+                    <NavigationMenuList>
+                      <NavigationMenuItem>
+                        <NavigationMenuTrigger>Product</NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          <div className="grid w-56 gap-1 p-2">
+                            <NavigationMenuLink>Overview</NavigationMenuLink>
+                            <NavigationMenuLink>Features</NavigationMenuLink>
+                            <NavigationMenuLink>Pricing</NavigationMenuLink>
+                          </div>
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                </Block>
+                <Block title="Hover card" meta="hover the trigger">
+                  <HoverCard>
+                    <HoverCardTrigger asChild><Button variant="link">@2one</Button></HoverCardTrigger>
+                    <HoverCardContent className="text-sm">The 2one Design Language System — components, tokens, and brand.</HoverCardContent>
+                  </HoverCard>
+                </Block>
+                <Block title="Carousel">
+                  <Carousel className="w-full max-w-xs">
+                    <CarouselContent>
+                      {[1, 2, 3].map((n) => (
+                        <CarouselItem key={n}>
+                          <div className="flex h-24 items-center justify-center rounded-md border text-2xl font-semibold">{n}</div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious /><CarouselNext />
+                  </Carousel>
+                </Block>
+                <Block title="Calendar">
+                  <Calendar mode="single" className="w-fit rounded-md border" />
+                </Block>
+                <Block title="Resizable" meta="drag the handle">
+                  <ResizablePanelGroup direction="horizontal" className="h-24 max-w-sm rounded-md border">
+                    <ResizablePanel defaultSize={50}><div className="flex h-full items-center justify-center text-sm">One</div></ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={50}><div className="flex h-full items-center justify-center text-sm">Two</div></ResizablePanel>
+                  </ResizablePanelGroup>
+                </Block>
+              </div>
             </section>
 
             {/* DATA DISPLAY */}
@@ -517,9 +624,14 @@ export function Components() {
               <div className="g-eyebrow">Templates</div><h2>Blocks</h2>
               <p className="g-lede">Pre-composed, auto-themed forms built from the 2one components — ready to drop into an app.</p>
               <div className="g-grid2">
-                <Block title="login-03" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login03 /></div></Block>
                 <Block title="login-01" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login01 /></div></Block>
+                <Block title="login-02" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login02 /></div></Block>
+                <Block title="login-03" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login03 /></div></Block>
+                <Block title="login-04" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login04 /></div></Block>
+                <Block title="login-05" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Login05 /></div></Block>
                 <Block title="signup-01" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Signup01 /></div></Block>
+                <Block title="signup-02" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Signup02 /></div></Block>
+                <Block title="signup-03" meta="block" className="col"><div className="w-full max-w-sm mx-auto"><Signup03 /></div></Block>
               </div>
               <Card className="mt-6 gap-4">
                 <CardHeader>
@@ -598,7 +710,7 @@ export function Components() {
 function OtpDemo() {
   const [v, setV] = useState('482')
   return (
-    <InputOTP maxLength={6} value={v} onChange={setV}>
+    <InputOTP maxLength={6} value={v} onChange={setV} aria-label="One-time passcode">
       <InputOTPGroup>{[0, 1, 2, 3, 4, 5].map((i) => <InputOTPSlot key={i} index={i} />)}</InputOTPGroup>
     </InputOTP>
   )

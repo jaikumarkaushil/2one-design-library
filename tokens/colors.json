@@ -1,17 +1,7 @@
 {
   "$schema": "../schema/token.schema.json",
-  "description": "2one colour tokens. Grayscale system — no brand hue. danger/success are the only hues and are reserved for validation state only. TWO THEMES: `semantic` is the light set, `semantic_dark` the dark one; always say which theme a value belongs to. Contrast pairs cover both and carry a `theme` field.",
+  "description": "2one colour tokens. Grayscale-founded with a single brand accent (#30A1FF, token --brand) for emphasis only. danger/success are validation-only hues. TWO THEMES: `semantic` is the light set, `semantic_dark` the dark one; always say which theme a value belongs to. Contrast pairs cover both and carry a `theme` field.",
   "ramps": {
-    "accent": {
-      "50": "#fafafa",
-      "100": "#f4f4f4",
-      "200": "#e4e4e4",
-      "300": "#d1d1d1",
-      "600": "#404040",
-      "700": "#262626",
-      "800": "#171717",
-      "950": "#000000"
-    },
     "neutral": {
       "50": "#fafafa",
       "100": "#f4f4f5",
@@ -23,6 +13,14 @@
       "700": "#3f3f46",
       "800": "#27272a",
       "950": "#09090b"
+    },
+    "brand": {
+      "50": "#eff8ff",
+      "100": "#d8ecff",
+      "300": "#7cc4ff",
+      "500": "#30a1ff",
+      "700": "#1670c9",
+      "800": "#12579c"
     },
     "danger": {
       "500": "#ef4444",
@@ -57,9 +55,11 @@
     "destructive-foreground": "#ffffff",
     "success": "#15803d",
     "success-foreground": "#ffffff",
+    "brand": "#1670c9",
+    "brand-foreground": "#ffffff",
     "border": "#dcdce0",
     "input": "#dcdce0",
-    "ring": "#a1a1aa",
+    "ring": "#1670c9",
     "chart-1": "#09090b",
     "chart-2": "#3f3f46",
     "chart-3": "#52525b",
@@ -72,7 +72,7 @@
     "sidebar-accent": "#f4f4f5",
     "sidebar-accent-foreground": "#09090b",
     "sidebar-border": "#dcdce0",
-    "sidebar-ring": "#a1a1aa"
+    "sidebar-ring": "#1670c9"
   },
   "semantic_dark": {
     "background": "#09090b",
@@ -93,9 +93,11 @@
     "destructive-foreground": "#09090b",
     "success": "#4ade80",
     "success-foreground": "#09090b",
+    "brand": "#7cc4ff",
+    "brand-foreground": "#09090b",
     "border": "#606069",
     "input": "#606069",
-    "ring": "#a1a1aa",
+    "ring": "#7cc4ff",
     "chart-1": "#fafafa",
     "chart-2": "#d4d4d8",
     "chart-3": "#a1a1aa",
@@ -108,7 +110,7 @@
     "sidebar-accent": "#27272a",
     "sidebar-accent-foreground": "#fafafa",
     "sidebar-border": "#606069",
-    "sidebar-ring": "#a1a1aa"
+    "sidebar-ring": "#7cc4ff"
   },
   "contrast": {
     "standard": "WCAG 2.x (ratio) + APCA / WCAG 3.0 draft (Lc). Layered: AA baseline, APCA as an additional perceptual check.",
@@ -182,6 +184,17 @@
       },
       {
         "theme": "light",
+        "name": "brand-accent-text",
+        "text": "#1670c9",
+        "background": "#ffffff",
+        "usage": "brand accent / link text",
+        "wcag_ratio": 5.01,
+        "apca_lc": 74,
+        "apca_min": 60,
+        "passes": true
+      },
+      {
+        "theme": "light",
         "name": "border-nontext",
         "text": "#dcdce0",
         "background": "#ffffff",
@@ -194,11 +207,11 @@
       {
         "theme": "light",
         "name": "focus-ring-nontext",
-        "text": "#a1a1aa",
+        "text": "#1670c9",
         "background": "#ffffff",
         "usage": "focus ring (non-text UI)",
-        "wcag_ratio": 2.56,
-        "apca_lc": 50.2,
+        "wcag_ratio": 5.01,
+        "apca_lc": 74,
         "apca_min": 15,
         "passes": true
       },
@@ -270,6 +283,17 @@
       },
       {
         "theme": "dark",
+        "name": "brand-accent-text",
+        "text": "#7cc4ff",
+        "background": "#09090b",
+        "usage": "brand accent / link text",
+        "wcag_ratio": 10.61,
+        "apca_lc": -67,
+        "apca_min": 60,
+        "passes": true
+      },
+      {
+        "theme": "dark",
         "name": "border-nontext",
         "text": "#606069",
         "background": "#09090b",
@@ -282,18 +306,19 @@
       {
         "theme": "dark",
         "name": "focus-ring-nontext",
-        "text": "#a1a1aa",
+        "text": "#7cc4ff",
         "background": "#09090b",
         "usage": "focus ring (non-text UI)",
-        "wcag_ratio": 7.76,
-        "apca_lc": -51.6,
+        "wcag_ratio": 10.61,
+        "apca_lc": -67,
         "apca_min": 15,
         "passes": true
       }
     ]
   },
   "rules": [
-    "Grayscale only — never introduce a brand hue.",
+    "Grayscale foundation + one brand accent (--brand, identity #30A1FF) for emphasis only — no other decorative hue.",
+    "The brand accent renders through --brand (APCA-accessible brand-700 on light, brand-300 on dark), never the raw #30A1FF as text or as a fill behind a label; it never replaces the grayscale primary and is never the sole signal of state.",
     "danger/success are for validation state only, never decoration.",
     "Never convey state by colour alone — pair with an icon or text.",
     "Any colour-token change must pass `npm run a11y`."

@@ -104,6 +104,17 @@ const dashboards = ls(join(blocksDir, 'dashboard-plain'), tsx).length ? ['dashbo
 const charts = ls(join(blocksDir, 'charts'), tsx).map(base)
 const marketing = ls(join(blocksDir, 'marketing'), tsx).map(base)
 
+// Assistant elements (Tier 3): complete, opinionated pieces for a single
+// AI-product interface state (reasoning, tool calls, refusals …), each in
+// src/assistant with a machine-readable spec in rules/assistant/<name>.json.
+// Indexed here so an agent finds a whole assistant-state answer the same way it
+// finds a component — with its grounding, governing rules and assumptions attached.
+const assistantDir = cfg.path('assistant')
+const assistant = ls(assistantDir, tsx).map(base)
+const assistantSpecs = ls(cfg.path('assistantSpecs'), (f) => f.endsWith('.json'))
+  .map((f) => { try { return JSON.parse(readFileSync(join(cfg.path('assistantSpecs'), f), 'utf8')) } catch { return null } })
+  .filter(Boolean)
+
 // The payload's machine-readable UX-rules contract, when it ships one. Indexed
 // here so an agent finds the rules the same way it finds tokens — and so the
 // counts in the manifest cannot disagree with the rules file itself.
@@ -208,6 +219,14 @@ const manifest = {
       blocks: { path: `${cfg.rel('blocks')}/`, items: blocks.concat(dashboards) },
       marketing: { path: `${cfg.rel('blocks')}/marketing/`, items: marketing },
       charts: { path: `${cfg.rel('blocks')}/charts/`, count: charts.length, items: charts },
+      assistant: {
+        path: `${cfg.rel('assistant')}/`,
+        specs: `${cfg.rel('assistantSpecs')}/`,
+        note: `Complete, opinionated pieces for a single assistant/AI-product interface state — the ${cfg.name} answer for reasoning, tool calls, refusals and the rest. Adapt the content, keep the structure. Each carries a machine-readable spec and a graph node (element:<id>). Concept inspired by assistant-ui's Elements; composed only from real ${cfg.name} primitives.`,
+        count: assistant.length,
+        items: assistant,
+        spec: assistantSpecs,
+      },
       recipes: 'recipes/',
     },
     ...(uxRules
@@ -250,7 +269,7 @@ const manifest = {
       // about 3 of the 7 values it listed before it was folded in from registry.json.
       tokenMap: Object.fromEntries(
         ['background', 'foreground', 'primary', 'primary-foreground', 'secondary', 'muted', 'muted-foreground',
-          'accent', 'border', 'input', 'ring', 'destructive', 'success']
+          'accent', 'brand', 'border', 'input', 'ring', 'destructive', 'success']
           .filter((k) => colors.semantic[k])
           .map((k) => [`--${k}`, colors.semantic[k]])
       ),

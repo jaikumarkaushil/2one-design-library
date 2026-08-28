@@ -78,6 +78,13 @@ const pairs = [
   ['--destructive', '--card', 'error text on a Card (Alert)', 60],
   ['--success', '--background', 'success text on page', 60],
   ['--success', '--card', 'success text on a Card', 60],
+  // brand accent — the one 2one hue, rendered as link / emphasis TEXT (the focus
+  // ring reuses --ring, audited below). Held to the label threshold, not a fill.
+  ['--brand', '--background', 'brand accent / link text on page', 60],
+  ['--brand', '--card', 'brand accent / link text on a Card', 60],
+  ['--brand', '--sidebar', 'brand accent on the sidebar surface', 60],
+  // the tick/knob rendered ON a brand fill (checkbox checked, switch thumb) — non-text UI
+  ['--brand-foreground', '--brand', 'tick / knob on a brand fill (non-text)', 15],
   // non-text UI (borders, rings) on each surface they sit on
   ['--border', '--background', 'border / input hairline on page', 15],
   ['--border', '--card', 'card & table hairlines on a Card', 15],

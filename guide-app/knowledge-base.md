@@ -34,9 +34,9 @@ human-understandable and AI-legible**, so any AI vendor can answer brand/design
 questions and generate on-brand output without hallucinating.
 
 It is delivered as a component library **built on shadcn/ui, re-skinned to the 2one
-tokens**. Identity in one line: **grayscale (no brand hue), light + audited dark, pill buttons,
-Satoshi headings + Inter body; danger/success are the only colours, used only for
-validation.**
+tokens**. Identity in one line: **grayscale-founded with one brand accent (#30A1FF,
+for emphasis), light + audited dark, pill buttons, Satoshi headings + Inter body;
+danger/success are the validation-only colours.**
 
 *Source: `manifest.json`, `README.md`.*
 
@@ -53,9 +53,13 @@ Headings: **Satoshi**. Body & UI: **Inter**. Both self-hosted (no CDN).
 *Source: `tokens/typography.json → fonts`.*
 
 **Do we have a brand colour?**
-No. The system is deliberately grayscale. `danger` (red) and `success` (green) are the
-only hues and are reserved for validation state only.
-*Source: `tokens/colors.json → rules`.*
+Yes — one. **2one Blue, `#30A1FF`** is the single brand accent, used deliberately for
+emphasis (links, focus ring, selection). The system is otherwise grayscale-founded:
+structure and primary actions stay grayscale. The accent renders through the `--brand`
+token as APCA-accessible steps of the identity hue (`#1670c9` on light, `#7cc4ff` on
+dark), and is never the sole carrier of state. `danger` (red) and `success` (green)
+remain reserved for validation only.
+*Source: `brand/brand.json → color.accent`, `tokens/colors.json → ramps.brand` + `rules`.*
 
 **What's the button component's spec?**
 `src/components/ui/button.tsx`. Variants: default, secondary, outline, ghost,

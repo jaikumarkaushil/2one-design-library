@@ -122,7 +122,7 @@ const CHART_ITEMS = IX.templates.charts.items as string[]
 
 const NAV = [
   { grp: 'Dashboard', items: [['overview', 'Overview', ''], ['use', 'How to use', '']] },
-  { grp: 'Explore', items: [['/components.html', 'Components & assets', String(COUNT.components)], ['/dls.html', 'What is a DLS?', ''], ['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
+  { grp: 'Explore', items: [['/components.html', 'Components & assets', String(COUNT.components)], ['/assistant.html', 'Elements', String((manifest.index.templates as any).assistant?.count ?? 0)], ['/dls.html', 'What is a DLS?', ''], ['/graph.html', 'Knowledge graph', String(COUNT.graphNodes)]] },
   { grp: 'Help', items: [['faq', 'FAQ', ''], ['support', 'Support', '']] },
 ]
 

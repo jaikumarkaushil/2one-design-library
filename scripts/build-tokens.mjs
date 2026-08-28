@@ -74,6 +74,8 @@ const pairsFor = (theme, s) => [
   pair(theme, 'destructive-button-label', s['--destructive-foreground'], s['--destructive'], 'destructive button label', 75),
   pair(theme, 'error-text', s['--destructive'], s['--background'], 'error text / label', 60),
   pair(theme, 'success-text', s['--success'], s['--background'], 'success text / label', 60),
+  // brand accent is optional per payload — only audit it when the payload defines one
+  ...(s['--brand'] ? [pair(theme, 'brand-accent-text', s['--brand'], s['--background'], 'brand accent / link text', 60)] : []),
   pair(theme, 'border-nontext', s['--border'], s['--background'], 'border / input hairline (non-text UI)', 15),
   pair(theme, 'focus-ring-nontext', s['--ring'], s['--background'], 'focus ring (non-text UI)', 15),
 ]

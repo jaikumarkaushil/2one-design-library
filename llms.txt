@@ -1,7 +1,8 @@
 # 2one Design Language System
 
-> shadcn/ui components re-skinned to the 2one design tokens. Grayscale (light +
-> audited dark), pill buttons, Satoshi headings + Inter body. Structured for humans and AI.
+> shadcn/ui components re-skinned to the 2one design tokens. Grayscale-founded with
+> one brand accent (#30A1FF, for emphasis), light + audited dark, pill buttons,
+> Satoshi headings + Inter body. Structured for humans and AI.
 
 You can consume this repository **without cloning it**. Every file below is
 fetchable over plain HTTPS. Base for raw files:
@@ -143,7 +144,7 @@ library is in play before generating (see `instructions_for_ai.clarify_first`).
 - `src/styles/globals.css` — 2one tokens → shadcn CSS variables (light `:root`
   + audited dark `.dark`). Switch with the exported `ThemeProvider`.
 - Fonts: Satoshi (headings, self-hosted woff2), Inter (body). Icons: lucide.
-- `danger` / `success` are the only hues and are reserved for validation states.
+- One brand accent (`--brand`, identity `#30A1FF`) for emphasis (links/focus/selection); `danger` / `success` are reserved for validation states. Otherwise grayscale.
 - Buttons are pills — enforced by an unlayered `[data-slot="button"]` rule in
   `globals.css`, which beats the `rounded-md` Tailwind utility in the cascade.
 

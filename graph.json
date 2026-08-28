@@ -4,8 +4,8 @@
   "generated_for": "0.2.0",
   "ontology": "graph/ontology.json",
   "stats": {
-    "nodes": 287,
-    "edges": 824,
+    "nodes": 303,
+    "edges": 878,
     "by_node_type": {
       "a11y": 8,
       "template-block": 20,
@@ -14,49 +14,50 @@
       "component-2one": 3,
       "component": 55,
       "context": 4,
-      "contrast": 8,
-      "intent": 11,
+      "contrast": 9,
+      "element": 7,
+      "intent": 18,
       "pattern": 4,
       "package": 13,
       "token-radius": 7,
-      "ramp": 23,
-      "rule": 32,
+      "ramp": 21,
+      "rule": 33,
       "state": 10,
-      "token-color": 34,
+      "token-color": 36,
       "token-type": 10,
       "variant": 6
     },
     "by_class": {
       "AccessibilityRequirement": 8,
-      "Pattern": 55,
+      "Pattern": 62,
       "Brand": 8,
       "Component": 64,
       "Context": 4,
-      "Evidence": 8,
-      "Intent": 11,
+      "Evidence": 9,
+      "Intent": 18,
       "Package": 13,
       "Foundation": 74,
-      "Rule": 32,
+      "Rule": 33,
       "State": 10
     },
     "by_edge_type": {
       "alternative_to": 2,
       "applies_when": 1,
       "appropriate_for": 4,
-      "composed_of": 400,
+      "composed_of": 407,
       "demonstrates": 5,
       "depends_on": 78,
-      "derived_from": 29,
-      "embodies": 5,
+      "derived_from": 30,
+      "embodies": 6,
       "forbidden_with": 1,
-      "governed_by": 90,
-      "has_contrast": 16,
+      "governed_by": 117,
+      "has_contrast": 18,
       "inappropriate_for": 4,
       "overrides": 1,
-      "preferred_composition": 11,
+      "preferred_composition": 20,
       "preferred_for": 6,
       "preferred_over": 2,
-      "realized_by": 8,
+      "realized_by": 15,
       "requires": 14,
       "serves": 5,
       "specializes": 6,
@@ -65,12 +66,12 @@
     },
     "by_provenance": {
       "nodes": {
-        "explicit": 83,
-        "derived": 204
+        "explicit": 98,
+        "derived": 205
       },
       "edges": {
-        "explicit": 177,
-        "derived": 647
+        "explicit": 221,
+        "derived": 657
       }
     },
     "ontology_violations": 0
@@ -1048,6 +1049,16 @@
       "passes": true
     },
     {
+      "id": "contrast:brand-accent-text",
+      "type": "contrast",
+      "class": "Evidence",
+      "prov": "derived",
+      "label": "brand-accent-text (Lc 74)",
+      "apca_lc": 74,
+      "wcag_ratio": 5.01,
+      "passes": true
+    },
+    {
       "id": "contrast:destructive-button-label",
       "type": "contrast",
       "class": "Evidence",
@@ -1072,9 +1083,9 @@
       "type": "contrast",
       "class": "Evidence",
       "prov": "derived",
-      "label": "focus-ring-nontext (Lc 50.2)",
-      "apca_lc": 50.2,
-      "wcag_ratio": 2.56,
+      "label": "focus-ring-nontext (Lc 74)",
+      "apca_lc": 74,
+      "wcag_ratio": 5.01,
       "passes": true
     },
     {
@@ -1106,6 +1117,69 @@
       "apca_lc": 74.2,
       "wcag_ratio": 5.02,
       "passes": true
+    },
+    {
+      "id": "element:guardrail-notice",
+      "type": "element",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Guardrail notice",
+      "description": "A refusal in its own (grayscale) shape, offering the nearest safe alternative. Reasoning category.",
+      "source": "src/assistant/guardrail-notice.tsx"
+    },
+    {
+      "id": "element:loading-state",
+      "type": "element",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Loading state",
+      "description": "A pixel matrix + Skeleton holding the frame before the first token. Reasoning category.",
+      "source": "src/assistant/loading-state.tsx"
+    },
+    {
+      "id": "element:reasoning-effort",
+      "type": "element",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Reasoning effort",
+      "description": "Effort level (label + segment shape) and budget spent vs allotted. Reasoning category.",
+      "source": "src/assistant/reasoning-effort.tsx"
+    },
+    {
+      "id": "element:reasoning-panel",
+      "type": "element",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Reasoning panel",
+      "description": "A collapsible timeline of reasoning steps that settles into a summary. Reasoning category.",
+      "source": "src/assistant/reasoning-panel.tsx"
+    },
+    {
+      "id": "element:streaming-text",
+      "type": "element",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Streaming text",
+      "description": "Answer tokens revealed over time; the leading edge carries the brand accent, then settles to ink. Reasoning category.",
+      "source": "src/assistant/streaming-text.tsx"
+    },
+    {
+      "id": "element:thinking-indicator",
+      "type": "element",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Thinking indicator",
+      "description": "A live status line naming the current step, with elapsed time. Reasoning category.",
+      "source": "src/assistant/thinking-indicator.tsx"
+    },
+    {
+      "id": "element:typing-indicator",
+      "type": "element",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Typing indicator",
+      "description": "Three grayscale dots signalling the assistant is composing. Reasoning category.",
+      "source": "src/assistant/typing-indicator.tsx"
     },
     {
       "id": "intent:authenticate",
@@ -1144,6 +1218,15 @@
       "source": "docs/accessibility.md"
     },
     {
+      "id": "intent:hold-pending",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Hold the frame before first output",
+      "description": "Keep the frame while the model has nothing to show yet.",
+      "source": "src/assistant/loading-state.tsx"
+    },
+    {
       "id": "intent:low-emphasis-action",
       "type": "intent",
       "class": "Intent",
@@ -1180,6 +1263,24 @@
       "source": "docs/accessibility.md"
     },
     {
+      "id": "intent:refuse-safely",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Refuse with a safe alternative",
+      "description": "Decline a request and offer the nearest thing the agent can do instead.",
+      "source": "src/assistant/guardrail-notice.tsx"
+    },
+    {
+      "id": "intent:report-effort",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Report reasoning effort",
+      "description": "Show how hard to think and how much of that budget was spent.",
+      "source": "src/assistant/reasoning-effort.tsx"
+    },
+    {
       "id": "intent:select-option",
       "type": "intent",
       "class": "Intent",
@@ -1187,6 +1288,42 @@
       "label": "Select an option",
       "description": "Choose one or more values from a set.",
       "source": "graph/decisions.json"
+    },
+    {
+      "id": "intent:show-reasoning",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Show the reasoning trace",
+      "description": "Reveal the model's intermediate steps without dominating the answer.",
+      "source": "src/assistant/reasoning-panel.tsx"
+    },
+    {
+      "id": "intent:signal-composing",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Signal the agent is composing",
+      "description": "Lightweight presence cue that a reply is coming, with no named step.",
+      "source": "src/assistant/typing-indicator.tsx"
+    },
+    {
+      "id": "intent:signal-working",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Signal the agent is working",
+      "description": "Tell the user the agent is working right now, and on what.",
+      "source": "src/assistant/thinking-indicator.tsx"
+    },
+    {
+      "id": "intent:stream-answer",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Stream an answer",
+      "description": "Show an assistant answer as its tokens arrive.",
+      "source": "src/assistant/streaming-text.tsx"
     },
     {
       "id": "intent:submit-form",
@@ -1425,68 +1562,52 @@
       "value": "2px"
     },
     {
-      "id": "ramp:accent-100",
+      "id": "ramp:brand-100",
       "type": "ramp",
       "class": "Foundation",
       "prov": "derived",
-      "label": "accent-100",
-      "hex": "#f4f4f4"
+      "label": "brand-100",
+      "hex": "#d8ecff"
     },
     {
-      "id": "ramp:accent-200",
+      "id": "ramp:brand-300",
       "type": "ramp",
       "class": "Foundation",
       "prov": "derived",
-      "label": "accent-200",
-      "hex": "#e4e4e4"
+      "label": "brand-300",
+      "hex": "#7cc4ff"
     },
     {
-      "id": "ramp:accent-300",
+      "id": "ramp:brand-50",
       "type": "ramp",
       "class": "Foundation",
       "prov": "derived",
-      "label": "accent-300",
-      "hex": "#d1d1d1"
+      "label": "brand-50",
+      "hex": "#eff8ff"
     },
     {
-      "id": "ramp:accent-50",
+      "id": "ramp:brand-500",
       "type": "ramp",
       "class": "Foundation",
       "prov": "derived",
-      "label": "accent-50",
-      "hex": "#fafafa"
+      "label": "brand-500",
+      "hex": "#30a1ff"
     },
     {
-      "id": "ramp:accent-600",
+      "id": "ramp:brand-700",
       "type": "ramp",
       "class": "Foundation",
       "prov": "derived",
-      "label": "accent-600",
-      "hex": "#404040"
+      "label": "brand-700",
+      "hex": "#1670c9"
     },
     {
-      "id": "ramp:accent-700",
+      "id": "ramp:brand-800",
       "type": "ramp",
       "class": "Foundation",
       "prov": "derived",
-      "label": "accent-700",
-      "hex": "#262626"
-    },
-    {
-      "id": "ramp:accent-800",
-      "type": "ramp",
-      "class": "Foundation",
-      "prov": "derived",
-      "label": "accent-800",
-      "hex": "#171717"
-    },
-    {
-      "id": "ramp:accent-950",
-      "type": "ramp",
-      "class": "Foundation",
-      "prov": "derived",
-      "label": "accent-950",
-      "hex": "#000000"
+      "label": "brand-800",
+      "hex": "#12579c"
     },
     {
       "id": "ramp:danger-500",
@@ -1607,6 +1728,21 @@
       "prov": "derived",
       "label": "success-600",
       "hex": "#15803d"
+    },
+    {
+      "id": "rule:brand-accent",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "The brand accent is for emphasis, never state or primary",
+      "kind": "guideline",
+      "priority": "PREFERRED",
+      "severity": "should",
+      "tier": "brand",
+      "category": "brand",
+      "statement": "Use the brand accent (--brand, identity #30A1FF) only for emphasis — links, the focus ring, and selection/active indicators. It never replaces the grayscale primary action, is never the sole carrier of state (pair it with text/icon, like any colour), and renders through the APCA-accessible token (--brand: brand-700 on light, brand-300 on dark), never the raw identity hex as text or as a solid fill behind a label.",
+      "rationale": "One accent used sparingly reads as brand; the same hue spent on primaries, hover surfaces, or bare state signals dilutes it and reintroduces the inconsistency the grayscale foundation removes.",
+      "source": "rules/ux-rules.json"
     },
     {
       "id": "rule:build-from-library",
@@ -1748,14 +1884,14 @@
       "type": "rule",
       "class": "Rule",
       "prov": "explicit",
-      "label": "Grayscale only — no brand hue",
+      "label": "Grayscale foundation — one brand accent, no other hues",
       "kind": "constraint",
       "priority": "MANDATORY",
       "severity": "must",
       "tier": "brand",
       "category": "brand",
-      "statement": "Theme the whole system in grayscale. There is no brand hue; the only chromatic tokens are danger and success.",
-      "rationale": "The hue-free constraint is what makes every 2one screen read as one system and keeps recolour/theming deterministic.",
+      "statement": "Theme the system on a grayscale foundation. Structure and primary actions stay grayscale (near-black on light, white on dark). The only permitted hues are the single brand accent (--brand, identity #30A1FF) for emphasis and the danger/success validation colours — never any other decorative hue.",
+      "rationale": "A grayscale foundation with one disciplined accent is what makes every 2one screen read as one system and keeps recolour/theming deterministic; an open palette does not.",
       "source": "rules/ux-rules.json"
     },
     {
@@ -2201,6 +2337,22 @@
       "hex": "#dcdce0"
     },
     {
+      "id": "token:brand",
+      "type": "token-color",
+      "class": "Foundation",
+      "prov": "derived",
+      "label": "brand",
+      "hex": "#1670c9"
+    },
+    {
+      "id": "token:brand-foreground",
+      "type": "token-color",
+      "class": "Foundation",
+      "prov": "derived",
+      "label": "brand-foreground",
+      "hex": "#ffffff"
+    },
+    {
       "id": "token:card",
       "type": "token-color",
       "class": "Foundation",
@@ -2342,7 +2494,7 @@
       "class": "Foundation",
       "prov": "derived",
       "label": "ring",
-      "hex": "#a1a1aa"
+      "hex": "#1670c9"
     },
     {
       "id": "token:secondary",
@@ -2422,7 +2574,7 @@
       "class": "Foundation",
       "prov": "derived",
       "label": "sidebar-ring",
-      "hex": "#a1a1aa"
+      "hex": "#1670c9"
     },
     {
       "id": "token:success",
@@ -3011,6 +3163,12 @@
     },
     {
       "source": "component:button",
+      "target": "token:brand",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component:button",
       "target": "token:destructive",
       "type": "composed_of",
       "prov": "derived"
@@ -3299,6 +3457,18 @@
     },
     {
       "source": "component:checkbox",
+      "target": "token:brand",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component:checkbox",
+      "target": "token:brand-foreground",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component:checkbox",
       "target": "token:destructive",
       "type": "composed_of",
       "prov": "derived"
@@ -3306,18 +3476,6 @@
     {
       "source": "component:checkbox",
       "target": "token:input",
-      "type": "composed_of",
-      "prov": "derived"
-    },
-    {
-      "source": "component:checkbox",
-      "target": "token:primary",
-      "type": "composed_of",
-      "prov": "derived"
-    },
-    {
-      "source": "component:checkbox",
-      "target": "token:primary-foreground",
       "type": "composed_of",
       "prov": "derived"
     },
@@ -4312,6 +4470,18 @@
       "prov": "derived"
     },
     {
+      "source": "component:pagination",
+      "target": "token:border",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component:pagination",
+      "target": "token:brand",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
       "source": "component:popover",
       "target": "radius:md",
       "type": "composed_of",
@@ -4379,6 +4549,12 @@
     },
     {
       "source": "component:radio-group",
+      "target": "token:brand",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component:radio-group",
       "target": "token:destructive",
       "type": "composed_of",
       "prov": "derived"
@@ -4386,12 +4562,6 @@
     {
       "source": "component:radio-group",
       "target": "token:input",
-      "type": "composed_of",
-      "prov": "derived"
-    },
-    {
-      "source": "component:radio-group",
-      "target": "token:primary",
       "type": "composed_of",
       "prov": "derived"
     },
@@ -4619,6 +4789,12 @@
     },
     {
       "source": "component:sidebar",
+      "target": "radius:full",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component:sidebar",
       "target": "radius:lg",
       "type": "composed_of",
       "prov": "derived"
@@ -4644,6 +4820,12 @@
     {
       "source": "component:sidebar",
       "target": "token:border",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component:sidebar",
+      "target": "token:brand",
       "type": "composed_of",
       "prov": "derived"
     },
@@ -4763,6 +4945,12 @@
     },
     {
       "source": "component:switch",
+      "target": "token:brand",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component:switch",
       "target": "token:foreground",
       "type": "composed_of",
       "prov": "derived"
@@ -4842,6 +5030,12 @@
     {
       "source": "component:tabs",
       "target": "token:border",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component:tabs",
+      "target": "token:brand",
       "type": "composed_of",
       "prov": "derived"
     },
@@ -5559,6 +5753,12 @@
       "prov": "derived"
     },
     {
+      "source": "token:brand",
+      "target": "ramp:brand-700",
+      "type": "derived_from",
+      "prov": "derived"
+    },
+    {
       "source": "token:card-foreground",
       "target": "ramp:neutral-950",
       "type": "derived_from",
@@ -5644,7 +5844,7 @@
     },
     {
       "source": "token:ring",
-      "target": "ramp:neutral-400",
+      "target": "ramp:brand-700",
       "type": "derived_from",
       "prov": "derived"
     },
@@ -5704,7 +5904,7 @@
     },
     {
       "source": "token:sidebar-ring",
-      "target": "ramp:neutral-400",
+      "target": "ramp:brand-700",
       "type": "derived_from",
       "prov": "derived"
     },
@@ -5713,6 +5913,12 @@
       "target": "ramp:success-600",
       "type": "derived_from",
       "prov": "derived"
+    },
+    {
+      "source": "brand:voice",
+      "target": "rule:brand-accent",
+      "type": "embodies",
+      "prov": "explicit"
     },
     {
       "source": "brand:voice",
@@ -6155,6 +6361,181 @@
       "prov": "explicit"
     },
     {
+      "source": "element:guardrail-notice",
+      "target": "rule:build-from-library",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/guardrail-notice.json"
+    },
+    {
+      "source": "element:guardrail-notice",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/guardrail-notice.json"
+    },
+    {
+      "source": "element:guardrail-notice",
+      "target": "rule:one-primary",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/guardrail-notice.json"
+    },
+    {
+      "source": "element:guardrail-notice",
+      "target": "rule:pill-buttons",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/guardrail-notice.json"
+    },
+    {
+      "source": "element:loading-state",
+      "target": "rule:loading-state",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/loading-state.json"
+    },
+    {
+      "source": "element:loading-state",
+      "target": "rule:reduced-motion",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/loading-state.json"
+    },
+    {
+      "source": "element:loading-state",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/loading-state.json"
+    },
+    {
+      "source": "element:reasoning-effort",
+      "target": "rule:build-from-library",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/reasoning-effort.json"
+    },
+    {
+      "source": "element:reasoning-effort",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/reasoning-effort.json"
+    },
+    {
+      "source": "element:reasoning-effort",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/reasoning-effort.json"
+    },
+    {
+      "source": "element:reasoning-panel",
+      "target": "rule:build-from-library",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/reasoning-panel.json"
+    },
+    {
+      "source": "element:reasoning-panel",
+      "target": "rule:one-primary",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/reasoning-panel.json"
+    },
+    {
+      "source": "element:reasoning-panel",
+      "target": "rule:reduced-motion",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/reasoning-panel.json"
+    },
+    {
+      "source": "element:reasoning-panel",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/reasoning-panel.json"
+    },
+    {
+      "source": "element:streaming-text",
+      "target": "rule:brand-accent",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/streaming-text.json"
+    },
+    {
+      "source": "element:streaming-text",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/streaming-text.json"
+    },
+    {
+      "source": "element:streaming-text",
+      "target": "rule:reduced-motion",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/streaming-text.json"
+    },
+    {
+      "source": "element:streaming-text",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/streaming-text.json"
+    },
+    {
+      "source": "element:thinking-indicator",
+      "target": "rule:build-from-library",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/thinking-indicator.json"
+    },
+    {
+      "source": "element:thinking-indicator",
+      "target": "rule:loading-state",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/thinking-indicator.json"
+    },
+    {
+      "source": "element:thinking-indicator",
+      "target": "rule:reduced-motion",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/thinking-indicator.json"
+    },
+    {
+      "source": "element:thinking-indicator",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/thinking-indicator.json"
+    },
+    {
+      "source": "element:typing-indicator",
+      "target": "rule:grayscale",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/typing-indicator.json"
+    },
+    {
+      "source": "element:typing-indicator",
+      "target": "rule:reduced-motion",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/typing-indicator.json"
+    },
+    {
+      "source": "element:typing-indicator",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/assistant/typing-indicator.json"
+    },
+    {
       "source": "radius:full",
       "target": "rule:pill-buttons",
       "type": "governed_by",
@@ -6209,6 +6590,12 @@
       "prov": "explicit"
     },
     {
+      "source": "token:brand",
+      "target": "rule:brand-accent",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
       "source": "token:destructive",
       "target": "rule:keep-tokens-alive",
       "type": "governed_by",
@@ -6259,6 +6646,12 @@
     {
       "source": "token:primary",
       "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "token:ring",
+      "target": "rule:brand-accent",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6325,6 +6718,18 @@
     {
       "source": "token:foreground",
       "target": "contrast:border-nontext",
+      "type": "has_contrast",
+      "prov": "derived"
+    },
+    {
+      "source": "token:foreground",
+      "target": "contrast:brand-accent-text",
+      "type": "has_contrast",
+      "prov": "derived"
+    },
+    {
+      "source": "token:foreground",
+      "target": "contrast:brand-accent-text",
       "type": "has_contrast",
       "prov": "derived"
     },
@@ -6426,6 +6831,69 @@
       "type": "overrides",
       "prov": "explicit",
       "evidence": "tokens/colors.json"
+    },
+    {
+      "source": "element:guardrail-notice",
+      "target": "component:alert",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/assistant/guardrail-notice.tsx"
+    },
+    {
+      "source": "element:guardrail-notice",
+      "target": "component:button",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/assistant/guardrail-notice.tsx"
+    },
+    {
+      "source": "element:loading-state",
+      "target": "component:skeleton",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/assistant/loading-state.tsx"
+    },
+    {
+      "source": "element:reasoning-effort",
+      "target": "component:badge",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/assistant/reasoning-effort.tsx"
+    },
+    {
+      "source": "element:reasoning-effort",
+      "target": "component:progress",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/assistant/reasoning-effort.tsx"
+    },
+    {
+      "source": "element:reasoning-panel",
+      "target": "component:button",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/assistant/reasoning-panel.tsx"
+    },
+    {
+      "source": "element:reasoning-panel",
+      "target": "component:collapsible",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/assistant/reasoning-panel.tsx"
+    },
+    {
+      "source": "element:reasoning-panel",
+      "target": "component:separator",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/assistant/reasoning-panel.tsx"
+    },
+    {
+      "source": "element:thinking-indicator",
+      "target": "component:spinner",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "src/assistant/thinking-indicator.tsx"
     },
     {
       "source": "pattern:authentication",
@@ -6595,6 +7063,14 @@
       "evidence": "graph/decisions.json"
     },
     {
+      "source": "intent:hold-pending",
+      "target": "element:loading-state",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "src/assistant/loading-state.tsx"
+    },
+    {
       "source": "intent:low-emphasis-action",
       "target": "variant:button-ghost",
       "type": "realized_by",
@@ -6611,12 +7087,60 @@
       "evidence": "recipes/build-an-app.md"
     },
     {
+      "source": "intent:refuse-safely",
+      "target": "element:guardrail-notice",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "src/assistant/guardrail-notice.tsx"
+    },
+    {
+      "source": "intent:report-effort",
+      "target": "element:reasoning-effort",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "src/assistant/reasoning-effort.tsx"
+    },
+    {
       "source": "intent:select-option",
       "target": "component:select",
       "type": "realized_by",
       "prov": "explicit",
       "priority": "PREFERRED",
       "evidence": "src/components/ui/select.tsx"
+    },
+    {
+      "source": "intent:show-reasoning",
+      "target": "element:reasoning-panel",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "src/assistant/reasoning-panel.tsx"
+    },
+    {
+      "source": "intent:signal-composing",
+      "target": "element:typing-indicator",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "src/assistant/typing-indicator.tsx"
+    },
+    {
+      "source": "intent:signal-working",
+      "target": "element:thinking-indicator",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "src/assistant/thinking-indicator.tsx"
+    },
+    {
+      "source": "intent:stream-answer",
+      "target": "element:streaming-text",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "src/assistant/streaming-text.tsx"
     },
     {
       "source": "intent:submit-form",

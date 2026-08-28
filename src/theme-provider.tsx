@@ -8,8 +8,8 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes'
  *
  * Adds a `.dark` class to the document root so the audited dark palette in
  * `globals.css` activates (and the shadcn `dark:` utilities with it). The
- * grayscale identity is unchanged — this only swaps the light/dark token set,
- * there is no brand/accent hue. Default is `light` (the 2one default); pass
+ * grayscale-founded identity is unchanged — this only swaps the light/dark token
+ * set (the one brand accent `--brand` swaps with it). Default is `light` (the 2one default); pass
  * `enableSystem` or `defaultTheme` to change that.
  *
  *   import { ThemeProvider } from '@2one/design-library'

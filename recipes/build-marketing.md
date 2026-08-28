@@ -19,7 +19,8 @@ dark, lucide icons). Compose them like `marketing/page.tsx` does:
 | **Full page** | `page.tsx` | composes all of the above |
 
 Rules: one primary pill CTA per section; full-bleed sections with content capped
-at `max-w-7xl mx-auto`; no brand hue (grayscale only); the `Logo` is theme-adaptive
+at `max-w-7xl mx-auto`; grayscale-founded with the one brand accent (`--brand`) for
+emphasis only — the primary CTA stays grayscale; the `Logo` is theme-adaptive
 (`dark:hidden` / `hidden dark:block`). Edit the copy — the components stay.
 
 ## Brand assets
@@ -30,6 +31,6 @@ Marketing assets use the **brand** layer, not the interactive components.
   (256/512/1024w, for raster). Rules in `brand/logo/manifest.json`: black on
   light, white on dark, no recolor/rotate/effects, min width 96px.
 - **Colors & type:** pull from `tokens/colors.css` and `tokens/typography.css`
-  so campaigns match the product exactly (grayscale system; danger/success are
-  the only hues).
+  so campaigns match the product exactly (grayscale-founded + the one brand accent
+  `--brand` / `#30A1FF` for emphasis; danger/success are the validation-only hues).
 - Keep the logo's clear space (½ its height) on all sides.

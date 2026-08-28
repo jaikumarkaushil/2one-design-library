@@ -5,24 +5,20 @@
   This supersedes the earlier "Foundations (Design tokens)" file (team
   "Claude Integration Testing"), which the user asked to stop using.
 
-  This system is grayscale (accent/neutral scale) with no brand/blue
-  color anywhere in the actual components — confirmed across every
-  component pulled. Buttons and links both use this same neutral scale;
-  danger/success are the only hue-carrying colors, reserved for
-  validation states.
+  The 2one colour foundation has THREE levels:
+    1. PRIMARY  — the `neutral` grayscale ramp. Structure + primary actions.
+    2. ACCENT   — the `brand` ramp (#30A1FF). The one brand hue, for emphasis
+                  (links, focus, selection). Never replaces the grayscale
+                  primary; never the sole carrier of state.
+    3. SEMANTIC — `danger` / `success`, reserved for validation state only.
+
+  There is no separate grayscale "accent" ramp: the old shadcn/Figma accent
+  scale was a duplicate of neutral and has been removed. shadcn's own
+  semantic --accent token (a neutral hover surface) lives in globals.css and
+  is a COMPONENT concern, not a brand colour level.
 */
 @theme {
-  /* accent/* — used by Button and Link */
-  --color-accent-50: #fafafa;
-  --color-accent-100: #f4f4f4;
-  --color-accent-200: #e4e4e4;
-  --color-accent-300: #d1d1d1;
-  --color-accent-600: #404040;
-  --color-accent-700: #262626;
-  --color-accent-800: #171717;
-  --color-accent-950: #000000;
-
-  /* neutral/* — used by Text field, Checkbox, Message */
+  /* PRIMARY — neutral/* (structure, primary actions, text) */
   --color-neutral-50: #fafafa;
   --color-neutral-100: #f4f4f5;
   --color-neutral-200: #e4e4e7;
@@ -34,7 +30,19 @@
   --color-neutral-800: #27272a;
   --color-neutral-950: #09090b;
 
-  /* semantic — the only hue-carrying colors in this system */
+  /* ACCENT — brand/* — the single 2one brand accent. #30A1FF (brand-500) is the identity
+     hue; the UI renders APCA-accessible steps of it so every pair clears the
+     audit: brand-700 for accent text/rings on light, brand-300 on the dark
+     ground. Used for emphasis only (links, focus, selection) — never to replace
+     the grayscale primary and never as the sole signal of state. */
+  --color-brand-50: #eff8ff;   /* subtle brand-tint surface (dark text clears APCA on it) */
+  --color-brand-100: #d8ecff;
+  --color-brand-300: #7cc4ff;  /* dark-theme accent — clears APCA Lc 60 (text) on the dark ground */
+  --color-brand-500: #30a1ff;  /* IDENTITY — the 2one brand reference hue */
+  --color-brand-700: #1670c9;  /* light-theme accent — clears APCA Lc 60 (text) / 15 (ring) on white */
+  --color-brand-800: #12579c;  /* hover / pressed for the light accent */
+
+  /* danger / success — the validation-only hues */
   --color-danger-500: #ef4444;
   --color-danger-600: #dc2626;
   --color-danger-700: #c81e1e; /* --destructive in the light theme; darker than 600 so the white button label clears APCA Lc 75 */

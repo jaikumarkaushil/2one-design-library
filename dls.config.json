@@ -35,7 +35,8 @@
     "iconLibrary": "lucide-react",
     "iconLibraryLabel": "lucide",
     "spacingBase": 4,
-    "grayscaleOnly": true,
+    "grayscaleOnly": false,
+    "brandAccent": "#30A1FF",
     "validationHues": [
       "danger",
       "success"

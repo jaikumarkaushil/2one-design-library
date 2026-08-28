@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "kind": "2one Design Language System — AI-legible design repository",
   "generated_for": "0.2.0",
-  "description": "2one's Design Language System: the brand foundation, design tokens, and component library that define how every 2one product, deck, and marketing asset should look, feel, and sound. It is the single, authoritative source of truth — structured to be both human-understandable and AI-legible so any AI vendor can answer brand/design questions and generate on-brand output without guessing. The system is grayscale (no brand hue), with a light and an audited dark theme, pill buttons, Satoshi headings and Inter body; danger/success are the only colours and are used for validation only.",
+  "description": "2one's Design Language System: the brand foundation, design tokens, and component library that define how every 2one product, deck, and marketing asset should look, feel, and sound. It is the single, authoritative source of truth — structured to be both human-understandable and AI-legible so any AI vendor can answer brand/design questions and generate on-brand output without guessing. The system is grayscale-founded with a single brand accent (#30A1FF, used for emphasis — links, focus, selection), with a light and an audited dark theme, pill buttons, Satoshi headings and Inter body; danger/success are validation-only colours.",
   "instructions_for_ai": {
     "read_first": "manifest.json (this file), then README.md and brand/brand.json",
     "no_hallucination": "This repository is the ONLY source of truth for 2one brand and design facts. Answer strictly from repo content.",
@@ -15,8 +15,8 @@
       "When generating any asset (UI, deck, marketing, comms), pull exact values from tokens/*.json and src/components — do not invent look-alike colours, sizes, or copy.",
       "On first contact, summarise to the user what the DLS contains and how to use it, using only this manifest + README.",
       "For any 2one-facing copy, match the brand voice in brand/brand.json (voice, tone, vocabulary).",
-      "Colour rules are non-negotiable: grayscale only; danger/success for validation only; never convey state by colour alone (pair with an icon/text). See tokens/colors.json → rules.",
-      "When BUILDING any UI, follow docs/building-with-the-dls.md — the consistency rules distilled from real build mistakes: (1) build FROM the library, never hand-roll parallel chrome; (2) one token system — no hard-coded hex or second palette; (3) one 8px spacing scale — no ad-hoc inline margins; (4) one container language — every panel a real Card, never nested; (5) light + audited dark via the exported ThemeProvider — no hand-rolled palette, no brand hue; (6) lucide icons only; (7) never signal state by colour alone; (8) cap width by content type — a reading cap is for prose only, app layouts get a generous responsive cap (max-w-7xl) or go fluid; (9) reading a @theme token at runtime (swatch/palette view) requires a live var — Tailwind tree-shakes unused ramp vars, so safelist the ramp utilities or prefer semantic tokens; (10) verify the render at ultrawide/laptop/mobile AND in both themes, not just the build; (11) Tailwind only keeps classes it can see — @source every folder you render (an arbitrary value used once is the canary); (12) brand marks need a FIXED ground, not a theme token, and in-app marks must be theme-adaptive; (13) dark is not invert-and-ship — re-audit every rendered pair in both themes and keep component colours token-driven so the audit matches the render."
+      "Colour rules are non-negotiable: a grayscale foundation with one brand accent (--brand, identity #30A1FF) used only for emphasis (links/focus/selection); danger/success for validation only; never convey state by colour alone (pair with an icon/text). See tokens/colors.json → rules.",
+      "When BUILDING any UI, follow docs/building-with-the-dls.md — the consistency rules distilled from real build mistakes: (1) build FROM the library, never hand-roll parallel chrome; (2) one token system — no hard-coded hex or second palette; (3) one 8px spacing scale — no ad-hoc inline margins; (4) one container language — every panel a real Card, never nested; (5) light + audited dark via the exported ThemeProvider — no hand-rolled palette; the one brand accent is #30A1FF (token --brand), for emphasis only; (6) lucide icons only; (7) never signal state by colour alone; (8) cap width by content type — a reading cap is for prose only, app layouts get a generous responsive cap (max-w-7xl) or go fluid; (9) reading a @theme token at runtime (swatch/palette view) requires a live var — Tailwind tree-shakes unused ramp vars, so safelist the ramp utilities or prefer semantic tokens; (10) verify the render at ultrawide/laptop/mobile AND in both themes, not just the build; (11) Tailwind only keeps classes it can see — @source every folder you render (an arbitrary value used once is the canary); (12) brand marks need a FIXED ground, not a theme token, and in-app marks must be theme-adaptive; (13) dark is not invert-and-ship — re-audit every rendered pair in both themes and keep component colours token-driven so the audit matches the render."
     ],
     "clarify_first": {
       "why": "Most off-brand output traces to an unstated assumption, not a missing token. Ask these BEFORE generating, then state the answers you are using. If the user says \"just pick\" or is evaluating, choose the default, name it explicitly, and continue — never block.",
@@ -650,11 +650,400 @@
           "chart-tooltip-default"
         ]
       },
+      "assistant": {
+        "path": "src/assistant/",
+        "specs": "rules/assistant/",
+        "note": "Complete, opinionated pieces for a single assistant/AI-product interface state — the 2one answer for reasoning, tool calls, refusals and the rest. Adapt the content, keep the structure. Each carries a machine-readable spec and a graph node (element:<id>). Concept inspired by assistant-ui's Elements; composed only from real 2one primitives.",
+        "count": 7,
+        "items": [
+          "guardrail-notice",
+          "loading-state",
+          "reasoning-effort",
+          "reasoning-panel",
+          "streaming-text",
+          "thinking-indicator",
+          "typing-indicator"
+        ],
+        "spec": [
+          {
+            "id": "element:guardrail-notice",
+            "label": "Guardrail notice",
+            "tier": 3,
+            "kind": "assistant-element",
+            "category": "reasoning",
+            "file": "src/assistant/guardrail-notice.tsx",
+            "export": "GuardrailNotice",
+            "purpose": "Give a refusal its own shape, and offer the nearest thing the agent can do instead.",
+            "when_to_use": "When the agent declines a request and a safe alternative exists.",
+            "when_not_to_use": "For a tool/system error (use an error state) — a refusal is a decision, not a failure.",
+            "composition": [
+              "A DLS Alert with a lucide ShieldAlert icon, title and message",
+              "One primary Button offering the nearest safe alternative"
+            ],
+            "composes": {
+              "components": [
+                "alert",
+                "button"
+              ],
+              "blocks": []
+            },
+            "primary_action": "Exactly one filled Button — the nearest safe alternative. Omit it only when no alternative exists.",
+            "responsive": "Caps at a readable max width; the action stacks below the message.",
+            "accessibility": [
+              "Alert carries role semantics; the refusal is signalled by icon + text, never colour alone (no-color-alone)",
+              "grayscale by default — a refusal is not an error and should not read as danger",
+              "the action is a keyboard-operable pill Button with a visible focus ring"
+            ],
+            "anti_patterns": [
+              "styling the refusal as destructive/red — it is a decision, not a failure",
+              "a dead-end refusal with no alternative offered",
+              "two competing primary actions"
+            ],
+            "governed_by": [
+              "no-color-alone",
+              "one-primary",
+              "pill-buttons",
+              "build-from-library"
+            ],
+            "assumptions": [
+              "Title, message and alternative label are DEMO copy — replace with the real refusal and the real alternative.",
+              "`onAlternative` is wired by the caller to the safe action."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference; no code is copied. Composed from real DLS primitives (Alert + Button).",
+              "shadcn_primitives": [
+                "alert",
+                "button"
+              ],
+              "dls_components": [
+                "alert",
+                "button"
+              ],
+              "checked_against": "https://www.assistant-ui.com/elements"
+            }
+          },
+          {
+            "id": "element:loading-state",
+            "label": "Loading state",
+            "tier": 3,
+            "kind": "assistant-element",
+            "category": "reasoning",
+            "file": "src/assistant/loading-state.tsx",
+            "export": "LoadingState",
+            "purpose": "Hold the frame while the model has nothing to show yet, and hint at the shape of the answer coming.",
+            "when_to_use": "The gap before the first token when no reasoning step can be named.",
+            "when_not_to_use": "Once a step is known (ThinkingIndicator) or once tokens stream (StreamingText).",
+            "composition": [
+              "A grayscale pixel matrix that keeps time",
+              "DLS Skeleton lines standing in for the answer shape"
+            ],
+            "composes": {
+              "components": [
+                "skeleton"
+              ],
+              "blocks": []
+            },
+            "responsive": "Caps at a readable max width; matrix and skeleton stack.",
+            "accessibility": [
+              "role=status + aria-live=polite + an aria-label naming what is loading",
+              "the matrix and skeleton are aria-hidden decoration",
+              "all motion collapses under prefers-reduced-motion"
+            ],
+            "anti_patterns": [
+              "a bare spinner with no hint of the answer shape",
+              "a skeleton whose layout does not resemble the content it precedes"
+            ],
+            "governed_by": [
+              "loading-state",
+              "reduced-motion",
+              "tokens-only"
+            ],
+            "assumptions": [
+              "The label is a DEMO value — name what is actually loading.",
+              "Skeleton line widths are placeholders — match them to the expected answer shape."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference; no code is copied. Composed from the real DLS Skeleton primitive plus a token-only pixel matrix.",
+              "shadcn_primitives": [
+                "skeleton"
+              ],
+              "dls_components": [
+                "skeleton"
+              ],
+              "checked_against": "https://www.assistant-ui.com/elements"
+            }
+          },
+          {
+            "id": "element:reasoning-effort",
+            "label": "Reasoning effort",
+            "tier": 3,
+            "kind": "assistant-element",
+            "category": "reasoning",
+            "file": "src/assistant/reasoning-effort.tsx",
+            "export": "ReasoningEffort",
+            "purpose": "Show how hard the model was told to think, and how much of that budget the run actually spent.",
+            "when_to_use": "On surfaces that expose the effort/budget dial and want to report it back honestly.",
+            "when_not_to_use": "When effort is not user-controllable or not worth surfacing.",
+            "composition": [
+              "An effort level as a text label + a filled-segment shape (1–3 bars)",
+              "A secondary Badge naming the level",
+              "A DLS Progress bar for budget spent vs allotted"
+            ],
+            "composes": {
+              "components": [
+                "progress",
+                "badge"
+              ],
+              "blocks": []
+            },
+            "responsive": "Caps at a readable max width; the header row wraps under it.",
+            "accessibility": [
+              "effort is carried by the label + the number of filled segments, never by colour alone (no-color-alone)",
+              "Progress carries an aria-label with the percentage used"
+            ],
+            "anti_patterns": [
+              "using colour (e.g. red = high) as the only signal of effort",
+              "showing spend without the budget it is measured against"
+            ],
+            "governed_by": [
+              "no-color-alone",
+              "tokens-only",
+              "build-from-library"
+            ],
+            "assumptions": [
+              "Level, spent and budget are DEMO values — wire them to the real run.",
+              "Three effort levels (low/medium/high); adjust to the surface's actual dial."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference; no code is copied. Composed from real DLS primitives (Progress + Badge) plus a token-only segment meter.",
+              "shadcn_primitives": [
+                "progress",
+                "badge"
+              ],
+              "dls_components": [
+                "progress",
+                "badge"
+              ],
+              "checked_against": "https://www.assistant-ui.com/elements"
+            }
+          },
+          {
+            "id": "element:reasoning-panel",
+            "label": "Reasoning panel",
+            "tier": 3,
+            "kind": "assistant-element",
+            "category": "reasoning",
+            "file": "src/assistant/reasoning-panel.tsx",
+            "export": "ReasoningPanel",
+            "purpose": "Stream a reasoning trace along a timeline, then settle it into a summary — available on demand without dominating the answer.",
+            "when_to_use": "When the model's intermediate steps are worth showing but should stay secondary to the final answer.",
+            "when_not_to_use": "For a single 'thinking' cue (use ThinkingIndicator) or when the trace must never be shown to the user.",
+            "composition": [
+              "A ghost-Button disclosure trigger with a rotating chevron + step count",
+              "A left-ruled timeline of steps (title + detail) that stream in",
+              "A Separator and a settled summary once complete"
+            ],
+            "composes": {
+              "components": [
+                "collapsible",
+                "button",
+                "separator"
+              ],
+              "blocks": []
+            },
+            "responsive": "Full width; the timeline indents from a single ruled edge at every width.",
+            "accessibility": [
+              "Collapsible manages aria-expanded + disclosure semantics",
+              "the ghost trigger is the only Button and is keyboard-operable with a visible focus ring",
+              "steps appear at once and the chevron does not animate under prefers-reduced-motion"
+            ],
+            "anti_patterns": [
+              "a second primary Button competing with the answer's action",
+              "leaving the panel open and streaming with no way to collapse it",
+              "rebuilding the disclosure by hand instead of using Collapsible"
+            ],
+            "governed_by": [
+              "reduced-motion",
+              "build-from-library",
+              "tokens-only",
+              "one-primary"
+            ],
+            "assumptions": [
+              "Steps and the summary are DEMO content — replace with the real reasoning trace.",
+              "The panel defaults to open for the demo; choose the default that fits the surface."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference; no code is copied. shadcn has no reasoning/AI block, so the disclosure is composed from real DLS primitives (Collapsible + Button + Separator).",
+              "shadcn_primitives": [
+                "collapsible",
+                "button",
+                "separator"
+              ],
+              "dls_components": [
+                "collapsible",
+                "button",
+                "separator"
+              ],
+              "checked_against": "https://www.assistant-ui.com/elements"
+            }
+          },
+          {
+            "id": "element:streaming-text",
+            "label": "Streaming text",
+            "tier": 3,
+            "kind": "assistant-element",
+            "category": "reasoning",
+            "file": "src/assistant/streaming-text.tsx",
+            "export": "StreamingText",
+            "purpose": "Render an answer as it streams — the leading edge marked, the settled text readable as plain prose.",
+            "when_to_use": "While assistant tokens are arriving and should be shown as they land.",
+            "when_not_to_use": "For a finished answer (render it as static text) or before the first token (use Thinking/TypingIndicator).",
+            "composition": [
+              "Word spans revealed over time",
+              "The newest N words carry the brand accent, then transition to foreground",
+              "A blinking caret at the leading edge while streaming"
+            ],
+            "composes": {
+              "components": [],
+              "blocks": []
+            },
+            "responsive": "Flows as a paragraph; wraps to its container.",
+            "accessibility": [
+              "aria-live=polite + aria-busy while streaming so assistive tech follows the update",
+              "colour is emphasis only — every word settles to foreground, so meaning never rests on the accent (no-color-alone)",
+              "the whole text is shown at once under prefers-reduced-motion"
+            ],
+            "anti_patterns": [
+              "leaving text in the accent colour permanently — the accent marks the edge, not the content",
+              "using the accent as the only cue that text is still streaming (pair it with aria-busy + the caret)"
+            ],
+            "governed_by": [
+              "brand-accent",
+              "no-color-alone",
+              "reduced-motion",
+              "tokens-only"
+            ],
+            "assumptions": [
+              "Streaming is SIMULATED here by a timer over a fixed string — replace with the real token stream.",
+              "`accentWords` (3) is a presentation choice; tune to the streaming rate."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference; no code is copied. Atomic text element — no shadcn primitive — built from DLS tokens (foreground + the --brand accent) only.",
+              "shadcn_primitives": [],
+              "dls_components": [],
+              "checked_against": "https://www.assistant-ui.com/elements"
+            }
+          },
+          {
+            "id": "element:thinking-indicator",
+            "label": "Thinking indicator",
+            "tier": 3,
+            "kind": "assistant-element",
+            "category": "reasoning",
+            "file": "src/assistant/thinking-indicator.tsx",
+            "export": "ThinkingIndicator",
+            "purpose": "Tell the user the agent is working right now — and on what — so a slow turn reads as progress, not a hang.",
+            "when_to_use": "Between the send and the first streamed token, whenever a named step is known.",
+            "when_not_to_use": "Once tokens are streaming — switch to StreamingText. For a purely decorative 'composing' cue with no step to name, use TypingIndicator.",
+            "composition": [
+              "A DLS Spinner (accent) or a resting dot",
+              "A named current step in foreground text",
+              "Elapsed time in tabular-nums"
+            ],
+            "composes": {
+              "components": [
+                "spinner"
+              ],
+              "blocks": []
+            },
+            "responsive": "A single inline row; wraps naturally in a narrow column.",
+            "accessibility": [
+              "role=status + aria-live=polite so the step and time are announced without stealing focus",
+              "the label names the step in text — presence is never signalled by the spinner alone"
+            ],
+            "anti_patterns": [
+              "an unlabelled spinner that names no step",
+              "colouring the whole row to signal 'busy' — busy is not a state worth a hue"
+            ],
+            "governed_by": [
+              "loading-state",
+              "reduced-motion",
+              "tokens-only",
+              "build-from-library"
+            ],
+            "assumptions": [
+              "The label and elapsed time are DEMO values — wire them to the real run's current step and start time.",
+              "`running` is driven here by a timer; in production it reflects the runtime's in-flight state."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference for this interface state; no code is copied. shadcn ships no assistant/AI-interface block, so this element is composed from a real DLS primitive (Spinner) plus tokens.",
+              "shadcn_primitives": [
+                "spinner"
+              ],
+              "dls_components": [
+                "spinner"
+              ],
+              "checked_against": "https://www.assistant-ui.com/elements"
+            }
+          },
+          {
+            "id": "element:typing-indicator",
+            "label": "Typing indicator",
+            "tier": 3,
+            "kind": "assistant-element",
+            "category": "reasoning",
+            "file": "src/assistant/typing-indicator.tsx",
+            "export": "TypingIndicator",
+            "purpose": "Signal that the assistant is composing, as presence rather than noise.",
+            "when_to_use": "A lightweight 'the assistant is about to speak' cue when there is no named step and no tokens yet.",
+            "when_not_to_use": "When a step can be named (use ThinkingIndicator) or when tokens are streaming (use StreamingText).",
+            "composition": [
+              "Three grayscale dots on the spacing scale, bouncing on a stagger"
+            ],
+            "composes": {
+              "components": [],
+              "blocks": []
+            },
+            "responsive": "Inline; fixed intrinsic size.",
+            "accessibility": [
+              "role=status with an aria-label describing the meaning of the dots",
+              "dots are aria-hidden; the label carries the meaning",
+              "animation collapses to a static row under prefers-reduced-motion"
+            ],
+            "anti_patterns": [
+              "colouring the dots — a coloured indicator reads as state",
+              "using it in place of a named step when one is available"
+            ],
+            "governed_by": [
+              "reduced-motion",
+              "grayscale",
+              "tokens-only"
+            ],
+            "assumptions": [
+              "Atomic element: composed from tokens + the spacing scale, no shadcn primitive exists for it.",
+              "Mount/unmount is driven by the caller to reflect the real composing window."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference; no code is copied. This is an atomic element with no shadcn primitive — it is built from DLS tokens and the spacing scale only, which is why composes.components is empty.",
+              "shadcn_primitives": [],
+              "dls_components": [],
+              "checked_against": "https://www.assistant-ui.com/elements"
+            }
+          }
+        ]
+      },
       "recipes": "recipes/"
     },
     "rules": {
       "file": "rules/ux-rules.json",
-      "count": 32,
+      "count": 33,
       "version": "1.0.0",
       "severity_levels": [
         "forbidden",
@@ -731,7 +1120,14 @@
         "dark"
       ],
       "switch": "the exported ThemeProvider (adds a .dark class, activating shadcn dark: utilities)",
-      "hues": "grayscale; danger + success are the only hues, reserved for validation state",
+      "hues": "grayscale foundation + one brand accent (#30A1FF, token --brand) for emphasis (links/focus/selection); danger + success are validation-only hues",
+      "accent": {
+        "identity": "#30A1FF",
+        "token": "--brand",
+        "light": "#1670c9",
+        "dark": "#7cc4ff",
+        "usage": "The single brand accent, for emphasis only — links, focus ring, selection/active indicators. Never replaces the grayscale primary and never the sole carrier of state. #30A1FF is the identity hue; the UI renders APCA-accessible steps of it (brand-700 on light, brand-300 on dark), audited by npm run a11y."
+      },
       "audited": "both themes pass the APCA audit (npm run a11y)",
       "fonts": {
         "heading": "Satoshi",
@@ -746,9 +1142,10 @@
         "--muted": "#f4f4f5",
         "--muted-foreground": "#52525b",
         "--accent": "#f4f4f5",
+        "--brand": "#1670c9",
         "--border": "#dcdce0",
         "--input": "#dcdce0",
-        "--ring": "#a1a1aa",
+        "--ring": "#1670c9",
         "--destructive": "#c81e1e",
         "--success": "#15803d"
       }

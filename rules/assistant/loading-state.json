@@ -1,0 +1,39 @@
+{
+  "id": "element:loading-state",
+  "label": "Loading state",
+  "tier": 3,
+  "kind": "assistant-element",
+  "category": "reasoning",
+  "file": "src/assistant/loading-state.tsx",
+  "export": "LoadingState",
+  "purpose": "Hold the frame while the model has nothing to show yet, and hint at the shape of the answer coming.",
+  "when_to_use": "The gap before the first token when no reasoning step can be named.",
+  "when_not_to_use": "Once a step is known (ThinkingIndicator) or once tokens stream (StreamingText).",
+  "composition": [
+    "A grayscale pixel matrix that keeps time",
+    "DLS Skeleton lines standing in for the answer shape"
+  ],
+  "composes": { "components": ["skeleton"], "blocks": [] },
+  "responsive": "Caps at a readable max width; matrix and skeleton stack.",
+  "accessibility": [
+    "role=status + aria-live=polite + an aria-label naming what is loading",
+    "the matrix and skeleton are aria-hidden decoration",
+    "all motion collapses under prefers-reduced-motion"
+  ],
+  "anti_patterns": [
+    "a bare spinner with no hint of the answer shape",
+    "a skeleton whose layout does not resemble the content it precedes"
+  ],
+  "governed_by": ["loading-state", "reduced-motion", "tokens-only"],
+  "assumptions": [
+    "The label is a DEMO value — name what is actually loading.",
+    "Skeleton line widths are placeholders — match them to the expected answer shape."
+  ],
+  "references": {
+    "shadcn_block": null,
+    "note": "assistant-ui's Elements catalogue (https://www.assistant-ui.com/elements, checked 2026-08) is the CONCEPTUAL reference; no code is copied. Composed from the real DLS Skeleton primitive plus a token-only pixel matrix.",
+    "shadcn_primitives": ["skeleton"],
+    "dls_components": ["skeleton"],
+    "checked_against": "https://www.assistant-ui.com/elements"
+  }
+}

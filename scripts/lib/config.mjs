@@ -38,6 +38,8 @@ const DEFAULTS = {
     components: 'src/components/ui',
     ownComponents: 'src/components',
     blocks: 'src/blocks',
+    assistant: 'src/assistant',
+    assistantSpecs: 'rules/assistant',
     barrel: 'src/index.ts',
     brand: { structured: 'brand/brand.json', prose: 'brand/BRAND.md', logo: 'brand/logo' },
     out: { tokens: 'tokens', manifest: 'manifest.json', graph: 'graph.json', dtcg: 'tokens/tokens.dtcg.json' },

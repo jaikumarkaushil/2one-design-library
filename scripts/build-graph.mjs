@@ -38,7 +38,7 @@ const decisions = J('graph/decisions.json')
 const TYPE_CLASS = {}
 for (const [cls, def] of Object.entries(ontology.node_classes)) for (const t of def.node_types) TYPE_CLASS[t] = cls
 const classOf = (type) => TYPE_CLASS[type] || 'Unknown'
-const AUTHORED_TYPES = new Set(['rule', 'brand', 'persona', 'intent', 'context', 'state', 'a11y', 'pattern', 'variant'])
+const AUTHORED_TYPES = new Set(['rule', 'brand', 'persona', 'intent', 'context', 'state', 'a11y', 'pattern', 'variant', 'element'])
 const provOfType = (type) => (AUTHORED_TYPES.has(type) ? 'explicit' : 'derived')
 
 const nodes = new Map()
@@ -172,6 +172,7 @@ addNode('brand:tone', 'brand', 'Tone: ' + brand.tone.descriptors.join(', '))
 for (const p of brand.personas) addNode(`persona:${p.id}`, 'brand', p.label)
 for (const p of brand.personas) addEdge('brand:mission', `persona:${p.id}`, 'serves', 'explicit')
 addEdge('brand:voice', 'rule:grayscale', 'embodies', 'explicit')
+addEdge('brand:voice', 'rule:brand-accent', 'embodies', 'explicit')
 addEdge('brand:voice', 'rule:pill-buttons', 'embodies', 'explicit')
 addEdge('brand:voice', 'rule:no-color-alone', 'embodies', 'explicit')
 addEdge('brand:voice', 'rule:build-from-library', 'embodies', 'explicit')

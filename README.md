@@ -32,8 +32,8 @@ slop," the generic output you get when the tool has no ground truth.
 | --- | --- |
 | **58 components** | 54 [shadcn/ui](https://ui.shadcn.com) primitives re-skinned to 2one, plus `Toolbar`, `Logo`, `AppBar`, `BottomNavItem` |
 | **9 templates** | five sign-in screens, three sign-ups, a dashboard — plus marketing sections and 31 charts |
-| **Two themes** | light and dark, both grayscale, both contrast-audited |
-| **32 UX rules** | machine-readable, with severity and a conflict-precedence ladder |
+| **Two themes** | light and dark, both grayscale-founded with one brand accent (`--brand`), both contrast-audited |
+| **33 UX rules** | machine-readable, with severity and a conflict-precedence ladder |
 | **Brand** | logo with usage rules, plus voice, tone, and personas |
 
 ---
@@ -222,9 +222,9 @@ The look is driven by CSS variables in `src/styles/globals.css`, fed by the raw
 tokens in `tokens/`. The authoritative map is `manifest.json` →
 `system.theme.tokenMap` — generated, so it cannot go stale.
 
-Light and dark both ship, both grayscale, both APCA-audited. Switch with the
-exported `ThemeProvider`. **Any token change must pass `npm run a11y` in both
-themes.**
+Light and dark both ship, both grayscale-founded with the one brand accent
+(`--brand`), both APCA-audited. Switch with the exported `ThemeProvider`. **Any
+token change must pass `npm run a11y` in both themes.**
 
 `tokens/tokens.dtcg.json` is the same set in W3C DTCG format — import it into
 Figma via Tokens Studio, or feed Style Dictionary for other platforms.
@@ -241,7 +241,7 @@ Both are bundled into the published styles, so consumers get them automatically.
 <details>
 <summary><b>Design rules</b></summary>
 
-- **Monochrome.** No brand hue. `danger`/`success` appear only on validation state.
+- **Grayscale-founded, one accent.** Structure and primary actions stay grayscale; a single brand accent (`--brand`, identity `#30A1FF`) carries emphasis (links/focus/selection). `danger`/`success` appear only on validation state.
 - **Pill buttons.** The signature, enforced in `globals.css` so it survives CLI regeneration.
 - **One primary per view.** Pair a `secondary` or `outline` with it.
 - **The logo is an asset, never type.** Never recolour, rotate, or distort it.

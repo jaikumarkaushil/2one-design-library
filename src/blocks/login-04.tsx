@@ -87,13 +87,10 @@ export function LoginForm({
               </FieldDescription>
             </FieldGroup>
           </form>
-          <div className="relative hidden bg-muted md:block">
-            <img
-              src="/placeholder.svg"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-            />
-          </div>
+          {/* Image slot — a themed muted panel by default; drop a consumer <img>
+              (absolute inset-0 h-full w-full object-cover) in here. No external
+              placeholder asset, so it never renders broken. */}
+          <div className="relative hidden bg-muted md:block" aria-hidden />
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">

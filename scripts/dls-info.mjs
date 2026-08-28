@@ -174,7 +174,7 @@ const info = {
   system: {
     themes: ['light', 'dark'],
     theme_switch: 'wrap the app in the exported ThemeProvider',
-    palette: 'grayscale — no brand hue; danger/success for validation state only',
+    palette: 'grayscale foundation + one brand accent (#30A1FF, --brand) for emphasis; danger/success for validation state only',
     icons,
     charts,
     signature: 'buttons are pills (radius-full)',

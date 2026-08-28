@@ -17,7 +17,7 @@ canonical tokens (`npm run tokens`), so it never drifts:
 - `logo` — fetchable SVG + PNG URLs for both variants, with the usage rules
 - `theme` — states which palette these values are (light; dark is in
   `tokens/colors.json` → `semantic_dark`)
-- `rules` — the colour usage rules (grayscale only; danger/success = validation only)
+- `rules` — the colour usage rules (grayscale-founded + one brand accent `#30A1FF` for emphasis; danger/success = validation only)
 
 ## How a user connects it
 

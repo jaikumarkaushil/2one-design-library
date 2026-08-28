@@ -560,7 +560,7 @@ export function Components() {
               <div className="grid gap-4 md:grid-cols-2">
                 <Block title="Command" meta="⌘K-style palette">
                   <Command className="max-w-sm rounded-lg border">
-                    <CommandInput placeholder="Search…" />
+                    <CommandInput placeholder="Search…" aria-label="Search commands" />
                     <CommandList>
                       <CommandEmpty>No results.</CommandEmpty>
                       <CommandGroup heading="Suggestions">

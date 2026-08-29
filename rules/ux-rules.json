@@ -39,7 +39,8 @@
         "token:muted",
         "token:accent",
         "token:background"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "brand-accent",
@@ -51,7 +52,8 @@
       "applies_to": [
         "token:brand",
         "token:ring"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "validation-only",
@@ -63,7 +65,8 @@
       "applies_to": [
         "token:destructive",
         "token:success"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "pill-buttons",
@@ -75,7 +78,8 @@
       "applies_to": [
         "component:button",
         "radius:full"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "logo-untouchable",
@@ -86,7 +90,8 @@
       "rationale": "A modified mark stops being the brand.",
       "applies_to": [
         "component-2one:logo"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "no-color-alone",
@@ -99,7 +104,8 @@
         "token:destructive",
         "token:success",
         "@interactive"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "focus-visible",
@@ -111,7 +117,8 @@
       "applies_to": [
         "@interactive",
         "token:ring"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "error-semantics",
@@ -124,7 +131,8 @@
         "component:input",
         "component:field",
         "component:form"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "reduced-motion",
@@ -136,7 +144,8 @@
       "applies_to": [
         "component:carousel",
         "component:sonner"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "build-from-library",
@@ -149,7 +158,8 @@
         "component:card",
         "component:sidebar",
         "component:button"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "tokens-only",
@@ -163,7 +173,8 @@
         "token:primary",
         "token:muted",
         "token:border"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "one-container",
@@ -174,7 +185,8 @@
       "rationale": "One container language is what makes screens feel like one product.",
       "applies_to": [
         "component:card"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "lucide-only",
@@ -185,7 +197,8 @@
       "rationale": "One icon library keeps weight, stroke, and metaphor consistent.",
       "applies_to": [
         "component:button"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "theming",
@@ -196,7 +209,8 @@
       "rationale": "Both shipped themes are APCA-audited; a hand-rolled palette bypasses the audit.",
       "applies_to": [
         "token:background"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "multi-theme-audit",
@@ -209,7 +223,8 @@
         "token:destructive",
         "token:border",
         "token:muted"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "one-primary",
@@ -220,7 +235,8 @@
       "rationale": "Competing primaries destroy the visual hierarchy that tells users what to do.",
       "applies_to": [
         "component:button"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "destructive-confirm",
@@ -232,7 +248,8 @@
       "applies_to": [
         "component:alert-dialog",
         "component:button"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "loading-state",
@@ -245,7 +262,8 @@
         "component:button",
         "component:spinner",
         "component:skeleton"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "empty-state",
@@ -256,7 +274,8 @@
       "rationale": "A blank region reads as a bug; an empty state tells the user what to do next.",
       "applies_to": [
         "component:empty"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "menu-toggle-affordance",
@@ -268,7 +287,8 @@
       "applies_to": [
         "component:sidebar",
         "component:button"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "one-spacing-scale",
@@ -279,7 +299,8 @@
       "rationale": "Inconsistent gaps are the single most visible 'AI-generated' tell.",
       "applies_to": [
         "radius:md"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "width-by-content",
@@ -288,7 +309,8 @@
       "label": "Cap width by content type",
       "statement": "A reading-width cap is for long-form prose only. App/component layouts get a generous responsive cap (max-w-7xl) or go fluid; cap only the prose inside.",
       "rationale": "A reading cap on an app wastes half a large monitor in empty gutters.",
-      "applies_to": []
+      "applies_to": [],
+      "since": "1.0.0"
     },
     {
       "id": "keep-tokens-alive",
@@ -301,7 +323,8 @@
         "token:accent",
         "token:destructive",
         "token:success"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "scan-what-you-render",
@@ -313,7 +336,8 @@
       "applies_to": [
         "component:chart",
         "component:card"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "fixed-vs-theme-color",
@@ -324,7 +348,8 @@
       "rationale": "The white logo on bg-foreground vanishes in dark (foreground flips near-white).",
       "applies_to": [
         "component-2one:logo"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "destructive-intent",
@@ -335,7 +360,8 @@
       "rationale": "Destructive colour is a warning; spending it on navigation trains users to ignore it and misreads risk.",
       "applies_to": [
         "component:button"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "tooltip-not-essential",
@@ -346,7 +372,8 @@
       "rationale": "Tooltips are unreachable on touch and are skipped by many assistive contexts; essential info behind one is lost.",
       "applies_to": [
         "component:tooltip"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "mobile-sheet-over-dialog",
@@ -358,7 +385,8 @@
       "applies_to": [
         "component:dialog",
         "component:sheet"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "filter-select-all",
@@ -370,7 +398,8 @@
       "applies_to": [
         "component:checkbox",
         "component:toggle-group"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "no-hardcoded-ui-data",
@@ -379,7 +408,8 @@
       "label": "UI counts and lists are generated, not hand-typed",
       "statement": "Any count, badge number, or list shown in the UI derives from the generated source (manifest.json / graph.json) — never a hand-typed literal.",
       "rationale": "Hand-typed numbers drift the moment the repo grows — a nav badge read 198 while the graph held 213. Deriving from source keeps the UI honest by construction (docs/building-with-the-dls.md §20).",
-      "applies_to": []
+      "applies_to": [],
+      "since": "1.0.0"
     },
     {
       "id": "mono-for-code-only",
@@ -388,7 +418,8 @@
       "label": "Monospace is for code, not chrome",
       "statement": "Use the mono font only for code blocks and literal commands/paths. Product chrome, labels and prose use the UI font (Inter/Satoshi).",
       "rationale": "Monospace in chrome reads as a developer sampler, not a product, and undercuts the SaaS feel (docs/building-with-the-dls.md §21).",
-      "applies_to": []
+      "applies_to": [],
+      "since": "1.0.0"
     },
     {
       "id": "pages-over-scroll",
@@ -397,7 +428,8 @@
       "label": "Split a product into destination pages",
       "statement": "A product is a set of destination pages (Dashboard, Components, Guide, Graph), not one endless scroll. Keep the global menu short and destination-oriented; deep section lists live on the page, not in the sidebar.",
       "rationale": "One long everything-page is a sampler, not a product — it buries the hierarchy and the way around (docs/building-with-the-dls.md §22).",
-      "applies_to": []
+      "applies_to": [],
+      "since": "1.0.0"
     },
     {
       "id": "content-page-chrome",
@@ -409,7 +441,8 @@
       "applies_to": [
         "component:sidebar",
         "component:breadcrumb"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "one-system-all-surfaces",
@@ -420,7 +453,8 @@
       "rationale": "A single off-system page (different fonts, no logo, its own palette) breaks the 'one product' feel more than any missing feature (docs/building-with-the-dls.md §23).",
       "applies_to": [
         "component-2one:logo"
-      ]
+      ],
+      "since": "1.0.0"
     },
     {
       "id": "error-state",
@@ -433,7 +467,8 @@
         "component:alert",
         "component:empty",
         "state:error"
-      ]
+      ],
+      "since": "1.1.0"
     },
     {
       "id": "interactive-states",
@@ -448,7 +483,8 @@
         "state:focus",
         "state:active",
         "state:disabled"
-      ]
+      ],
+      "since": "1.1.0"
     },
     {
       "id": "both-themes",
@@ -461,7 +497,8 @@
         "token:background",
         "token:foreground",
         "token:card"
-      ]
+      ],
+      "since": "1.1.0"
     },
     {
       "id": "chart-baseline",
@@ -473,7 +510,8 @@
       "applies_to": [
         "component:chart",
         "token:chart-1"
-      ]
+      ],
+      "since": "1.1.0"
     },
     {
       "id": "tabular-numerics",
@@ -485,7 +523,8 @@
       "applies_to": [
         "component:table",
         "component:chart"
-      ]
+      ],
+      "since": "1.1.0"
     },
     {
       "id": "unambiguous-formats",
@@ -497,7 +536,8 @@
       "applies_to": [
         "component:table",
         "component:chart"
-      ]
+      ],
+      "since": "1.1.0"
     },
     {
       "id": "placeholder-marked",
@@ -509,7 +549,8 @@
       "applies_to": [
         "component:badge",
         "component:skeleton"
-      ]
+      ],
+      "since": "1.1.0"
     },
     {
       "id": "no-chartjunk",
@@ -521,7 +562,9 @@
       "applies_to": [
         "component:chart",
         "token:chart-1"
-      ]
+      ],
+      "since": "1.1.0"
     }
-  ]
+  ],
+  "deprecations": []
 }

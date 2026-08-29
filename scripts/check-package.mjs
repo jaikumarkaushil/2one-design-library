@@ -44,6 +44,8 @@ const CONSUMER_FACING = [
   'graph-decide.mjs',
   'what-uses.mjs',
   'init-payload.mjs',
+  'promote-component.mjs',
+  'check-rules-compat.mjs',
   'lib/config.mjs',
 ]
 

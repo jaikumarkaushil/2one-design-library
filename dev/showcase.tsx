@@ -5,6 +5,7 @@ import {
   Network, Accessibility, Sparkles, Globe, ArrowRight, Mail, ExternalLink, BookOpen,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useTranslation, Trans } from 'react-i18next'
 import { toast } from 'sonner'
 import graphData from '../graph.json'
 import manifest from '../manifest.json'
@@ -53,6 +54,7 @@ import { Logo } from '@/components/logo'
 import { AppBar } from '@/components/app-bar'
 import { BottomNavItem } from '@/components/bottom-nav-item'
 import { TopNav } from './global-nav'
+import { LanguageToggle } from './i18n/language-toggle'
 
 // blocks (templates)
 import { LoginForm as Login01 } from '@/blocks/login-01'
@@ -88,15 +90,9 @@ const TYPE: [string, string, string][] = [['display', 'text-display', '76 / 103'
 const RADII = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', 'full']
 
 // FAQ — the questions teams ask when they first evaluate the system, answered in
-// the 2one voice (factual, no hype, honest about the gaps). Rendered as its own
-// guide section via the Accordion primitive.
-const FAQS: { q: string; a: string }[] = [
-  { q: "Whose brand do we build with — ours or 2one's?", a: "This repository is 2one's own system: our brand, built on shadcn/ui, so our team ships product and marketing that already look like 2one. We share it so you can try the approach on something real. If it fits, we build the same foundations for your brand, wire them into your front-end library, and wrap an application around them for your team." },
-  { q: "What can our team actually produce with it?", a: "Websites, marketing pages and product screens — generated with AI against the system's rules, so the output stays on-brand and carries fewer bugs. The same foundations live in Figma for designers and developers to share. It won't hand you a finished application: it gives you a strong, consistent first version, and your team makes it their own." },
-  { q: "Who is it for?", a: "The people deciding are product and engineering leaders — VPs, product managers, CXOs — who want their teams using AI productively, without the slop. The people using it day to day are developers, marketing teams and product managers who build against it." },
-  { q: "Is it tied to shadcn, and how is it licensed?", a: "No. shadcn is simply what 2one runs on; if your team is on MudBlazor, or anything else, we build the same system there. Licensing is yours to choose — open (MIT) by default, so anyone can clone and use it, or proprietary if you would rather keep it in-house." },
-  { q: "How do we get access?", a: "Clone the repository and install the packages locally. Access is being opened up so there is nothing to set up — the people we share it with can pull it and start building. Today it is the foundation our team builds on; on the roadmap, a shared design system your whole organisation can draw from." },
-]
+// the 2one voice (factual, no hype, honest about the gaps). Copy lives in i18n
+// (overview.faq.items.<id>.{q,a}); this is just the render order.
+const FAQ_IDS = ['brand', 'produce', 'who', 'shadcn', 'access'] as const
 
 // Component index derived from the knowledge graph (single source of truth — no
 // hand-maintained list to drift). Each chip deep-links into /graph.html.
@@ -121,13 +117,8 @@ const COUNT = {
 const BLOCK_ITEMS = IX.templates.blocks.items as string[]
 const CHART_ITEMS = IX.templates.charts.items as string[]
 
-const NAV = [
-  { grp: 'On this page', items: [['overview', 'Overview', ''], ['use', 'How to use', '']] },
-  { grp: 'Help', items: [['faq', 'FAQ', ''], ['support', 'Support', '']] },
-]
-
-
 function CodeBlock({ code }: { code: string }) {
+  const { t } = useTranslation()
   const [done, setDone] = useState(false)
   return (
     <div className="relative min-w-0">
@@ -135,7 +126,7 @@ function CodeBlock({ code }: { code: string }) {
       <Button
         variant="ghost"
         size="icon-sm"
-        aria-label={done ? 'Copied' : 'Copy to clipboard'}
+        aria-label={done ? t('common.copied') : t('common.copyToClipboard')}
         className="absolute right-1.5 top-1.5"
         onClick={() => { navigator.clipboard?.writeText(code); setDone(true); setTimeout(() => setDone(false), 1200) }}
       >
@@ -148,16 +139,17 @@ function CodeBlock({ code }: { code: string }) {
 // Copy-only control — a pill button that copies `text` on click (no code block,
 // no scroll). Shows a "Copied" state briefly.
 function CopyButton({ text, label }: { text: string; label: string }) {
+  const { t } = useTranslation()
   const [done, setDone] = useState(false)
   return (
     <Button
       variant="outline"
       className="w-full justify-start gap-2 font-normal"
-      aria-label={done ? 'Copied to clipboard' : label}
+      aria-label={done ? t('common.copiedToClipboard') : label}
       onClick={() => { navigator.clipboard?.writeText(text); setDone(true); setTimeout(() => setDone(false), 1400) }}
     >
       {done ? <Check className="size-4 shrink-0" /> : <Copy className="size-4 shrink-0" />}
-      <span className="truncate">{done ? 'Copied' : label}</span>
+      <span className="truncate">{done ? t('common.copied') : label}</span>
     </Button>
   )
 }
@@ -180,6 +172,7 @@ const Cap = ({ children }: { children: React.ReactNode }) => <span className="te
 
 // Light/dark toggle — verifies the whole system in both themes (dogfoods ThemeProvider).
 function ThemeToggle({ className = '' }: { className?: string }) {
+  const { t } = useTranslation()
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
@@ -189,11 +182,11 @@ function ThemeToggle({ className = '' }: { className?: string }) {
       variant="outline"
       size="sm"
       className={className}
-      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      aria-label={isDark ? t('common.switchToLight') : t('common.switchToDark')}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
     >
       {isDark ? <Sun /> : <Moon />}
-      {isDark ? 'Light' : 'Dark'}
+      {isDark ? t('common.light') : t('common.dark')}
     </Button>
   )
 }
@@ -202,10 +195,11 @@ function ThemeToggle({ className = '' }: { className?: string }) {
 // collapsed (or on mobile, where it's an off-canvas sheet) it hops to the top bar
 // next to the hamburger — so the wordmark is always visible exactly once.
 function TopBarLogo() {
+  const { t } = useTranslation()
   const { state, isMobile } = useSidebar()
   if (state === 'expanded' && !isMobile) return null
   return (
-    <a href="/" className="flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="2one — dashboard">
+    <a href="/" className="flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('common.dashboardAria')}>
       <Logo variant="black" width={46} className="dark:hidden" />
       <Logo variant="white" width={46} className="hidden dark:block" />
     </a>
@@ -213,7 +207,13 @@ function TopBarLogo() {
 }
 
 export function Showcase() {
+  const { t } = useTranslation()
   const [active, setActive] = useState('overview')
+
+  const NAV = [
+    { grp: t('common.onThisPage'), items: [['overview', t('overview.sidebar.overview'), ''], ['use', t('overview.sidebar.howToUse'), '']] },
+    { grp: t('common.help'), items: [['faq', t('overview.sidebar.faq'), ''], ['support', t('overview.sidebar.support'), '']] },
+  ]
 
   useEffect(() => {
     const secs = Array.from(document.querySelectorAll('.g-section[id]'))
@@ -228,7 +228,7 @@ export function Showcase() {
         {/* App shell — the library's own Sidebar, not bespoke chrome */}
         <Sidebar>
           <SidebarHeader>
-            <a href="/" className="flex items-center gap-2.5 px-2 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="2one — dashboard">
+            <a href="/" className="flex items-center gap-2.5 px-2 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('common.dashboardAria')}>
               <Logo variant="black" width={52} className="dark:hidden" />
               <Logo variant="white" width={52} className="hidden dark:block" />
             </a>
@@ -258,48 +258,51 @@ export function Showcase() {
             <TopBarLogo />
             <Separator orientation="vertical" className="mr-1 !h-5" />
             <TopNav current="/" />
-            <ThemeToggle className="ml-auto" />
+            <div className="ml-auto flex items-center gap-2">
+              <LanguageToggle />
+              <ThemeToggle />
+            </div>
           </header>
           <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">
 
             {/* OVERVIEW */}
             <section id="overview" className="g-section g-hero">
-              <div className="g-eyebrow">Design language system · delivered as a product</div>
-              <h1>Ship on-brand product &amp; marketing, <span className="thin">without the guesswork.</span></h1>
-              <p>2one is a design language system for <b className="text-foreground">product development and product marketing</b> — the components, tokens, brand, and the rules that bind them. A <b className="text-foreground">knowledge graph</b> makes the system opinionated and deterministic, so people <em>and</em> AI build interfaces that already feel like 2one.</p>
+              <div className="g-eyebrow">{t('overview.hero.eyebrow')}</div>
+              <h1>{t('overview.hero.titleLead')} <span className="thin">{t('overview.hero.titleThin')}</span></h1>
+              <p><Trans i18nKey="overview.hero.body" components={{ b: <b className="text-foreground" />, em: <em /> }} /></p>
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <Button asChild size="lg"><a href="/graph.html">Explore the knowledge graph <ArrowRight /></a></Button>
-                <Button asChild size="lg" variant="outline"><a href="/dls.html">Read the guide</a></Button>
+                <Button asChild size="lg"><a href="/graph.html">{t('overview.hero.exploreGraph')} <ArrowRight /></a></Button>
+                <Button asChild size="lg" variant="outline"><a href="/dls.html">{t('overview.hero.readGuide')}</a></Button>
               </div>
 
               {/* DLS teaser — content + a way into the dedicated DLS page (which now hosts the theming playground) */}
               <Card className="mt-8">
                 <CardHeader>
                   <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden><BookOpen /></div>
-                  <CardTitle className="pt-2 text-base">New here? Start with the DLS</CardTitle>
-                  <CardDescription>A Design Language System is the shared kit — brand, tokens, components, and the rules that bind them. The guide explains the three tiers it’s built from and includes the live theming playground: set one brand colour and watch the whole system recolour, contrast-checked as you go.</CardDescription>
+                  <CardTitle className="pt-2 text-base">{t('overview.dlsTeaser.title')}</CardTitle>
+                  <CardDescription>{t('overview.dlsTeaser.body')}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button asChild variant="outline"><a href="/dls.html">Open the DLS guide <ArrowRight /></a></Button>
+                  <Button asChild variant="outline"><a href="/dls.html">{t('overview.dlsTeaser.cta')} <ArrowRight /></a></Button>
                 </CardContent>
               </Card>
 
               {/* Features — the key selling points, each with checkable evidence (honest, no hype) */}
-              <div className="g-eyebrow mt-14">Features</div>
-              <h2>What makes it different</h2>
-              <p className="g-lede">Each point below is a real capability with checkable evidence — no hype.</p>
+              <div className="g-eyebrow mt-14">{t('overview.features.eyebrow')}</div>
+              <h2>{t('overview.features.title')}</h2>
+              <p className="g-lede">{t('overview.features.lede')}</p>
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {([
-                  [<Network />, 'Opinionated & deterministic', 'A knowledge graph of every token, component and rule — ask what a change touches before you ship it.', 'npm run what-uses'],
-                  [<Accessibility />, 'Accessible by default', 'Radix primitives + an APCA contrast audit that runs on every change, in light and dark.', 'npm run a11y'],
-                  [<Sparkles />, 'AI-legible', 'Machine-readable UX rules with severity + precedence, so AI composes the 2one language — it doesn’t invent one.', 'rules/ux-rules.json'],
-                  [<Globe />, 'Universal & one system', 'One grayscale token system, two audited themes, semantic HTML — the same product feel on every surface.', 'tokens/*.json'],
-                ] as [React.ReactNode, string, string, string][]).map(([icon, title, desc, ev]) => (
-                  <Card key={title} className="flex flex-col">
+                  [<Network />, 'opinionated', 'npm run what-uses'],
+                  [<Accessibility />, 'accessible', 'npm run a11y'],
+                  [<Sparkles />, 'aiLegible', 'rules/ux-rules.json'],
+                  [<Globe />, 'universal', 'tokens/*.json'],
+                ] as [React.ReactNode, string, string][]).map(([icon, key, ev]) => (
+                  <Card key={key} className="flex flex-col">
                     <CardHeader>
                       <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden>{icon}</div>
-                      <CardTitle className="pt-2 text-base">{title}</CardTitle>
-                      <CardDescription>{desc}</CardDescription>
+                      <CardTitle className="pt-2 text-base">{t(`overview.features.${key}.title`)}</CardTitle>
+                      <CardDescription>{t(`overview.features.${key}.desc`)}</CardDescription>
                     </CardHeader>
                     <CardContent className="mt-auto">
                       <Badge variant="outline" className="font-mono font-normal">{ev}</Badge>
@@ -308,10 +311,10 @@ export function Showcase() {
                 ))}
               </div>
 
-              <div className="g-eyebrow mt-14">What&apos;s available</div>
-              <h2>The system at a glance</h2>
+              <div className="g-eyebrow mt-14">{t('overview.available.eyebrow')}</div>
+              <h2>{t('overview.available.title')}</h2>
               <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-                {([[String(COUNT.components), 'Components'], [String(COUNT.shadcn), 'shadcn primitives'], [String(COUNT.twoOne), '2one-authored'], ['1', 'Hue-free system']] as [string, string][]).map(([k, l]) => (
+                {([[String(COUNT.components), t('overview.available.components')], [String(COUNT.shadcn), t('overview.available.shadcn')], [String(COUNT.twoOne), t('overview.available.twoOne')], ['1', t('overview.available.hueFree')]] as [string, string][]).map(([k, l]) => (
                   <Card key={l}>
                     <CardHeader>
                       <CardDescription>{l}</CardDescription>
@@ -324,35 +327,35 @@ export function Showcase() {
 
             {/* HOW TO USE THE APPLICATION — connect to the library + build with AI (from the 2one library, token-driven) */}
             <section id="use" className="g-section">
-              <div className="g-eyebrow">Start here</div><h2>How to use the application</h2>
-              <p className="g-lede">A step-by-step way to connect an AI assistant to the 2one library and build with it. Point your assistant — Claude Code, Cursor, Copilot, Gemini — at the repo, have it read the system, then build from the real components, tokens and rules. No manual coding required.</p>
+              <div className="g-eyebrow">{t('overview.use.eyebrow')}</div><h2>{t('overview.use.title')}</h2>
+              <p className="g-lede">{t('overview.use.lede')}</p>
 
               <div className="mt-2 grid gap-4 md:grid-cols-3">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">1</Badge> Connect to the library</CardTitle>
-                    <CardDescription>Give your AI the repo. It reads <span className="font-mono">manifest.json</span> first, then builds only from the system.</CardDescription>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">1</Badge> {t('overview.use.step1.title')}</CardTitle>
+                    <CardDescription><Trans i18nKey="overview.use.step1.desc" components={{ mono: <span className="font-mono" /> }} /></CardDescription>
                   </CardHeader>
-                  <CardContent className="min-w-0"><CopyButton text="https://github.com/yokesh-2one/2one-design-library" label="Copy GitHub link" /></CardContent>
+                  <CardContent className="min-w-0"><CopyButton text="https://github.com/yokesh-2one/2one-design-library" label={t('overview.use.step1.copy')} /></CardContent>
                 </Card>
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">2</Badge> Ask for a summary first</CardTitle>
-                    <CardDescription>Have it report which components, tokens, brand foundations and templates exist — before it builds anything.</CardDescription>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">2</Badge> {t('overview.use.step2.title')}</CardTitle>
+                    <CardDescription>{t('overview.use.step2.desc')}</CardDescription>
                   </CardHeader>
                 </Card>
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">3</Badge> Build with the prompt</CardTitle>
-                    <CardDescription>Fill the [brackets] in the prompt below and paste it. The assistant composes real 2one UI; you refine.</CardDescription>
+                    <CardTitle className="flex items-center gap-2"><Badge variant="outline">3</Badge> {t('overview.use.step3.title')}</CardTitle>
+                    <CardDescription>{t('overview.use.step3.desc')}</CardDescription>
                   </CardHeader>
                 </Card>
               </div>
 
               <Card className="mt-4 min-w-0">
                 <CardHeader>
-                  <CardTitle className="text-base">The build prompt</CardTitle>
-                  <CardDescription>Copy it, fill in the [brackets], and paste it into your AI assistant.</CardDescription>
+                  <CardTitle className="text-base">{t('overview.use.prompt.title')}</CardTitle>
+                  <CardDescription>{t('overview.use.prompt.desc')}</CardDescription>
                 </CardHeader>
                 <CardContent className="min-w-0">
                   <CodeBlock code={`Prompt for Building with the 2one Design Library
@@ -390,24 +393,24 @@ Run  npx 2one check <path>  and fix everything it reports (it exits non-zero on 
 
               <Card className="mt-4 min-w-0">
                 <CardHeader>
-                  <CardTitle className="text-base">Run it locally</CardTitle>
-                  <CardDescription>Clone the repo and explore this catalog yourself — works today, no registry, no auth.</CardDescription>
+                  <CardTitle className="text-base">{t('overview.use.runLocally.title')}</CardTitle>
+                  <CardDescription>{t('overview.use.runLocally.desc')}</CardDescription>
                 </CardHeader>
                 <CardContent className="min-w-0">
-                  <CopyButton text={'npm install\nnpm run dev'} label="Copy install commands" />
+                  <CopyButton text={'npm install\nnpm run dev'} label={t('overview.use.runLocally.copy')} />
                 </CardContent>
               </Card>
             </section>
 
             {/* FAQ */}
             <section id="faq" className="g-section">
-              <div className="g-eyebrow">Help</div><h2>FAQ</h2>
-              <p className="g-lede">The questions teams ask us when they first see the system — what it is, what you can build with it, how it’s licensed, and how an engagement works.</p>
+              <div className="g-eyebrow">{t('overview.faq.eyebrow')}</div><h2>{t('overview.faq.title')}</h2>
+              <p className="g-lede">{t('overview.faq.lede')}</p>
               <Accordion type="single" collapsible className="mt-6 w-full max-w-3xl">
-                {FAQS.map((f, i) => (
-                  <AccordionItem key={f.q} value={`faq-${i}`}>
-                    <AccordionTrigger className="text-left text-base">{f.q}</AccordionTrigger>
-                    <AccordionContent className="max-w-[68ch] text-muted-foreground">{f.a}</AccordionContent>
+                {FAQ_IDS.map((id, i) => (
+                  <AccordionItem key={id} value={`faq-${i}`}>
+                    <AccordionTrigger className="text-left text-base">{t(`overview.faq.items.${id}.q`)}</AccordionTrigger>
+                    <AccordionContent className="max-w-[68ch] text-muted-foreground">{t(`overview.faq.items.${id}.a`)}</AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>
@@ -415,14 +418,14 @@ Run  npx 2one check <path>  and fix everything it reports (it exits non-zero on 
 
             {/* SUPPORT */}
             <section id="support" className="g-section">
-              <div className="g-eyebrow">Help</div><h2>Support</h2>
-              <p className="g-lede">Questions about the system, or want it built for your brand? We answer directly — with full transparency about what it does and doesn’t do today.</p>
+              <div className="g-eyebrow">{t('overview.support.eyebrow')}</div><h2>{t('overview.support.title')}</h2>
+              <p className="g-lede">{t('overview.support.lede')}</p>
               <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
                 <Card>
                   <CardHeader>
                     <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden><Mail /></div>
-                    <CardTitle className="pt-2 text-base">Questions</CardTitle>
-                    <CardDescription>Email us and we’ll get back to you.</CardDescription>
+                    <CardTitle className="pt-2 text-base">{t('overview.support.questions.title')}</CardTitle>
+                    <CardDescription>{t('overview.support.questions.desc')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Button asChild><a href="mailto:yokesh@2one.solutions">yokesh@2one.solutions <ArrowRight /></a></Button>
@@ -431,17 +434,17 @@ Run  npx 2one check <path>  and fix everything it reports (it exits non-zero on 
                 <Card>
                   <CardHeader>
                     <div className="flex size-10 items-center justify-center rounded-lg border bg-muted text-foreground [&_svg]:size-5" aria-hidden><ExternalLink /></div>
-                    <CardTitle className="pt-2 text-base">Follow us</CardTitle>
-                    <CardDescription>Updates and what we’re shipping.</CardDescription>
+                    <CardTitle className="pt-2 text-base">{t('overview.support.follow.title')}</CardTitle>
+                    <CardDescription>{t('overview.support.follow.desc')}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button asChild variant="outline"><a href="https://www.linkedin.com/company/2onesolutions" target="_blank" rel="noreferrer">2one Solutions on LinkedIn <ArrowRight /></a></Button>
+                    <Button asChild variant="outline"><a href="https://www.linkedin.com/company/2onesolutions" target="_blank" rel="noreferrer">{t('overview.support.follow.cta')} <ArrowRight /></a></Button>
                   </CardContent>
                 </Card>
               </div>
             </section>
 
-            <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">@yokesh-2one/design-library · shadcn/ui re-skinned to the 2one tokens · light + audited dark · rendered live from the real components.</footer>
+            <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">{t('common.footerCatalog')}</footer>
           </div>
         </SidebarInset>
       </SidebarProvider>

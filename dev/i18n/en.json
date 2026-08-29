@@ -1,0 +1,733 @@
+{
+  "common": {
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme",
+    "light": "Light",
+    "dark": "Dark",
+    "switchLanguageTo": "Switch to {{lang}}",
+    "copyToClipboard": "Copy to clipboard",
+    "copied": "Copied",
+    "copiedToClipboard": "Copied to clipboard",
+    "dashboardAria": "2one — dashboard",
+    "onThisPage": "On this page",
+    "help": "Help",
+    "footerCatalog": "@yokesh-2one/design-library · shadcn/ui re-skinned to the 2one tokens · light + audited dark · rendered live from the real components.",
+    "footerDls": "@yokesh-2one/design-library · design language system reference · light and audited dark."
+  },
+  "nav": {
+    "overview": "Overview",
+    "components": "Components",
+    "aiComponents": "Components for AI Interface",
+    "graph": "Knowledge graph",
+    "dls": "What is a DLS?"
+  },
+  "overview": {
+    "sidebar": {
+      "overview": "Overview",
+      "howToUse": "How to use",
+      "faq": "FAQ",
+      "support": "Support"
+    },
+    "hero": {
+      "eyebrow": "Design language system · delivered as a product",
+      "titleLead": "Ship on-brand product & marketing,",
+      "titleThin": "without the guesswork.",
+      "body": "2one is a design language system for <b>product development and product marketing</b> — the components, tokens, brand, and the rules that bind them. A <b>knowledge graph</b> makes the system opinionated and deterministic, so people <em>and</em> AI build interfaces that already feel like 2one.",
+      "exploreGraph": "Explore the knowledge graph",
+      "readGuide": "Read the guide"
+    },
+    "dlsTeaser": {
+      "title": "New here? Start with the DLS",
+      "body": "A Design Language System is the shared kit — brand, tokens, components, and the rules that bind them. The guide explains the three tiers it’s built from and includes the live theming playground: set one brand colour and watch the whole system recolour, contrast-checked as you go.",
+      "cta": "Open the DLS guide"
+    },
+    "features": {
+      "eyebrow": "Features",
+      "title": "What makes it different",
+      "lede": "Each point below is a real capability with checkable evidence — no hype.",
+      "opinionated": {
+        "title": "Opinionated & deterministic",
+        "desc": "A knowledge graph of every token, component and rule — ask what a change touches before you ship it."
+      },
+      "accessible": {
+        "title": "Accessible by default",
+        "desc": "Radix primitives + an APCA contrast audit that runs on every change, in light and dark."
+      },
+      "aiLegible": {
+        "title": "AI-legible",
+        "desc": "Machine-readable UX rules with severity + precedence, so AI composes the 2one language — it doesn’t invent one."
+      },
+      "universal": {
+        "title": "Universal & one system",
+        "desc": "One grayscale token system, two audited themes, semantic HTML — the same product feel on every surface."
+      }
+    },
+    "available": {
+      "eyebrow": "What’s available",
+      "title": "The system at a glance",
+      "components": "Components",
+      "shadcn": "shadcn primitives",
+      "twoOne": "2one-authored",
+      "hueFree": "Hue-free system"
+    },
+    "use": {
+      "eyebrow": "Start here",
+      "title": "How to use the application",
+      "lede": "A step-by-step way to connect an AI assistant to the 2one library and build with it. Point your assistant — Claude Code, Cursor, Copilot, Gemini — at the repo, have it read the system, then build from the real components, tokens and rules. No manual coding required.",
+      "step1": {
+        "title": "Connect to the library",
+        "desc": "Give your AI the repo. It reads <mono>manifest.json</mono> first, then builds only from the system.",
+        "copy": "Copy GitHub link"
+      },
+      "step2": {
+        "title": "Ask for a summary first",
+        "desc": "Have it report which components, tokens, brand foundations and templates exist — before it builds anything."
+      },
+      "step3": {
+        "title": "Build with the prompt",
+        "desc": "Fill the [brackets] in the prompt below and paste it. The assistant composes real 2one UI; you refine."
+      },
+      "prompt": {
+        "title": "The build prompt",
+        "desc": "Copy it, fill in the [brackets], and paste it into your AI assistant."
+      },
+      "runLocally": {
+        "title": "Run it locally",
+        "desc": "Clone the repo and explore this catalog yourself — works today, no registry, no auth.",
+        "copy": "Copy install commands"
+      }
+    },
+    "faq": {
+      "eyebrow": "Help",
+      "title": "FAQ",
+      "lede": "The questions teams ask us when they first see the system — what it is, what you can build with it, how it’s licensed, and how an engagement works.",
+      "items": {
+        "brand": {
+          "q": "Whose brand do we build with — ours or 2one’s?",
+          "a": "This repository is 2one’s own system: our brand, built on shadcn/ui, so our team ships product and marketing that already look like 2one. We share it so you can try the approach on something real. If it fits, we build the same foundations for your brand, wire them into your front-end library, and wrap an application around them for your team."
+        },
+        "produce": {
+          "q": "What can our team actually produce with it?",
+          "a": "Websites, marketing pages and product screens — generated with AI against the system’s rules, so the output stays on-brand and carries fewer bugs. The same foundations live in Figma for designers and developers to share. It won’t hand you a finished application: it gives you a strong, consistent first version, and your team makes it their own."
+        },
+        "who": {
+          "q": "Who is it for?",
+          "a": "The people deciding are product and engineering leaders — VPs, product managers, CXOs — who want their teams using AI productively, without the slop. The people using it day to day are developers, marketing teams and product managers who build against it."
+        },
+        "shadcn": {
+          "q": "Is it tied to shadcn, and how is it licensed?",
+          "a": "No. shadcn is simply what 2one runs on; if your team is on MudBlazor, or anything else, we build the same system there. Licensing is yours to choose — open (MIT) by default, so anyone can clone and use it, or proprietary if you would rather keep it in-house."
+        },
+        "access": {
+          "q": "How do we get access?",
+          "a": "Clone the repository and install the packages locally. Access is being opened up so there is nothing to set up — the people we share it with can pull it and start building. Today it is the foundation our team builds on; on the roadmap, a shared design system your whole organisation can draw from."
+        }
+      }
+    },
+    "support": {
+      "eyebrow": "Help",
+      "title": "Support",
+      "lede": "Questions about the system, or want it built for your brand? We answer directly — with full transparency about what it does and doesn’t do today.",
+      "questions": {
+        "title": "Questions",
+        "desc": "Email us and we’ll get back to you."
+      },
+      "follow": {
+        "title": "Follow us",
+        "desc": "Updates and what we’re shipping.",
+        "cta": "2one Solutions on LinkedIn"
+      }
+    }
+  },
+  "components": {
+    "sidebar": {
+      "tier1": "Tier 1 · Brand",
+      "brand": "Brand",
+      "tier2": "Tier 2 · Foundation",
+      "colour": "Colour",
+      "typography": "Typography",
+      "radius": "Radius",
+      "tier3": "Tier 3",
+      "blocks": "Blocks",
+      "marketing": "Marketing",
+      "charts": "Charts",
+      "twoOneComponents": "2one Components",
+      "mobile": "Mobile · 2one",
+      "shadcnComponents": "Shadcn Components",
+      "actions": "Actions",
+      "forms": "Forms",
+      "overlays": "Overlays",
+      "more": "More",
+      "data": "Data display",
+      "feedback": "Feedback",
+      "navigation": "Navigation"
+    },
+    "brand": {
+      "eyebrow": "Tier 1 · Brand",
+      "title": "Brand foundation",
+      "lede": "The strategic core — the “why” and “who” every asset traces back to, pulled from <mono>brand/brand.json</mono>. Full context lives on the <a>DLS guide</a>.",
+      "missionCard": "Mission · vision · tagline",
+      "mission": "Mission",
+      "vision": "Vision",
+      "tagline": "Tagline",
+      "voiceCard": "Voice · tone · personality",
+      "voiceCardDesc": "Match this in any 2one-facing copy.",
+      "voice": "Voice",
+      "tone": "Tone",
+      "personality": "Personality",
+      "archetype": "Archetype: {{name}}",
+      "whoFor": "Who it’s for",
+      "logo": "The logo",
+      "logoDesc": "Two fills only — black on light, white on dark. Never recolour, rotate, or distort."
+    },
+    "colour": {
+      "eyebrow": "Foundations",
+      "title": "Colour",
+      "lede": "Three levels. <b>Primary</b> — the neutral grayscale ramp (structure & primary actions). <b>Accent</b> — the one brand hue, <b>#30A1FF</b> (<mono>--brand</mono>), for emphasis: links, focus, selection. <b>Semantic</b> — <b>danger</b> / <b>success</b>, reserved for validation only. (shadcn’s own <mono>--accent</mono> hover surface is a component token, not a brand level.)",
+      "primaryLabel": "primary · neutral",
+      "accentLabel": "accent · brand (#30A1FF — the one brand hue)",
+      "semanticLabel": "semantic (validation only)"
+    },
+    "type": {
+      "eyebrow": "Foundations",
+      "title": "Typography",
+      "lede": "<b>Satoshi</b> for the heading scale, <b>Inter</b> for body & UI. The scale below renders from the real tokens."
+    },
+    "radius": {
+      "eyebrow": "Foundations",
+      "title": "Radius",
+      "lede": "From hairline chips to fully-round pills. Buttons use <mono>full</mono> — the 2one signature."
+    },
+    "blocks": {
+      "eyebrow": "Templates",
+      "title": "Blocks",
+      "lede": "Pre-composed, auto-themed forms built from the 2one components — ready to drop into an app.",
+      "dashboardTitle": "dashboard-plain",
+      "dashboardDesc": "block · content only, no navigation",
+      "allBlocks": "All blocks"
+    },
+    "marketing": {
+      "eyebrow": "Templates",
+      "title": "Marketing",
+      "lede": "Landing-page sections, built entirely from the library — grayscale, light + dark. Each is a full-bleed section; <code>marketing/page.tsx</code> composes them into a complete page.",
+      "fullPage": "page — full landing page (composed)"
+    },
+    "charts": {
+      "eyebrow": "Templates · data viz",
+      "title": "Charts",
+      "lede": "{{count}} chart templates across every type — an accent-led categorical palette (<code>--chart-1…5</code>), validated for colour-blind separation and contrast in light and dark. Data-viz is the one place hues are sanctioned; charts always carry a legend + labels so identity is never colour-alone. One of each type shown; the full set lives in <code>src/blocks/charts/</code>.",
+      "all": "All {{count}} charts"
+    },
+    "mobile": {
+      "eyebrow": "Components · 2one-only",
+      "title": "Mobile & brand",
+      "lede": "The three components shadcn has no equivalent for.",
+      "signIn": "Sign in",
+      "home": "Home",
+      "search": "Search",
+      "alerts": "Alerts",
+      "profile": "Profile",
+      "logoMeta": "black on light / white on dark"
+    },
+    "actions": {
+      "eyebrow": "Components",
+      "title": "Actions",
+      "lede": "Buttons are pills; one primary per view.",
+      "buttonMeta": "variant × size",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "outline": "Outline",
+      "ghost": "Ghost",
+      "delete": "Delete",
+      "disabled": "Disabled",
+      "small": "Small",
+      "large": "Large",
+      "day": "Day",
+      "week": "Week",
+      "month": "Month",
+      "toggleMeta": "wraps — never clips",
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "leave": "Leave"
+    },
+    "forms": {
+      "eyebrow": "Components",
+      "title": "Forms",
+      "email": "Email",
+      "password": "Password",
+      "passwordError": "Must be at least 8 characters.",
+      "writeMessage": "Write a message…",
+      "message": "Message",
+      "rememberMe": "Remember me",
+      "subscribe": "Subscribe",
+      "standard": "Standard",
+      "express": "Express",
+      "wifi": "Wi-Fi",
+      "country": "Country",
+      "india": "India",
+      "unitedStates": "United States",
+      "germany": "Germany",
+      "value": "Value",
+      "otpLabel": "One-time passcode"
+    },
+    "overlays": {
+      "eyebrow": "Components",
+      "title": "Overlays",
+      "blockTitle": "Dialog · Sheet · Popover · Dropdown · Tooltip · Alert dialog",
+      "dialog": "Dialog",
+      "upgradeTitle": "Upgrade to Pro",
+      "upgradeDesc": "Unlock every component.",
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "sheet": "Sheet",
+      "settings": "Settings",
+      "slideOver": "Slide-over panel.",
+      "popover": "Popover",
+      "anchored": "Anchored floating content.",
+      "menu": "Menu",
+      "account": "Account",
+      "profile": "Profile",
+      "billing": "Billing",
+      "logOut": "Log out",
+      "tooltip": "Tooltip",
+      "helpfulHint": "Helpful hint",
+      "delete": "Delete",
+      "areYouSure": "Are you sure?",
+      "cannotUndo": "This cannot be undone."
+    },
+    "more": {
+      "eyebrow": "Components",
+      "title": "More",
+      "commandMeta": "⌘K-style palette",
+      "searchPlaceholder": "Search…",
+      "searchCommands": "Search commands",
+      "noResults": "No results.",
+      "suggestions": "Suggestions",
+      "searchDocs": "Search docs",
+      "profile": "Profile",
+      "billing": "Billing",
+      "contextMeta": "right-click the area",
+      "rightClickHere": "Right-click here",
+      "logOut": "Log out",
+      "file": "File",
+      "new": "New",
+      "open": "Open",
+      "save": "Save",
+      "edit": "Edit",
+      "undo": "Undo",
+      "redo": "Redo",
+      "product": "Product",
+      "overview": "Overview",
+      "features": "Features",
+      "pricing": "Pricing",
+      "hoverMeta": "hover the trigger",
+      "hoverCardBody": "The 2one Design Language System — components, tokens, and brand.",
+      "calendar": "Calendar",
+      "resizableMeta": "drag the handle",
+      "one": "One",
+      "two": "Two"
+    },
+    "data": {
+      "eyebrow": "Components",
+      "title": "Data display",
+      "upgradeTitle": "Upgrade to Pro",
+      "upgradeDesc": "Unlock every component.",
+      "upgradeBody": "Grayscale, token-driven, ready to ship.",
+      "continue": "Continue",
+      "overview": "Overview",
+      "details": "Details",
+      "overviewPanel": "Overview panel.",
+      "detailsPanel": "Details panel.",
+      "accordionQ1": "Is it themed to 2one?",
+      "accordionA1": "Yes — every token maps to the 2one system.",
+      "accordionQ2": "Light and dark?",
+      "accordionA2": "Yes — both themes ship and both pass the APCA audit. Toggle with the ThemeProvider.",
+      "plan": "Plan",
+      "seats": "Seats",
+      "price": "Price",
+      "starter": "Starter",
+      "pro": "Pro",
+      "default": "Default",
+      "secondary": "Secondary",
+      "outline": "Outline",
+      "error": "Error",
+      "home": "Home",
+      "docs": "Docs"
+    },
+    "feedback": {
+      "eyebrow": "Components",
+      "title": "Feedback",
+      "blockTitle": "Alert · Toast · Spinner",
+      "headsUp": "Heads up",
+      "alertBody": "This is the 2one-themed alert.",
+      "toastTitle": "Saved",
+      "toastDesc": "Your changes are live.",
+      "showToast": "Show toast",
+      "spinner": "Spinner"
+    },
+    "navigation": {
+      "eyebrow": "Components",
+      "title": "Navigation",
+      "home": "Home",
+      "components": "Components",
+      "button": "Button"
+    }
+  },
+  "ai": {
+    "sidebar": {
+      "onThisPage": "On this page",
+      "reasoning": "Reasoning"
+    },
+    "hero": {
+      "eyebrow": "Tier 3 · AI interface",
+      "title": "Components for AI Interface",
+      "lede": "Complete, opinionated pieces for the states an AI product moves through — composed from the same 2one primitives, tokens and rules as everything else, so an agent adapts the content, not the structure. Each one carries a machine-readable spec and a graph node (<mono/>), so what it is built from and what governs it travel with it — shown live below."
+    },
+    "reasoning": {
+      "eyebrowCount": "Reasoning · {{count}} components",
+      "title": "Reasoning",
+      "lede": "How the assistant shows it is thinking, working, and answering."
+    },
+    "composedOf": "Composed of",
+    "governedBy": "Governed by",
+    "thinkingLabel": "Reading the request",
+    "items": {
+      "loadingState": "Holds the frame while the model has nothing to show yet, and hints at the answer shape coming.",
+      "thinkingIndicator": "Names the step the agent is on, with elapsed time — so a slow turn reads as work, not a hang.",
+      "typingIndicator": "Presence, not noise — a lightweight cue that a reply is coming.",
+      "streamingText": "The leading edge carries the brand accent, then settles into ink as the answer catches up.",
+      "reasoningPanel": "A collapsible trace that streams its steps along a timeline, then settles into a summary.",
+      "reasoningEffort": "How hard to think, and how much of that budget the run actually spent.",
+      "guardrailNotice": "A refusal in its own shape — grayscale, never alarming — with the nearest safe alternative."
+    }
+  },
+  "dls": {
+    "sidebar": {
+      "onThisPage": "On this page",
+      "overview": "What is a DLS?",
+      "glance": "The three tiers",
+      "analogy": "A working analogy",
+      "threeTiers": "The three tiers",
+      "tier1": "Tier 1 · Brand",
+      "tier2": "Tier 2 · Foundation",
+      "tier3": "Tier 3 · Output",
+      "more": "More",
+      "principle": "The guiding principle",
+      "inrepo": "Where it lives here"
+    },
+    "tiers": {
+      "one": "Tier 1",
+      "two": "Tier 2",
+      "three": "Tier 3"
+    },
+    "pyramid": {
+      "aria": "A three-tier pyramid: Tier 1 Brand at the top, Tier 2 Design Foundation in the middle, Tier 3 Design System at the base.",
+      "tier3Tag": "TIER 3 · WHERE",
+      "tier3Title": "Design System",
+      "tier2Tag": "TIER 2 · WHAT",
+      "tier2Title": "Design Foundation",
+      "tier1Tag": "TIER 1",
+      "tier1Title": "Brand"
+    },
+    "hero": {
+      "eyebrow": "2one · design language system",
+      "titleLead": "The design language system,",
+      "titleThin": "explained.",
+      "body": "A <b>Design Language System (DLS)</b> is the complete set of rules, assets, and principles that define how a brand <em>looks</em>, <em>sounds</em>, and <em>behaves</em> across every surface — from a mission statement to a product icon. It is organised into three tiers that move from <b>strategic intent</b> down to the <b>finished work a customer sees</b>.",
+      "card1Tag": "Why & who",
+      "card1Title": "Tier 1 — Brand",
+      "card1Sub": "Strategy and positioning.",
+      "card2Tag": "What",
+      "card2Title": "Tier 2 — Foundation",
+      "card2Sub": "Reusable building blocks.",
+      "card3Tag": "Where",
+      "card3Title": "Tier 3 — Output",
+      "card3Sub": "Shipped products and assets."
+    },
+    "glance": {
+      "eyebrow": "The model",
+      "title": "The three tiers, at a glance",
+      "lede": "The tiers can be read in either direction. Intent defined at the apex cascades <b>down</b> into everything the brand produces, and every finished asset at the base traces back <b>up</b> to the strategy that shaped it.",
+      "cascades": "intent cascades down",
+      "traces": "output traces up",
+      "row1Name": "Brand foundation",
+      "row1Desc": "Defines why the brand exists and who it serves. This tier is pure strategy and contains no visual rules; everything below must trace back to it.",
+      "row2Name": "Design foundation",
+      "row2Desc": "The reusable building blocks — colour, typography, iconography, and voice. This is the brand’s vocabulary; no element here is a finished deliverable.",
+      "row3Name": "Design system",
+      "row3Desc": "The building blocks assembled into finished, shippable work — applications, websites, decks, and campaigns. This is what customers ultimately see."
+    },
+    "analogy": {
+      "eyebrow": "For non-design stakeholders",
+      "title": "A working analogy: language",
+      "lede": "The name is deliberate. A design <em>language</em> behaves much like a spoken one, and the three tiers map directly onto its structure.",
+      "card1Title": "The intent behind speaking",
+      "card1Desc": "Who you are addressing and what you mean to convey. This is the <b>brand</b>: mission, values, personality, and audience.",
+      "card2Title": "Vocabulary and grammar",
+      "card2Desc": "The words and rules you assemble sentences from. This is the <b>design foundation</b>: colour, typography, iconography, and tone of voice — reusable, never a finished sentence on their own.",
+      "card3Title": "The conversations themselves",
+      "card3Desc": "The sentences you actually say. This is the <b>design system in use</b>: the product screens, websites, campaigns, and decks that customers experience.",
+      "construction": "An alternative analogy is construction. <b>Tier 1</b> is the project brief — what is being built and for whom; <b>Tier 2</b> is the materials and the building code; and <b>Tier 3</b> is the finished, occupied building."
+    },
+    "tier1": {
+      "eyebrow": "Tier 1 · the apex",
+      "title": "Brand foundation — the “why” and “who”",
+      "lede": "The strategic core of the system. This tier contains <b>no visual rules</b>; it defines why the brand exists and who it serves. Every decision in the tiers below must trace back to it.",
+      "appliedTitle": "The 2one brand, applied",
+      "appliedLede": "Tier 1 for 2one itself — pulled from <mono>brand/brand.json</mono>, the source every on-brand asset traces back to.",
+      "missionCard": "Mission · vision · tagline",
+      "mission": "Mission",
+      "vision": "Vision",
+      "tagline": "Tagline",
+      "voiceCard": "Voice · tone · personality",
+      "voiceCardDesc": "How the brand speaks — match this in any 2one-facing copy.",
+      "voice": "Voice",
+      "tone": "Tone",
+      "personality": "Personality",
+      "archetype": "Archetype: {{name}}",
+      "whoFor": "Who it’s for",
+      "whoForDesc": "The personas the mission serves.",
+      "logo": "The logo",
+      "logoDesc": "Two fills only — black on light, white on dark. Never recolour, rotate, or distort.",
+      "modules": {
+        "missionVision": {
+          "title": "Mission & Vision",
+          "desc": "The brand’s purpose today and its long-term aspiration — the reference point for every downstream decision."
+        },
+        "values": {
+          "title": "Values",
+          "desc": "The core principles that guide how the brand behaves and makes decisions."
+        },
+        "personality": {
+          "title": "Personality",
+          "desc": "The brand’s human character — for example bold, precise, or approachable — which informs tone and visuals."
+        },
+        "audiences": {
+          "title": "Audiences & Personas",
+          "desc": "The defined segments the brand designs for, including their needs, behaviours, and context."
+        },
+        "archetype": {
+          "title": "Archetype",
+          "desc": "The brand’s narrative role — Hero, Sage, Creator, and so on — used to keep its character consistent."
+        },
+        "tagline": {
+          "title": "Tagline",
+          "desc": "A short, memorable line that captures the brand’s promise."
+        }
+      }
+    },
+    "tier2": {
+      "eyebrow": "Tier 2 · the middle",
+      "title": "Design foundation — the building blocks",
+      "lede": "The reusable building blocks and rules derived from Tier 1 — the brand’s vocabulary. No element in this tier is a finished deliverable; each is a rule or component that Tier 3 assembles into shipped work.",
+      "modules": {
+        "colours": {
+          "title": "Colours",
+          "desc": "The full colour system and the rules for using it — including accessibility.",
+          "subs": ["Brand palette", "Gradients", "Neutral ramp", "Semantic (success / error)", "Contrast pairs", "Usage do’s & don’ts"]
+        },
+        "typography": {
+          "title": "Typography",
+          "desc": "The type system — hierarchy, legibility and the voice of text.",
+          "subs": ["Brand typefaces", "System fallbacks", "Type scale (Display → Caption)", "Weights & styles", "Line-height & spacing", "Script support"]
+        },
+        "iconography": {
+          "title": "Iconography",
+          "desc": "A consistent icon system across product and marketing.",
+          "subs": ["Icon style", "Base grid (e.g. 24×24)", "Stroke weight", "Categories", "Size scale", "Animated variants"]
+        },
+        "illustration": {
+          "title": "Illustration",
+          "desc": "Rules for custom illustrated artwork.",
+          "subs": ["Style guide", "Illustration palette", "People & inclusivity", "Composition rules", "Use-case library"]
+        },
+        "photography": {
+          "title": "Photography",
+          "desc": "Rules for real (non-illustrated) imagery.",
+          "subs": ["Mood & style", "Colour grading", "Image treatment", "Stock vs. custom"]
+        },
+        "graphics": {
+          "title": "Graphics & Patterns",
+          "desc": "Supporting textures and decorative systems.",
+          "subs": ["Background patterns", "Data-viz style", "Iconographic patterns", "Surface effects"]
+        },
+        "voice": {
+          "title": "Voice & Tone",
+          "desc": "How the brand sounds — the language equivalent of the visuals.",
+          "subs": ["Voice principles", "Tone by context", "Vocabulary do’s & don’ts", "Writing examples", "Localisation"]
+        },
+        "moodboard": {
+          "title": "Moodboard",
+          "desc": "Reference material that anchors abstract style in concrete examples.",
+          "subs": ["Inspiration boards", "Aspirational references", "Look-and-feel keywords", "Texture & lighting refs"]
+        }
+      }
+    },
+    "tier3": {
+      "eyebrow": "Tier 3 · the base",
+      "title": "Design system — the shipped output",
+      "lede": "The applied layer, where the Tier 2 foundations are assembled into finished, shippable deliverables — organised by where they are used.",
+      "modules": {
+        "product": {
+          "title": "Product & Software",
+          "desc": "Digital interfaces where the system becomes functional UI.",
+          "subs": ["Website", "Web app / dashboards", "Mobile app", "Wearables", "AR / VR"]
+        },
+        "marketing": {
+          "title": "Marketing",
+          "desc": "Outward-facing materials for growth and engagement.",
+          "subs": ["Social media", "Motion / video", "Ad formats", "Pitch & sales decks"]
+        },
+        "comms": {
+          "title": "Comms & Internal",
+          "desc": "Internal and business-facing communication.",
+          "subs": ["Internal decks", "Reports & analytics", "Stationery", "Letterhead & signatures"]
+        }
+      }
+    },
+    "principle": {
+      "eyebrow": "The guiding principle",
+      "title": "Human-understandable and AI-legible",
+      "lede": "A well-built DLS is documented clearly enough for a person to apply by hand, and structured precisely enough for an AI system to parse and build from without ambiguity.",
+      "humanTitle": "A person can apply it",
+      "humanDesc": "Every rule, token, and asset is documented in plain language, so a new team member can produce on-brand work without a designer present.",
+      "aiTitle": "An AI can build from it",
+      "aiDesc": "Every element is labelled and structured, so an AI assistant can read the system and generate on-brand work directly — without inventing colours, fonts, or components."
+    },
+    "inrepo": {
+      "eyebrow": "Applied to this library",
+      "title": "Where each tier lives in this library",
+      "lede": "<mono>@yokesh-2one/design-library</mono> implements this three-tier model directly. Each tier maps to specific files in the repository.",
+      "tier1Key": "Tier 1 · Brand",
+      "tier1Desc": "Brand strategy — mission, values, personality, and voice — is defined in <code>brand/brand.json</code> and <code>brand/BRAND.md</code>.",
+      "tier2Key": "Tier 2 · Foundation",
+      "tier2Desc": "The building blocks — colour, typography, and spacing — are defined as tokens in <code>tokens/</code> and consumed by the components in <code>src/components/ui</code>.",
+      "tier3Key": "Tier 3 · Output",
+      "tier3Desc": "The assembled, shippable pieces — pre-composed blocks, charts, and AI build recipes — live in <code>src/blocks</code> and <code>recipes/</code>.",
+      "aiKey": "AI-legible layer",
+      "aiDesc": "A machine-readable index ties the system together. An AI assistant reads these files first, then builds only from the system.",
+      "backToCatalog": "← Back to the component catalog",
+      "openGraph": "Open the knowledge graph →"
+    }
+  },
+  "graph": {
+    "themeAria": "Toggle light and dark",
+    "all": "All",
+    "none": "None",
+    "stats": "{{nodes}} elements · {{edges}} relationships",
+    "hint": "drag to pan · scroll to zoom · click a node · arrows point to what's used",
+    "inspiration": {
+      "title": "Colors Inspiration",
+      "caption": "The source palette — a Japanese woodblock print.",
+      "body": "The colors in this knowledge graph were <b>inspired by Japanese woodblock paintings</b> — a bonsai pine on a sea cliff beneath a red sun. Japanese prints are famous for their small and distinct palettes. every colour is already chosen to sit apart from the others.",
+      "legendLabel": "Each family, eyedropped from the print",
+      "missing": "Add the painting at dev/assets/painting.avif to show it here."
+    },
+    "components": {
+      "title": "All Components",
+      "filter": "filter components…",
+      "showOnCanvas": "Show on canvas",
+      "showAria": "Show {{label}} on the canvas",
+      "jumpTitle": "Show {{label}} in the graph"
+    },
+    "controls": {
+      "title": "Graph Controls",
+      "find": "find element…",
+      "filterByType": "Filter by type",
+      "resetView": "Reset view",
+      "cues": "Dot size = number of connections · a ring marks a rule · select a node and the arrowheads point to whatever it uses."
+    },
+    "panel": {
+      "empty": "Click any node to see its context — what it’s composed of, what uses it, what governs it.",
+      "relCap": "Arrowheads on the canvas point to whatever is being used. Each group below is tagged with an outward arrow (what this element uses) or an inward arrow (what uses it).",
+      "connectionOne": "connection",
+      "connectionOther": "connections",
+      "pass": "pass",
+      "fail": "fail",
+      "viewInCatalog": "View in catalog"
+    },
+    "dir": {
+      "outAria": "outgoing — this element uses these",
+      "inAria": "incoming — these use this element",
+      "outTitle": "this element → uses these",
+      "inTitle": "these → use this element"
+    },
+    "family": {
+      "Identity": "Identity",
+      "Governance": "Governance",
+      "Reasoning": "Reasoning",
+      "Renders on screen": "Renders on screen",
+      "Templates": "Templates",
+      "Patterns": "Patterns",
+      "Raw token values": "Raw token values",
+      "External": "External",
+      "Accessibility": "Accessibility",
+      "Other": "Other"
+    },
+    "type": {
+      "brand": "Brand",
+      "rule": "Rule",
+      "component": "Component",
+      "component-2one": "2one-only",
+      "template-block": "Block",
+      "template-chart": "Chart",
+      "token-color": "Colour token",
+      "ramp": "Ramp step",
+      "token-radius": "Radius",
+      "token-type": "Type",
+      "package": "Package",
+      "contrast": "Contrast",
+      "intent": "Intent",
+      "context": "Context",
+      "state": "State",
+      "pattern": "Pattern",
+      "variant": "Variant",
+      "a11y": "Requirement"
+    },
+    "src": {
+      "brand": "the setting sun",
+      "rule": "the sun's deep-red band",
+      "component": "the ocean waves",
+      "component-2one": "the bonsai pine",
+      "template-block": "the sunset clouds",
+      "template-chart": "the pale horizon glow",
+      "token-color": "the cliff rock",
+      "ramp": "the rock's shadow",
+      "token-radius": "the mid-tone swell",
+      "token-type": "the sea-foam",
+      "package": "the weathered stone",
+      "contrast": "kept green — it flags pass / fail",
+      "intent": "the user's goal",
+      "context": "when it applies",
+      "state": "interaction state",
+      "pattern": "a composed solution",
+      "variant": "a component variant",
+      "a11y": "an a11y requirement"
+    },
+    "rel": {
+      "composed_of": { "out": "Composed of", "in": "Used by" },
+      "uses": { "out": "Uses", "in": "Used by" },
+      "derived_from": { "out": "Derived from", "in": "Source of" },
+      "governed_by": { "out": "Governed by", "in": "Governs" },
+      "has_contrast": { "out": "Contrast", "in": "Contrast of" },
+      "embodies": { "out": "Embodies", "in": "Embodied by" },
+      "serves": { "out": "Serves", "in": "Served by" },
+      "depends_on": { "out": "Depends on", "in": "Depended on by" },
+      "preferred_for": { "out": "Preferred for", "in": "Preferred choice for" },
+      "appropriate_for": { "out": "Appropriate for", "in": "Appropriate use" },
+      "inappropriate_for": { "out": "Inappropriate for", "in": "Inappropriate use" },
+      "preferred_over": { "out": "Preferred over", "in": "Superseded by" },
+      "alternative_to": { "out": "Alternative to", "in": "Alternative" },
+      "forbidden_with": { "out": "Forbidden with", "in": "Forbidden with" },
+      "requires": { "out": "Requires", "in": "Required by" },
+      "supports_state": { "out": "Supports state", "in": "State of" },
+      "preferred_composition": { "out": "Preferred composition", "in": "Composed into" },
+      "realized_by": { "out": "Realized by", "in": "Realizes" },
+      "demonstrates": { "out": "Demonstrates", "in": "Demonstrated by" },
+      "applies_when": { "out": "Applies when", "in": "Applies" },
+      "overrides": { "out": "Overrides", "in": "Overridden by" },
+      "specializes": { "out": "Specializes", "in": "Specialized by" }
+    }
+  }
+}

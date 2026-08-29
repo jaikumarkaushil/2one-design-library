@@ -2,7 +2,16 @@
 // Knowledge-graph explorer, loaded as a Vite module (data imported directly).
 import '../src/styles/globals.css' // DLS tokens + audited dark theme + Inter/Satoshi — single source, no hard-coded palette
 import graph from '../graph.json'
+import { gt, currentLang, setLang } from './i18n/graph-i18n'
 const GRAPH = graph as any
+
+// i18n helpers — labels come from graph.* in dev/i18n/*.json; TYPES/REL below stay
+// the source for colour/family/direction, with the English text as a safe default.
+const typeLabel = (t: string) => gt('graph.type.' + t, { defaultValue: (TYPES[t]?.label ?? t) })
+const familyLabel = (f: string) => gt('graph.family.' + f, { defaultValue: f })
+const srcLabel = (t: string) => gt('graph.src.' + t, { defaultValue: (TYPES[t]?.src ?? '') })
+const relName = (type: string, out: boolean) =>
+  gt('graph.rel.' + type + '.' + (out ? 'out' : 'in'), { defaultValue: ((REL[type] || {})[out ? 'out' : 'in'] || type) })
 
 // lucide icons only (no mixed icon set): raw path data → an inline SVG string
 const IC: Record<string, string> = {
@@ -11,6 +20,7 @@ const IC: Record<string, string> = {
   arrowRight: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
   arrowLeft: '<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
   externalLink: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6"/>',
+  globe: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
 }
 const lucide = (name: string, size = 15) => `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[name]}</svg>`
 
@@ -208,35 +218,35 @@ function select(n: any) {
   // sync selection to the URL so a node is shareable / deep-linkable from the catalog
   history.replaceState(null, '', n ? '?node=' + encodeURIComponent(n.id) : location.pathname)
   const panel = document.getElementById('panel')!; panel.replaceChildren()
-  if (!n) { panel.className = 'empty'; panel.textContent = 'Click any node to see its context — what it’s composed of, what uses it, what governs it.'; return }
+  if (!n) { panel.className = 'empty'; panel.textContent = gt('graph.panel.empty'); return }
   panel.className = ''
   const meta = TYPES[n.type] || {}
   const col = meta.semantic ? (n.passes === false ? cvarv('--bad') : cvarv('--ok')) : nodeColor(n.type)
-  const trow = el('div', 'n-type'); const d0 = el('span', 'dot'); d0.style.background = col; trow.appendChild(d0); trow.appendChild(document.createTextNode(meta.label || n.type)); panel.appendChild(trow)
+  const trow = el('div', 'n-type'); const d0 = el('span', 'dot'); d0.style.background = col; trow.appendChild(d0); trow.appendChild(document.createTextNode(typeLabel(n.type))); panel.appendChild(trow)
   const lab = el('div', 'n-label'); lab.textContent = n.label; panel.appendChild(lab)
   const m = el('div', 'n-meta')
   const chip = (txt: string, swatch?: string) => { const s = el('span'); if (swatch) { const sw = el('span', 'sw'); sw.style.background = swatch; s.appendChild(sw) } s.appendChild(document.createTextNode(txt)); m.appendChild(s) }
   if (n.hex) chip(n.hex, n.hex)
   if (n.value) chip(n.value)
   if (n.px) chip(n.px + 'px')
-  if (n.apca_lc !== undefined) chip('APCA Lc ' + n.apca_lc + ' · WCAG ' + n.wcag_ratio + ':1 · ' + (n.passes ? 'pass' : 'fail'))
+  if (n.apca_lc !== undefined) chip('APCA Lc ' + n.apca_lc + ' · WCAG ' + n.wcag_ratio + ':1 · ' + (n.passes ? gt('graph.panel.pass') : gt('graph.panel.fail')))
   if (n.path) chip(n.path)
-  chip(n.deg + (n.deg === 1 ? ' connection' : ' connections'))
+  chip(n.deg + ' ' + gt(n.deg === 1 ? 'graph.panel.connectionOne' : 'graph.panel.connectionOther'))
   panel.appendChild(m)
   // back-link to the live catalog for components (closes the app ↔ graph loop)
   if (n.type === 'component' || n.type === 'component-2one') {
     const a = el('a') as HTMLAnchorElement
-    a.href = '/#index'; a.innerHTML = 'View in catalog ' + lucide('externalLink', 13)
+    a.href = '/#index'; a.innerHTML = gt('graph.panel.viewInCatalog') + ' ' + lucide('externalLink', 13)
     a.style.cssText = 'display:inline-flex;align-items:center;gap:6px;margin:0 0 12px;font-family:var(--sans);font-size:12px;color:var(--ink-2);text-decoration:none;border:1px solid var(--line);border-radius:var(--r-pill);padding:6px 12px'
     panel.appendChild(a)
   }
   const groups: Record<string, any[]> = {}
   const outNames = new Set<string>()
   edges.forEach((e: any) => { if (e.source !== n.id && e.target !== n.id) return; const out = e.source === n.id, other = out ? e.t : e.s
-    const name = (REL[e.type] || {})[out ? 'out' : 'in'] || e.type; if (out) outNames.add(name); (groups[name] = groups[name] || []).push(other) })
+    const name = relName(e.type, out); if (out) outNames.add(name); (groups[name] = groups[name] || []).push(other) })
   if (Object.keys(groups).length) {
     const cap = el('div', 'rel-cap')
-    cap.textContent = 'Arrowheads on the canvas point to whatever is being used. Each group below is tagged with an outward arrow (what this element uses) or an inward arrow (what uses it).'
+    cap.textContent = gt('graph.panel.relCap')
     panel.appendChild(cap)
   }
   // Show outgoing (this element → others) first, then incoming — so "what it uses" and
@@ -245,8 +255,8 @@ function select(n: any) {
     const isOut = outNames.has(name)
     const arr = groups[name]; const rel = el('div', 'rel'); const h = el('h4')
     const tag = el('span', 'dir ' + (isOut ? 'out' : 'in')); tag.innerHTML = lucide(isOut ? 'arrowRight' : 'arrowLeft', 12)
-    tag.setAttribute('aria-label', isOut ? 'outgoing — this element uses these' : 'incoming — these use this element')
-    tag.title = isOut ? 'this element → uses these' : 'these → use this element'
+    tag.setAttribute('aria-label', isOut ? gt('graph.dir.outAria') : gt('graph.dir.inAria'))
+    tag.title = isOut ? gt('graph.dir.outTitle') : gt('graph.dir.inTitle')
     h.appendChild(tag); h.appendChild(document.createTextNode(name))
     const cnt = el('span', 'cnt'); cnt.textContent = String(arr.length); h.appendChild(cnt); rel.appendChild(h)
     const ul = el('ul'); arr.forEach((o: any) => { const li = el('li'); li.textContent = o.label; li.addEventListener('click', () => { select(o); centerOn(o) }); ul.appendChild(li) })
@@ -258,9 +268,9 @@ const chipsEl = document.getElementById('chips')!
 const types = Array.from(new Set(nodes.map((n: any) => n.type))) as string[]
 const chipByType = new Map<string, HTMLElement>()
 const makeChip = (t: string) => {
-  const meta = TYPES[t] || { label: t }; const chip = el('div', 'chip'); chip.dataset.t = t
+  const chip = el('div', 'chip'); chip.dataset.t = t
   const dot = el('span', 'dot'); paintSwatch(dot, t)
-  chip.appendChild(dot); chip.appendChild(document.createTextNode(meta.label || t))
+  chip.appendChild(dot); chip.appendChild(document.createTextNode(typeLabel(t)))
   chip.addEventListener('click', () => { if (hidden.has(t)) { hidden.delete(t); chip.classList.remove('off') } else { hidden.add(t); chip.classList.add('off') } })
   chipByType.set(t, chip); return chip
 }
@@ -268,9 +278,9 @@ const makeChip = (t: string) => {
 const chipFamilies: Record<string, string[]> = {}
 types.forEach((t) => { const f = (TYPES[t] || {}).family || 'Other'; (chipFamilies[f] = chipFamilies[f] || []).push(t) })
 FAMILY_ORDER.filter((f) => chipFamilies[f]).forEach((f) => {
-  const grp = el('div', 'chip-fam'); const ft = el('div', 'chip-fam-title'); ft.textContent = f; grp.appendChild(ft)
+  const grp = el('div', 'chip-fam'); const ft = el('div', 'chip-fam-title'); ft.textContent = familyLabel(f); grp.appendChild(ft)
   const row = el('div', 'chip-row')
-  chipFamilies[f].sort((a, b) => (TYPES[a] ? TYPES[a].label : a).localeCompare(TYPES[b] ? TYPES[b].label : b)).forEach((t) => row.appendChild(makeChip(t)))
+  chipFamilies[f].sort((a, b) => typeLabel(a).localeCompare(typeLabel(b))).forEach((t) => row.appendChild(makeChip(t)))
   grp.appendChild(row); chipsEl.appendChild(grp)
 })
 
@@ -311,9 +321,9 @@ compNodes.forEach((n: any) => {
   const row = el('div', 'comp-item'); row.dataset.id = n.id
   const box = el('input') as HTMLInputElement; box.type = 'checkbox'; box.className = 'comp-check'; box.checked = true
   box.dataset.type = n.type; box.style.accentColor = nodeColor(n.type) // the checkbox carries the node's colour
-  box.setAttribute('aria-label', 'Show ' + n.label + ' on the canvas')
+  box.setAttribute('aria-label', gt('graph.components.showAria', { label: n.label }))
   box.addEventListener('change', () => setCompVisible(n, box, row, box.checked))
-  const jump = el('button', 'comp-jump'); jump.title = 'Show ' + n.label + ' in the graph'
+  const jump = el('button', 'comp-jump'); jump.title = gt('graph.components.jumpTitle', { label: n.label })
   const name = el('span', 'comp-name'); name.textContent = n.label
   jump.appendChild(name)
   if (n.type === 'component-2one') { const tag = el('span', 'ctag'); tag.textContent = '2one'; jump.appendChild(tag) }
@@ -350,13 +360,13 @@ const guideLegend = document.getElementById('guide-legend')!
 const families: Record<string, string[]> = {}
 types.forEach((t) => { const f = (TYPES[t] || {}).family || 'Other'; (families[f] = families[f] || []).push(t) })
 FAMILY_ORDER.filter((f) => families[f]).forEach((f) => {
-  const grp = el('div', 'g-fam'); const ft = el('div', 'g-fam-title'); ft.textContent = f; grp.appendChild(ft)
+  const grp = el('div', 'g-fam'); const ft = el('div', 'g-fam-title'); ft.textContent = familyLabel(f); grp.appendChild(ft)
   families[f].forEach((t) => {
     const meta = TYPES[t] || { label: t }; const row = el('div', 'g-row'); row.dataset.t = t
     const dot = el('span', 'g-dot'); paintSwatch(dot, t)
-    const name = el('span', 'g-name'); name.textContent = meta.label || t
+    const name = el('span', 'g-name'); name.textContent = typeLabel(t)
     row.appendChild(dot); row.appendChild(name)
-    if (meta.src) { const s = el('span', 'g-src'); s.textContent = meta.src; row.appendChild(s) }
+    if (meta.src) { const s = el('span', 'g-src'); s.textContent = srcLabel(t); row.appendChild(s) }
     grp.appendChild(row)
   })
   guideLegend.appendChild(grp)
@@ -370,18 +380,68 @@ document.getElementById('search')!.addEventListener('input', (e: any) => {
 document.getElementById('reset')!.addEventListener('click', () => { scale = 1; ox = 0; oy = 0; select(null); alpha = 0.6 })
 
 const tb = document.getElementById('theme')!
-function setT(t: string) { root.classList.toggle('dark', t === 'dark'); try { localStorage.setItem('theme', t) } catch {} const isDark = t === 'dark'; tb.innerHTML = lucide(isDark ? 'sun' : 'moon') + '<span>' + (isDark ? 'Light' : 'Dark') + '</span>'
+function setT(t: string) { root.classList.toggle('dark', t === 'dark'); try { localStorage.setItem('theme', t) } catch {} const isDark = t === 'dark'; tb.innerHTML = lucide(isDark ? 'sun' : 'moon') + '<span>' + (isDark ? gt('common.light') : gt('common.dark')) + '</span>'
   Array.prototype.forEach.call(document.querySelectorAll('.chip'), (c: any) => paintSwatch(c.querySelector('.dot'), c.dataset.t))
   Array.prototype.forEach.call(document.querySelectorAll('.g-row'), (row: any) => { const t2 = row.dataset.t; if (t2) paintSwatch(row.querySelector('.g-dot'), t2) })
   Array.prototype.forEach.call(document.querySelectorAll('.comp-check'), (b: any) => { if (b.dataset.type) b.style.accentColor = nodeColor(b.dataset.type) })
   if (selected) select(selected) }
-// Honour the theme the app pages persist (localStorage 'theme', written by the
-// ThemeProvider) so navigating Dashboard → graph keeps the same theme; fall back
-// to the OS preference on a first, standalone visit.
-setT(localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'))
+// Default to LIGHT. Honour a theme the app pages persisted (localStorage 'theme',
+// written by the ThemeProvider) so navigating from a dark app page keeps dark — but
+// a first, standalone visit always opens light (never the OS dark preference).
+setT(localStorage.getItem('theme') || 'light')
 tb.addEventListener('click', () => setT(theme() === 'dark' ? 'light' : 'dark'))
 
-document.getElementById('stats')!.textContent = GRAPH.stats.nodes + ' elements · ' + GRAPH.stats.edges + ' relationships'
+// Language toggle — mirrors the React LanguageToggle. Two languages, so it flips and
+// reloads (simplest for a plain-TS page that builds much of its DOM up front).
+const lb = document.getElementById('lang')!
+const lang = currentLang()
+const nextLang = lang === 'fr' ? 'en' : 'fr'
+lb.innerHTML = lucide('globe') + '<span>' + lang.toUpperCase() + '</span>'
+lb.setAttribute('aria-label', gt('common.switchLanguageTo', { lang: nextLang === 'fr' ? 'Français' : 'English' }))
+lb.addEventListener('click', () => { setLang(nextLang); location.reload() })
+
+document.documentElement.lang = lang
+tb.setAttribute('aria-label', gt('graph.themeAria'))
+document.getElementById('stats')!.textContent = gt('graph.stats', { nodes: GRAPH.stats.nodes, edges: GRAPH.stats.edges })
+translateStatic()
+
+// Localise the static HTML chrome (nav, panel headers, placeholders, buttons, hint).
+function translateStatic() {
+  const set = (sel: string, text: string) => { const e = document.querySelector(sel); if (e) e.textContent = text }
+  const setFirstText = (sel: string, text: string) => { const e = document.querySelector(sel); if (e && e.firstChild) e.firstChild.nodeValue = text }
+  const ph = (sel: string, text: string) => { const e = document.querySelector(sel) as HTMLInputElement | null; if (e) e.placeholder = text }
+  // Global nav (mirrors dev/global-nav.tsx). `.topnav a` order: the flat
+  // destinations, then the three links inside the Help menu.
+  const navKeys = ['nav.overview', 'nav.components', 'nav.graph', 'nav.dls', 'overview.sidebar.faq', 'overview.sidebar.support']
+  document.querySelectorAll('.topnav a').forEach((a, i) => { if (navKeys[i]) a.textContent = gt(navKeys[i]) })
+  set('.nav-help summary span', gt('common.help'))
+  const brand = document.querySelector('.brandlink'); if (brand) brand.setAttribute('aria-label', gt('common.dashboardAria'))
+  // Inspiration panel
+  set('#pnl-inspiration .pnl-head span', gt('graph.inspiration.title'))
+  set('#paint figcaption', gt('graph.inspiration.caption'))
+  const insp = document.querySelector('.insp-text'); if (insp) insp.innerHTML = gt('graph.inspiration.body')
+  set('#pnl-inspiration .pnl-label', gt('graph.inspiration.legendLabel'))
+  // All Components panel
+  set('#pnl-components .pnl-head span', gt('graph.components.title'))
+  ph('#comp-search', gt('graph.components.filter'))
+  setFirstText('#pnl-components .pnl-label', gt('graph.components.showOnCanvas') + ' ')
+  set('#comp-all', gt('graph.all')); set('#comp-none', gt('graph.none'))
+  // Graph Controls panel
+  set('#pnl-selection .pnl-head span', gt('graph.controls.title'))
+  ph('#search', gt('graph.controls.find'))
+  setFirstText('#pnl-selection .pnl-label', gt('graph.controls.filterByType') + ' ')
+  set('#selall', gt('graph.all')); set('#deselall', gt('graph.none'))
+  set('#reset', gt('graph.controls.resetView'))
+  set('.pnl-cues', gt('graph.controls.cues'))
+  // Canvas overlays
+  const panelEl = document.getElementById('panel'); if (panelEl && panelEl.classList.contains('empty')) panelEl.textContent = gt('graph.panel.empty')
+  set('.hint', gt('graph.hint'))
+}
+
+// Help menu: close the <details> disclosure when clicking outside it (mirrors
+// the React DropdownMenu's dismiss-on-outside-click).
+const helpEl = document.querySelector('.nav-help') as HTMLDetailsElement | null
+if (helpEl) document.addEventListener('click', (e) => { if (helpEl.open && !helpEl.contains(e.target as Node)) helpEl.open = false })
 
 // deep-link: /graph.html?node=<id> opens focused on that node (from the catalog)
 const initId = new URLSearchParams(location.search).get('node')

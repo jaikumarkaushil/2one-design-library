@@ -46,6 +46,44 @@ doesn't even cover `dev/`).
 - **Untracked ≠ safe.** Anything untracked (and not ignored) can be swept in by
   `git add .` — stage explicit paths, and back up work you care about by pushing a branch.
 
+## Bilingual showcase (English + French)
+
+The `dev/` showcase ships in **English and French**. Copy is not hard-coded in the page
+components — it lives in [`dev/i18n/en.json`](dev/i18n/en.json) (the source of truth) and
+[`dev/i18n/fr.json`](dev/i18n/fr.json), read through `react-i18next` (`useTranslation` /
+`<Trans>`). A `LanguageToggle` sits in every page header next to the theme toggle; the
+choice is persisted to `localStorage` (`2one-lang`) so it survives the multi-page app's
+full page loads, and drives `<html lang>`.
+
+**When you add or change any user-facing string in `dev/`:**
+
+1. Add the key to **`en.json`**, then the translated value to **`fr.json`** — same key
+   path, same shape, same interpolation placeholders (`{{count}}`, `{{name}}`, …).
+2. Render it with `t('some.key')`, or `<Trans i18nKey="…" components={{ … }} />` for copy
+   with inline emphasis (`<b>`, `<em>`, `<mono>`, `<code>`, `<a>`). For a fixed code/asset
+   token inside translated prose, use a **self-closing** placeholder (`<mono/>`) and supply
+   the literal as the component's own children — an entity like `&lt;id&gt;` written inside
+   the translation string will **not** be decoded by `<Trans>`.
+3. Keep genuinely language-neutral content out of i18n: component/block IDs (`login-01`),
+   token/class names (`--brand`, `text-h1`), the build-prompt code block, and brand facts
+   pulled live from `brand/brand.json`.
+
+`npm run check:i18n` (part of `npm run verify`) fails the build if the locales drift —
+a missing key, an empty value, a shape mismatch, or mismatched placeholders. So a new
+English string can never land without its French translation.
+
+The vanilla graph explorer (`dev/graph.html` / `dev/graph-main.ts`) is localised too: it
+has no React, so it runs its own i18next instance ([`dev/i18n/graph-i18n.ts`](dev/i18n/graph-i18n.ts))
+over the **same** `en.json`/`fr.json` (the `graph.*` keys), reads the same `2one-lang`,
+and reloads on switch. Its strings are covered by `check:i18n` like everything else.
+
+## Default theme
+
+The showcase **defaults to light** and never derives dark from the OS. The React pages use
+`ThemeProvider` (`defaultTheme="light"`, `enableSystem={false}`); the graph page falls back
+to `'light'` when no theme is persisted. The light/dark toggle still works and its choice
+persists across pages via `localStorage` (`theme`).
+
 ## When you add or remove a capability
 
 Everything the repo says about itself is generated or checked (see

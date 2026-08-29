@@ -1,0 +1,733 @@
+{
+  "common": {
+    "switchToLight": "Passer au thème clair",
+    "switchToDark": "Passer au thème sombre",
+    "light": "Clair",
+    "dark": "Sombre",
+    "switchLanguageTo": "Passer en {{lang}}",
+    "copyToClipboard": "Copier dans le presse-papiers",
+    "copied": "Copié",
+    "copiedToClipboard": "Copié dans le presse-papiers",
+    "dashboardAria": "2one — tableau de bord",
+    "onThisPage": "Sur cette page",
+    "help": "Aide",
+    "footerCatalog": "@yokesh-2one/design-library · shadcn/ui reskinné aux tokens 2one · clair + sombre audité · rendu en direct à partir des vrais composants.",
+    "footerDls": "@yokesh-2one/design-library · référence du système de langage de conception · clair et sombre audité."
+  },
+  "nav": {
+    "overview": "Vue d’ensemble",
+    "components": "Composants",
+    "aiComponents": "Composants pour interface IA",
+    "graph": "Graphe de connaissances",
+    "dls": "Qu’est-ce qu’un DLS ?"
+  },
+  "overview": {
+    "sidebar": {
+      "overview": "Vue d’ensemble",
+      "howToUse": "Comment l’utiliser",
+      "faq": "FAQ",
+      "support": "Assistance"
+    },
+    "hero": {
+      "eyebrow": "Système de langage de conception · livré comme un produit",
+      "titleLead": "Livrez des produits et du marketing fidèles à la marque,",
+      "titleThin": "sans approximation.",
+      "body": "2one est un système de langage de conception pour le <b>développement produit et le marketing produit</b> — les composants, les tokens, la marque, et les règles qui les relient. Un <b>graphe de connaissances</b> rend le système opiniâtre et déterministe, pour que les humains <em>et</em> l’IA construisent des interfaces qui ressemblent déjà à 2one.",
+      "exploreGraph": "Explorer le graphe de connaissances",
+      "readGuide": "Lire le guide"
+    },
+    "dlsTeaser": {
+      "title": "Nouveau ici ? Commencez par le DLS",
+      "body": "Un système de langage de conception (DLS) est le kit partagé — marque, tokens, composants, et les règles qui les relient. Le guide explique les trois niveaux dont il est constitué et inclut l’atelier de thématisation en direct : choisissez une seule couleur de marque et regardez tout le système se recolorer, avec le contraste vérifié au fil de l’eau.",
+      "cta": "Ouvrir le guide du DLS"
+    },
+    "features": {
+      "eyebrow": "Atouts",
+      "title": "Ce qui fait la différence",
+      "lede": "Chaque point ci-dessous est une capacité réelle, avec une preuve vérifiable — sans esbroufe.",
+      "opinionated": {
+        "title": "Opiniâtre et déterministe",
+        "desc": "Un graphe de connaissances de chaque token, composant et règle — demandez ce qu’un changement impacte avant de le livrer."
+      },
+      "accessible": {
+        "title": "Accessible par défaut",
+        "desc": "Primitives Radix + un audit de contraste APCA qui s’exécute à chaque changement, en clair et en sombre."
+      },
+      "aiLegible": {
+        "title": "Lisible par l’IA",
+        "desc": "Des règles UX lisibles par machine, avec sévérité et priorité, pour que l’IA compose le langage 2one — au lieu d’en inventer un."
+      },
+      "universal": {
+        "title": "Universel et unifié",
+        "desc": "Un seul système de tokens en niveaux de gris, deux thèmes audités, du HTML sémantique — la même sensation produit sur chaque surface."
+      }
+    },
+    "available": {
+      "eyebrow": "Ce qui est disponible",
+      "title": "Le système en un coup d’œil",
+      "components": "Composants",
+      "shadcn": "primitives shadcn",
+      "twoOne": "conçus par 2one",
+      "hueFree": "Système sans teinte"
+    },
+    "use": {
+      "eyebrow": "Commencez ici",
+      "title": "Comment utiliser l’application",
+      "lede": "Une méthode étape par étape pour connecter un assistant IA à la bibliothèque 2one et construire avec. Pointez votre assistant — Claude Code, Cursor, Copilot, Gemini — vers le dépôt, faites-lui lire le système, puis construisez à partir des vrais composants, tokens et règles. Aucun codage manuel requis.",
+      "step1": {
+        "title": "Se connecter à la bibliothèque",
+        "desc": "Donnez le dépôt à votre IA. Elle lit d’abord <mono>manifest.json</mono>, puis construit uniquement à partir du système.",
+        "copy": "Copier le lien GitHub"
+      },
+      "step2": {
+        "title": "Demandez d’abord un résumé",
+        "desc": "Faites-lui indiquer quels composants, tokens, fondations de marque et modèles existent — avant qu’elle ne construise quoi que ce soit."
+      },
+      "step3": {
+        "title": "Construire avec l’invite",
+        "desc": "Remplissez les [crochets] de l’invite ci-dessous et collez-la. L’assistant compose une vraie interface 2one ; vous peaufinez."
+      },
+      "prompt": {
+        "title": "L’invite de construction",
+        "desc": "Copiez-la, remplissez les [crochets], puis collez-la dans votre assistant IA."
+      },
+      "runLocally": {
+        "title": "Lancer en local",
+        "desc": "Clonez le dépôt et explorez vous-même ce catalogue — fonctionne dès aujourd’hui, sans registre ni authentification.",
+        "copy": "Copier les commandes d’installation"
+      }
+    },
+    "faq": {
+      "eyebrow": "Aide",
+      "title": "FAQ",
+      "lede": "Les questions que les équipes nous posent en découvrant le système — ce que c’est, ce que vous pouvez construire avec, sa licence, et comment se déroule une mission.",
+      "items": {
+        "brand": {
+          "q": "Avec quelle marque construisons-nous — la nôtre ou celle de 2one ?",
+          "a": "Ce dépôt est le système propre à 2one : notre marque, bâtie sur shadcn/ui, pour que notre équipe livre des produits et du marketing qui ressemblent déjà à 2one. Nous le partageons pour que vous puissiez essayer l’approche sur du concret. Si cela convient, nous construisons les mêmes fondations pour votre marque, les intégrons à votre bibliothèque front-end, et bâtissons une application autour, pour votre équipe."
+        },
+        "produce": {
+          "q": "Que peut réellement produire notre équipe avec ?",
+          "a": "Des sites web, des pages marketing et des écrans produit — générés avec l’IA selon les règles du système, pour que le résultat reste fidèle à la marque et comporte moins de bugs. Les mêmes fondations existent dans Figma, partagées entre designers et développeurs. Il ne vous livrera pas une application finie : il vous donne une première version solide et cohérente, que votre équipe s’approprie."
+        },
+        "who": {
+          "q": "À qui s’adresse-t-il ?",
+          "a": "Les décideurs sont des responsables produit et ingénierie — VP, chefs de produit, CXO — qui veulent des équipes productives avec l’IA, sans la médiocrité. Au quotidien, ce sont les développeurs, les équipes marketing et les chefs de produit qui construisent avec."
+        },
+        "shadcn": {
+          "q": "Est-il lié à shadcn, et sous quelle licence ?",
+          "a": "Non. shadcn est simplement la base sur laquelle tourne 2one ; si votre équipe est sur MudBlazor, ou autre chose, nous y construisons le même système. La licence est votre choix — ouverte (MIT) par défaut, pour que chacun puisse la cloner et l’utiliser, ou propriétaire si vous préférez la garder en interne."
+        },
+        "access": {
+          "q": "Comment y accéder ?",
+          "a": "Clonez le dépôt et installez les paquets en local. L’accès est en cours d’ouverture, il n’y a donc rien à configurer — les personnes avec qui nous le partageons peuvent le récupérer et commencer à construire. Aujourd’hui, c’est la fondation sur laquelle notre équipe bâtit ; à terme, un système de conception partagé dans lequel toute votre organisation pourra puiser."
+        }
+      }
+    },
+    "support": {
+      "eyebrow": "Aide",
+      "title": "Assistance",
+      "lede": "Des questions sur le système, ou envie de le faire construire pour votre marque ? Nous répondons directement — en toute transparence sur ce qu’il fait et ne fait pas aujourd’hui.",
+      "questions": {
+        "title": "Questions",
+        "desc": "Écrivez-nous et nous vous répondrons."
+      },
+      "follow": {
+        "title": "Suivez-nous",
+        "desc": "Les nouveautés et ce que nous livrons.",
+        "cta": "2one Solutions sur LinkedIn"
+      }
+    }
+  },
+  "components": {
+    "sidebar": {
+      "tier1": "Niveau 1 · Marque",
+      "brand": "Marque",
+      "tier2": "Niveau 2 · Fondation",
+      "colour": "Couleur",
+      "typography": "Typographie",
+      "radius": "Rayon",
+      "tier3": "Niveau 3",
+      "blocks": "Blocs",
+      "marketing": "Marketing",
+      "charts": "Graphiques",
+      "twoOneComponents": "Composants 2one",
+      "mobile": "Mobile · 2one",
+      "shadcnComponents": "Composants Shadcn",
+      "actions": "Actions",
+      "forms": "Formulaires",
+      "overlays": "Surcouches",
+      "more": "Plus",
+      "data": "Affichage de données",
+      "feedback": "Retour",
+      "navigation": "Navigation"
+    },
+    "brand": {
+      "eyebrow": "Niveau 1 · Marque",
+      "title": "Fondation de marque",
+      "lede": "Le cœur stratégique — le « pourquoi » et le « qui » auxquels chaque élément renvoie, issus de <mono>brand/brand.json</mono>. Tout le contexte se trouve dans le <a>guide du DLS</a>.",
+      "missionCard": "Mission · vision · slogan",
+      "mission": "Mission",
+      "vision": "Vision",
+      "tagline": "Slogan",
+      "voiceCard": "Voix · ton · personnalité",
+      "voiceCardDesc": "À respecter dans tout contenu destiné à 2one.",
+      "voice": "Voix",
+      "tone": "Ton",
+      "personality": "Personnalité",
+      "archetype": "Archétype : {{name}}",
+      "whoFor": "À qui il s’adresse",
+      "logo": "Le logo",
+      "logoDesc": "Deux remplissages seulement — noir sur clair, blanc sur sombre. Ne jamais recolorer, faire pivoter ni déformer."
+    },
+    "colour": {
+      "eyebrow": "Fondations",
+      "title": "Couleur",
+      "lede": "Trois niveaux. <b>Primaire</b> — la rampe neutre en niveaux de gris (structure et actions principales). <b>Accent</b> — la seule teinte de marque, <b>#30A1FF</b> (<mono>--brand</mono>), pour l’emphase : liens, focus, sélection. <b>Sémantique</b> — <b>danger</b> / <b>succès</b>, réservés à la validation uniquement. (La surface de survol <mono>--accent</mono> propre à shadcn est un token de composant, pas un niveau de marque.)",
+      "primaryLabel": "primaire · neutre",
+      "accentLabel": "accent · marque (#30A1FF — la seule teinte de marque)",
+      "semanticLabel": "sémantique (validation uniquement)"
+    },
+    "type": {
+      "eyebrow": "Fondations",
+      "title": "Typographie",
+      "lede": "<b>Satoshi</b> pour l’échelle des titres, <b>Inter</b> pour le corps de texte et l’interface. L’échelle ci-dessous est rendue à partir des vrais tokens."
+    },
+    "radius": {
+      "eyebrow": "Fondations",
+      "title": "Rayon",
+      "lede": "Des puces à angle fin aux pilules entièrement arrondies. Les boutons utilisent <mono>full</mono> — la signature 2one."
+    },
+    "blocks": {
+      "eyebrow": "Modèles",
+      "title": "Blocs",
+      "lede": "Des formulaires pré-composés et thématisés automatiquement, construits à partir des composants 2one — prêts à intégrer une application.",
+      "dashboardTitle": "dashboard-plain",
+      "dashboardDesc": "bloc · contenu seul, sans navigation",
+      "allBlocks": "Tous les blocs"
+    },
+    "marketing": {
+      "eyebrow": "Modèles",
+      "title": "Marketing",
+      "lede": "Des sections de page d’atterrissage, entièrement construites à partir de la bibliothèque — niveaux de gris, clair + sombre. Chacune est une section pleine largeur ; <code>marketing/page.tsx</code> les compose en une page complète.",
+      "fullPage": "page — page d’atterrissage complète (composée)"
+    },
+    "charts": {
+      "eyebrow": "Modèles · visualisation de données",
+      "title": "Graphiques",
+      "lede": "{{count}} modèles de graphiques de tous types — une palette catégorielle menée par l’accent (<code>--chart-1…5</code>), validée pour la distinction daltonienne et le contraste en clair et en sombre. La visualisation de données est le seul endroit où les teintes sont autorisées ; les graphiques portent toujours une légende et des étiquettes, l’identité n’est donc jamais portée par la seule couleur. Un exemplaire de chaque type est montré ; l’ensemble complet se trouve dans <code>src/blocks/charts/</code>.",
+      "all": "Les {{count}} graphiques"
+    },
+    "mobile": {
+      "eyebrow": "Composants · propres à 2one",
+      "title": "Mobile et marque",
+      "lede": "Les trois composants pour lesquels shadcn n’a pas d’équivalent.",
+      "signIn": "Se connecter",
+      "home": "Accueil",
+      "search": "Recherche",
+      "alerts": "Alertes",
+      "profile": "Profil",
+      "logoMeta": "noir sur clair / blanc sur sombre"
+    },
+    "actions": {
+      "eyebrow": "Composants",
+      "title": "Actions",
+      "lede": "Les boutons sont des pilules ; une seule action principale par vue.",
+      "buttonMeta": "variante × taille",
+      "primary": "Principal",
+      "secondary": "Secondaire",
+      "outline": "Contour",
+      "ghost": "Fantôme",
+      "delete": "Supprimer",
+      "disabled": "Désactivé",
+      "small": "Petit",
+      "large": "Grand",
+      "day": "Jour",
+      "week": "Semaine",
+      "month": "Mois",
+      "toggleMeta": "s’enroule — ne coupe jamais",
+      "bold": "Gras",
+      "italic": "Italique",
+      "underline": "Souligné",
+      "leave": "Quitter"
+    },
+    "forms": {
+      "eyebrow": "Composants",
+      "title": "Formulaires",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "passwordError": "8 caractères minimum requis.",
+      "writeMessage": "Rédiger un message…",
+      "message": "Message",
+      "rememberMe": "Se souvenir de moi",
+      "subscribe": "S’abonner",
+      "standard": "Standard",
+      "express": "Express",
+      "wifi": "Wi-Fi",
+      "country": "Pays",
+      "india": "Inde",
+      "unitedStates": "États-Unis",
+      "germany": "Allemagne",
+      "value": "Valeur",
+      "otpLabel": "Code à usage unique"
+    },
+    "overlays": {
+      "eyebrow": "Composants",
+      "title": "Surcouches",
+      "blockTitle": "Dialog · Sheet · Popover · Dropdown · Tooltip · Alert dialog",
+      "dialog": "Dialog",
+      "upgradeTitle": "Passer à Pro",
+      "upgradeDesc": "Débloquez tous les composants.",
+      "cancel": "Annuler",
+      "continue": "Continuer",
+      "sheet": "Sheet",
+      "settings": "Paramètres",
+      "slideOver": "Panneau latéral.",
+      "popover": "Popover",
+      "anchored": "Contenu flottant ancré.",
+      "menu": "Menu",
+      "account": "Compte",
+      "profile": "Profil",
+      "billing": "Facturation",
+      "logOut": "Se déconnecter",
+      "tooltip": "Tooltip",
+      "helpfulHint": "Astuce utile",
+      "delete": "Supprimer",
+      "areYouSure": "Êtes-vous sûr ?",
+      "cannotUndo": "Cette action est irréversible."
+    },
+    "more": {
+      "eyebrow": "Composants",
+      "title": "Plus",
+      "commandMeta": "palette de style ⌘K",
+      "searchPlaceholder": "Rechercher…",
+      "searchCommands": "Rechercher des commandes",
+      "noResults": "Aucun résultat.",
+      "suggestions": "Suggestions",
+      "searchDocs": "Rechercher dans la doc",
+      "profile": "Profil",
+      "billing": "Facturation",
+      "contextMeta": "clic droit sur la zone",
+      "rightClickHere": "Clic droit ici",
+      "logOut": "Se déconnecter",
+      "file": "Fichier",
+      "new": "Nouveau",
+      "open": "Ouvrir",
+      "save": "Enregistrer",
+      "edit": "Édition",
+      "undo": "Annuler",
+      "redo": "Rétablir",
+      "product": "Produit",
+      "overview": "Vue d’ensemble",
+      "features": "Fonctionnalités",
+      "pricing": "Tarifs",
+      "hoverMeta": "survolez le déclencheur",
+      "hoverCardBody": "Le système de langage de conception 2one — composants, tokens et marque.",
+      "calendar": "Calendrier",
+      "resizableMeta": "faites glisser la poignée",
+      "one": "Un",
+      "two": "Deux"
+    },
+    "data": {
+      "eyebrow": "Composants",
+      "title": "Affichage de données",
+      "upgradeTitle": "Passer à Pro",
+      "upgradeDesc": "Débloquez tous les composants.",
+      "upgradeBody": "Niveaux de gris, piloté par tokens, prêt à livrer.",
+      "continue": "Continuer",
+      "overview": "Vue d’ensemble",
+      "details": "Détails",
+      "overviewPanel": "Panneau vue d’ensemble.",
+      "detailsPanel": "Panneau détails.",
+      "accordionQ1": "Est-il aux couleurs de 2one ?",
+      "accordionA1": "Oui — chaque token correspond au système 2one.",
+      "accordionQ2": "Clair et sombre ?",
+      "accordionA2": "Oui — les deux thèmes sont livrés et passent tous deux l’audit APCA. Basculez avec le ThemeProvider.",
+      "plan": "Formule",
+      "seats": "Sièges",
+      "price": "Prix",
+      "starter": "Starter",
+      "pro": "Pro",
+      "default": "Par défaut",
+      "secondary": "Secondaire",
+      "outline": "Contour",
+      "error": "Erreur",
+      "home": "Accueil",
+      "docs": "Doc"
+    },
+    "feedback": {
+      "eyebrow": "Composants",
+      "title": "Retour",
+      "blockTitle": "Alert · Toast · Spinner",
+      "headsUp": "À noter",
+      "alertBody": "Ceci est l’alerte thématisée 2one.",
+      "toastTitle": "Enregistré",
+      "toastDesc": "Vos modifications sont en ligne.",
+      "showToast": "Afficher le toast",
+      "spinner": "Spinner"
+    },
+    "navigation": {
+      "eyebrow": "Composants",
+      "title": "Navigation",
+      "home": "Accueil",
+      "components": "Composants",
+      "button": "Bouton"
+    }
+  },
+  "ai": {
+    "sidebar": {
+      "onThisPage": "Sur cette page",
+      "reasoning": "Raisonnement"
+    },
+    "hero": {
+      "eyebrow": "Niveau 3 · interface IA",
+      "title": "Composants pour interface IA",
+      "lede": "Des pièces complètes et opiniâtres pour les états que traverse un produit d’IA — composées à partir des mêmes primitives, tokens et règles 2one que tout le reste, pour qu’un agent adapte le contenu, pas la structure. Chacune porte une spécification lisible par machine et un nœud de graphe (<mono/>), de sorte que ce dont elle est faite et ce qui la régit voyagent avec elle — montré en direct ci-dessous."
+    },
+    "reasoning": {
+      "eyebrowCount": "Raisonnement · {{count}} composants",
+      "title": "Raisonnement",
+      "lede": "Comment l’assistant montre qu’il réfléchit, travaille et répond."
+    },
+    "composedOf": "Composé de",
+    "governedBy": "Régi par",
+    "thinkingLabel": "Lecture de la demande",
+    "items": {
+      "loadingState": "Maintient le cadre tant que le modèle n’a encore rien à montrer, et laisse deviner la forme de la réponse à venir.",
+      "thinkingIndicator": "Nomme l’étape en cours de l’agent, avec le temps écoulé — pour qu’un tour lent se lise comme du travail, pas comme un blocage.",
+      "typingIndicator": "Une présence, pas du bruit — un indice léger qu’une réponse arrive.",
+      "streamingText": "Le bord avant porte l’accent de marque, puis se fixe en encre à mesure que la réponse rattrape.",
+      "reasoningPanel": "Une trace repliable qui diffuse ses étapes le long d’une chronologie, puis se stabilise en un résumé.",
+      "reasoningEffort": "À quel point réfléchir, et quelle part de ce budget l’exécution a réellement dépensée.",
+      "guardrailNotice": "Un refus dans sa propre forme — en niveaux de gris, jamais alarmant — avec l’alternative sûre la plus proche."
+    }
+  },
+  "dls": {
+    "sidebar": {
+      "onThisPage": "Sur cette page",
+      "overview": "Qu’est-ce qu’un DLS ?",
+      "glance": "Les trois niveaux",
+      "analogy": "Une analogie parlante",
+      "threeTiers": "Les trois niveaux",
+      "tier1": "Niveau 1 · Marque",
+      "tier2": "Niveau 2 · Fondation",
+      "tier3": "Niveau 3 · Production",
+      "more": "Plus",
+      "principle": "Le principe directeur",
+      "inrepo": "Où cela vit ici"
+    },
+    "tiers": {
+      "one": "Niveau 1",
+      "two": "Niveau 2",
+      "three": "Niveau 3"
+    },
+    "pyramid": {
+      "aria": "Une pyramide à trois niveaux : Niveau 1 Marque au sommet, Niveau 2 Fondation de conception au milieu, Niveau 3 Système de conception à la base.",
+      "tier3Tag": "NIVEAU 3 · OÙ",
+      "tier3Title": "Système de conception",
+      "tier2Tag": "NIVEAU 2 · QUOI",
+      "tier2Title": "Fondation de conception",
+      "tier1Tag": "NIVEAU 1",
+      "tier1Title": "Marque"
+    },
+    "hero": {
+      "eyebrow": "2one · système de langage de conception",
+      "titleLead": "Le système de langage de conception,",
+      "titleThin": "expliqué.",
+      "body": "Un <b>système de langage de conception (DLS)</b> est l’ensemble complet des règles, ressources et principes qui définissent comment une marque <em>apparaît</em>, <em>sonne</em> et <em>se comporte</em> sur chaque surface — de l’énoncé de mission à l’icône produit. Il s’organise en trois niveaux qui vont de l’<b>intention stratégique</b> jusqu’au <b>travail fini que voit le client</b>.",
+      "card1Tag": "Pourquoi & qui",
+      "card1Title": "Niveau 1 — Marque",
+      "card1Sub": "Stratégie et positionnement.",
+      "card2Tag": "Quoi",
+      "card2Title": "Niveau 2 — Fondation",
+      "card2Sub": "Briques réutilisables.",
+      "card3Tag": "Où",
+      "card3Title": "Niveau 3 — Production",
+      "card3Sub": "Produits et ressources livrés."
+    },
+    "glance": {
+      "eyebrow": "Le modèle",
+      "title": "Les trois niveaux, en un coup d’œil",
+      "lede": "Les niveaux se lisent dans les deux sens. L’intention définie au sommet <b>descend</b> en cascade dans tout ce que la marque produit, et chaque ressource finie à la base <b>remonte</b> jusqu’à la stratégie qui l’a façonnée.",
+      "cascades": "l’intention descend en cascade",
+      "traces": "la production remonte",
+      "row1Name": "Fondation de marque",
+      "row1Desc": "Définit pourquoi la marque existe et qui elle sert. Ce niveau est de la pure stratégie et ne contient aucune règle visuelle ; tout ce qui est en dessous doit y renvoyer.",
+      "row2Name": "Fondation de conception",
+      "row2Desc": "Les briques réutilisables — couleur, typographie, iconographie et voix. C’est le vocabulaire de la marque ; aucun élément ici n’est un livrable fini.",
+      "row3Name": "Système de conception",
+      "row3Desc": "Les briques assemblées en un travail fini et livrable — applications, sites web, présentations et campagnes. C’est ce que le client voit au bout du compte."
+    },
+    "analogy": {
+      "eyebrow": "Pour les parties prenantes non-designers",
+      "title": "Une analogie parlante : le langage",
+      "lede": "Le nom est volontaire. Un <em>langage</em> de conception se comporte beaucoup comme un langage parlé, et les trois niveaux correspondent directement à sa structure.",
+      "card1Title": "L’intention derrière la parole",
+      "card1Desc": "À qui vous vous adressez et ce que vous voulez transmettre. C’est la <b>marque</b> : mission, valeurs, personnalité et audience.",
+      "card2Title": "Vocabulaire et grammaire",
+      "card2Desc": "Les mots et les règles avec lesquels vous assemblez des phrases. C’est la <b>fondation de conception</b> : couleur, typographie, iconographie et ton de la voix — réutilisables, jamais une phrase finie à eux seuls.",
+      "card3Title": "Les conversations elles-mêmes",
+      "card3Desc": "Les phrases que vous prononcez réellement. C’est le <b>système de conception en usage</b> : les écrans produit, sites web, campagnes et présentations dont le client fait l’expérience.",
+      "construction": "Une autre analogie est la construction. Le <b>niveau 1</b> est le cahier des charges — quoi construire et pour qui ; le <b>niveau 2</b>, ce sont les matériaux et le code du bâtiment ; et le <b>niveau 3</b>, c’est le bâtiment fini et occupé."
+    },
+    "tier1": {
+      "eyebrow": "Niveau 1 · le sommet",
+      "title": "Fondation de marque — le « pourquoi » et le « qui »",
+      "lede": "Le cœur stratégique du système. Ce niveau ne contient <b>aucune règle visuelle</b> ; il définit pourquoi la marque existe et qui elle sert. Chaque décision dans les niveaux inférieurs doit y renvoyer.",
+      "appliedTitle": "La marque 2one, appliquée",
+      "appliedLede": "Le niveau 1 pour 2one elle-même — issu de <mono>brand/brand.json</mono>, la source à laquelle renvoie chaque ressource fidèle à la marque.",
+      "missionCard": "Mission · vision · slogan",
+      "mission": "Mission",
+      "vision": "Vision",
+      "tagline": "Slogan",
+      "voiceCard": "Voix · ton · personnalité",
+      "voiceCardDesc": "Comment la marque s’exprime — à respecter dans tout contenu destiné à 2one.",
+      "voice": "Voix",
+      "tone": "Ton",
+      "personality": "Personnalité",
+      "archetype": "Archétype : {{name}}",
+      "whoFor": "À qui il s’adresse",
+      "whoForDesc": "Les personas que la mission sert.",
+      "logo": "Le logo",
+      "logoDesc": "Deux remplissages seulement — noir sur clair, blanc sur sombre. Ne jamais recolorer, faire pivoter ni déformer.",
+      "modules": {
+        "missionVision": {
+          "title": "Mission et Vision",
+          "desc": "La raison d’être de la marque aujourd’hui et son aspiration à long terme — le point de référence de chaque décision en aval."
+        },
+        "values": {
+          "title": "Valeurs",
+          "desc": "Les principes fondamentaux qui guident la façon dont la marque se comporte et décide."
+        },
+        "personality": {
+          "title": "Personnalité",
+          "desc": "Le caractère humain de la marque — par exemple audacieuse, précise ou accessible — qui informe le ton et le visuel."
+        },
+        "audiences": {
+          "title": "Audiences et Personas",
+          "desc": "Les segments définis pour lesquels la marque conçoit, y compris leurs besoins, comportements et contexte."
+        },
+        "archetype": {
+          "title": "Archétype",
+          "desc": "Le rôle narratif de la marque — Héros, Sage, Créateur, etc. — pour garder son caractère cohérent."
+        },
+        "tagline": {
+          "title": "Slogan",
+          "desc": "Une phrase courte et mémorable qui capture la promesse de la marque."
+        }
+      }
+    },
+    "tier2": {
+      "eyebrow": "Niveau 2 · le milieu",
+      "title": "Fondation de conception — les briques",
+      "lede": "Les briques et règles réutilisables dérivées du niveau 1 — le vocabulaire de la marque. Aucun élément de ce niveau n’est un livrable fini ; chacun est une règle ou un composant que le niveau 3 assemble en travail livré.",
+      "modules": {
+        "colours": {
+          "title": "Couleurs",
+          "desc": "Le système de couleur complet et les règles pour l’utiliser — accessibilité comprise.",
+          "subs": ["Palette de marque", "Dégradés", "Rampe neutre", "Sémantique (succès / erreur)", "Paires de contraste", "À faire et à éviter"]
+        },
+        "typography": {
+          "title": "Typographie",
+          "desc": "Le système typographique — hiérarchie, lisibilité et voix du texte.",
+          "subs": ["Polices de marque", "Polices de repli système", "Échelle typographique (Display → Légende)", "Graisses et styles", "Interligne et espacement", "Prise en charge des écritures"]
+        },
+        "iconography": {
+          "title": "Iconographie",
+          "desc": "Un système d’icônes cohérent entre produit et marketing.",
+          "subs": ["Style d’icône", "Grille de base (p. ex. 24×24)", "Épaisseur du trait", "Catégories", "Échelle de tailles", "Variantes animées"]
+        },
+        "illustration": {
+          "title": "Illustration",
+          "desc": "Règles pour les illustrations sur mesure.",
+          "subs": ["Guide de style", "Palette d’illustration", "Personnes et inclusivité", "Règles de composition", "Bibliothèque de cas d’usage"]
+        },
+        "photography": {
+          "title": "Photographie",
+          "desc": "Règles pour l’imagerie réelle (non illustrée).",
+          "subs": ["Ambiance et style", "Étalonnage des couleurs", "Traitement de l’image", "Banque vs. sur mesure"]
+        },
+        "graphics": {
+          "title": "Graphismes et Motifs",
+          "desc": "Textures d’appui et systèmes décoratifs.",
+          "subs": ["Motifs d’arrière-plan", "Style de visualisation", "Motifs iconographiques", "Effets de surface"]
+        },
+        "voice": {
+          "title": "Voix et Ton",
+          "desc": "Comment sonne la marque — l’équivalent langagier du visuel.",
+          "subs": ["Principes de voix", "Ton selon le contexte", "Vocabulaire à faire et à éviter", "Exemples de rédaction", "Localisation"]
+        },
+        "moodboard": {
+          "title": "Planche d’ambiance",
+          "desc": "Des références qui ancrent un style abstrait dans des exemples concrets.",
+          "subs": ["Tableaux d’inspiration", "Références aspirationnelles", "Mots-clés d’ambiance", "Références de texture et lumière"]
+        }
+      }
+    },
+    "tier3": {
+      "eyebrow": "Niveau 3 · la base",
+      "title": "Système de conception — la production livrée",
+      "lede": "La couche appliquée, où les fondations du niveau 2 sont assemblées en livrables finis et expédiables — organisés par lieu d’utilisation.",
+      "modules": {
+        "product": {
+          "title": "Produit et Logiciel",
+          "desc": "Les interfaces numériques où le système devient une UI fonctionnelle.",
+          "subs": ["Site web", "Application web / tableaux de bord", "Application mobile", "Objets connectés", "AR / VR"]
+        },
+        "marketing": {
+          "title": "Marketing",
+          "desc": "Les supports tournés vers l’extérieur pour la croissance et l’engagement.",
+          "subs": ["Réseaux sociaux", "Motion / vidéo", "Formats publicitaires", "Présentations pitch et vente"]
+        },
+        "comms": {
+          "title": "Communication et Interne",
+          "desc": "La communication interne et à destination de l’entreprise.",
+          "subs": ["Présentations internes", "Rapports et analyses", "Papeterie", "En-tête et signatures"]
+        }
+      }
+    },
+    "principle": {
+      "eyebrow": "Le principe directeur",
+      "title": "Compréhensible par l’humain et lisible par l’IA",
+      "lede": "Un DLS bien construit est documenté assez clairement pour qu’une personne l’applique à la main, et structuré assez précisément pour qu’un système d’IA l’analyse et construise à partir de lui sans ambiguïté.",
+      "humanTitle": "Une personne peut l’appliquer",
+      "humanDesc": "Chaque règle, token et ressource est documenté en langage clair, pour qu’un nouveau membre de l’équipe produise un travail fidèle à la marque sans designer présent.",
+      "aiTitle": "Une IA peut construire à partir de lui",
+      "aiDesc": "Chaque élément est étiqueté et structuré, pour qu’un assistant IA lise le système et génère directement un travail fidèle à la marque — sans inventer de couleurs, de polices ni de composants."
+    },
+    "inrepo": {
+      "eyebrow": "Appliqué à cette bibliothèque",
+      "title": "Où chaque niveau vit dans cette bibliothèque",
+      "lede": "<mono>@yokesh-2one/design-library</mono> met en œuvre ce modèle à trois niveaux directement. Chaque niveau correspond à des fichiers précis du dépôt.",
+      "tier1Key": "Niveau 1 · Marque",
+      "tier1Desc": "La stratégie de marque — mission, valeurs, personnalité et voix — est définie dans <code>brand/brand.json</code> et <code>brand/BRAND.md</code>.",
+      "tier2Key": "Niveau 2 · Fondation",
+      "tier2Desc": "Les briques — couleur, typographie et espacement — sont définies comme tokens dans <code>tokens/</code> et consommées par les composants dans <code>src/components/ui</code>.",
+      "tier3Key": "Niveau 3 · Production",
+      "tier3Desc": "Les pièces assemblées et livrables — blocs pré-composés, graphiques et recettes de construction IA — vivent dans <code>src/blocks</code> et <code>recipes/</code>.",
+      "aiKey": "Couche lisible par l’IA",
+      "aiDesc": "Un index lisible par machine relie le système. Un assistant IA lit d’abord ces fichiers, puis construit uniquement à partir du système.",
+      "backToCatalog": "← Retour au catalogue de composants",
+      "openGraph": "Ouvrir le graphe de connaissances →"
+    }
+  },
+  "graph": {
+    "themeAria": "Basculer clair et sombre",
+    "all": "Tout",
+    "none": "Aucun",
+    "stats": "{{nodes}} éléments · {{edges}} relations",
+    "hint": "glisser pour déplacer · molette pour zoomer · cliquer un nœud · les flèches pointent vers ce qui est utilisé",
+    "inspiration": {
+      "title": "Inspiration des couleurs",
+      "caption": "La palette source — une estampe japonaise sur bois.",
+      "body": "Les couleurs de ce graphe de connaissances ont été <b>inspirées des estampes japonaises sur bois</b> — un pin bonsaï sur une falaise marine sous un soleil rouge. Les estampes japonaises sont réputées pour leurs palettes réduites et distinctes. chaque couleur est déjà choisie pour se démarquer des autres.",
+      "legendLabel": "Chaque famille, prélevée dans l’estampe",
+      "missing": "Ajoutez la peinture à dev/assets/painting.avif pour l’afficher ici."
+    },
+    "components": {
+      "title": "Tous les composants",
+      "filter": "filtrer les composants…",
+      "showOnCanvas": "Afficher sur le canevas",
+      "showAria": "Afficher {{label}} sur le canevas",
+      "jumpTitle": "Afficher {{label}} dans le graphe"
+    },
+    "controls": {
+      "title": "Contrôles du graphe",
+      "find": "trouver un élément…",
+      "filterByType": "Filtrer par type",
+      "resetView": "Réinitialiser la vue",
+      "cues": "Taille du point = nombre de connexions · un anneau marque une règle · sélectionnez un nœud et les flèches pointent vers ce qu’il utilise."
+    },
+    "panel": {
+      "empty": "Cliquez sur un nœud pour voir son contexte — de quoi il est composé, ce qui l’utilise, ce qui le régit.",
+      "relCap": "Les têtes de flèche sur le canevas pointent vers ce qui est utilisé. Chaque groupe ci-dessous porte une flèche sortante (ce que cet élément utilise) ou une flèche entrante (ce qui utilise cet élément).",
+      "connectionOne": "connexion",
+      "connectionOther": "connexions",
+      "pass": "réussi",
+      "fail": "échoué",
+      "viewInCatalog": "Voir dans le catalogue"
+    },
+    "dir": {
+      "outAria": "sortant — cet élément utilise ceux-ci",
+      "inAria": "entrant — ceux-ci utilisent cet élément",
+      "outTitle": "cet élément → utilise ceux-ci",
+      "inTitle": "ceux-ci → utilisent cet élément"
+    },
+    "family": {
+      "Identity": "Identité",
+      "Governance": "Gouvernance",
+      "Reasoning": "Raisonnement",
+      "Renders on screen": "Rendu à l’écran",
+      "Templates": "Modèles",
+      "Patterns": "Motifs",
+      "Raw token values": "Valeurs de tokens brutes",
+      "External": "Externe",
+      "Accessibility": "Accessibilité",
+      "Other": "Autre"
+    },
+    "type": {
+      "brand": "Marque",
+      "rule": "Règle",
+      "component": "Composant",
+      "component-2one": "Propre à 2one",
+      "template-block": "Bloc",
+      "template-chart": "Graphique",
+      "token-color": "Token de couleur",
+      "ramp": "Palier de rampe",
+      "token-radius": "Rayon",
+      "token-type": "Type",
+      "package": "Paquet",
+      "contrast": "Contraste",
+      "intent": "Intention",
+      "context": "Contexte",
+      "state": "État",
+      "pattern": "Motif",
+      "variant": "Variante",
+      "a11y": "Exigence"
+    },
+    "src": {
+      "brand": "le soleil couchant",
+      "rule": "la bande rouge profond du soleil",
+      "component": "les vagues de l’océan",
+      "component-2one": "le pin bonsaï",
+      "template-block": "les nuages du couchant",
+      "template-chart": "la pâle lueur de l’horizon",
+      "token-color": "la roche de la falaise",
+      "ramp": "l’ombre de la roche",
+      "token-radius": "la houle en demi-teinte",
+      "token-type": "l’écume de mer",
+      "package": "la pierre patinée",
+      "contrast": "gardé vert — il signale réussite / échec",
+      "intent": "l’objectif de l’utilisateur",
+      "context": "quand cela s’applique",
+      "state": "état d’interaction",
+      "pattern": "une solution composée",
+      "variant": "une variante de composant",
+      "a11y": "une exigence d’accessibilité"
+    },
+    "rel": {
+      "composed_of": { "out": "Composé de", "in": "Utilisé par" },
+      "uses": { "out": "Utilise", "in": "Utilisé par" },
+      "derived_from": { "out": "Dérivé de", "in": "Source de" },
+      "governed_by": { "out": "Régi par", "in": "Régit" },
+      "has_contrast": { "out": "Contraste", "in": "Contraste de" },
+      "embodies": { "out": "Incarne", "in": "Incarné par" },
+      "serves": { "out": "Sert", "in": "Servi par" },
+      "depends_on": { "out": "Dépend de", "in": "Dont dépend" },
+      "preferred_for": { "out": "Préféré pour", "in": "Choix préféré pour" },
+      "appropriate_for": { "out": "Approprié pour", "in": "Usage approprié" },
+      "inappropriate_for": { "out": "Inapproprié pour", "in": "Usage inapproprié" },
+      "preferred_over": { "out": "Préféré à", "in": "Remplacé par" },
+      "alternative_to": { "out": "Alternative à", "in": "Alternative" },
+      "forbidden_with": { "out": "Interdit avec", "in": "Interdit avec" },
+      "requires": { "out": "Nécessite", "in": "Requis par" },
+      "supports_state": { "out": "Prend en charge l’état", "in": "État de" },
+      "preferred_composition": { "out": "Composition préférée", "in": "Composé en" },
+      "realized_by": { "out": "Réalisé par", "in": "Réalise" },
+      "demonstrates": { "out": "Démontre", "in": "Démontré par" },
+      "applies_when": { "out": "S’applique quand", "in": "S’applique" },
+      "overrides": { "out": "Remplace", "in": "Remplacé par" },
+      "specializes": { "out": "Spécialise", "in": "Spécialisé par" }
+    }
+  }
+}

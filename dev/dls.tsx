@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
-  Sun, Moon, ArrowLeft, ArrowUp, ArrowDown,
+  Sun, Moon, ArrowUp, ArrowDown,
   // Tier 1 — brand modules
   Target, Gem, Drama, Users, Crown, Tag,
   // Tier 2 — design foundation
@@ -11,9 +11,9 @@ import {
   UserRound, Bot,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useTranslation, Trans } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -24,70 +24,61 @@ import {
 } from '@/components/ui/sidebar'
 import { Logo } from '@/components/logo'
 import { TopNav } from './global-nav'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { LanguageToggle } from './i18n/language-toggle'
 import brand from '../brand/brand.json'
 
 /* ---------------------------------------------------------
    Content — condensed from the DLS definitions doc. Three
    tiers: strategic intent → building blocks → shipped output.
-   Written in a professional, client-facing register for
-   stakeholders who do not work in design day to day.
+   Copy lives in dev/i18n/{en,fr}.json (dls.*); this file wires
+   icons + structure to those keys.
    --------------------------------------------------------- */
 
-const NAV = [
-  { grp: 'On this page', items: [['overview', 'What is a DLS?'], ['glance', 'The three tiers'], ['analogy', 'A working analogy']] },
-  { grp: 'The three tiers', items: [['tier1', 'Tier 1 · Brand'], ['tier2', 'Tier 2 · Foundation'], ['tier3', 'Tier 3 · Output']] },
-  { grp: 'More', items: [['principle', 'The guiding principle'], ['inrepo', 'Where it lives here']] },
-] as { grp: string; items: [string, string][] }[]
-
-
-const TIER1_MODULES: [React.ReactNode, string, string][] = [
-  [<Target />, 'Mission & Vision', 'The brand’s purpose today and its long-term aspiration — the reference point for every downstream decision.'],
-  [<Gem />, 'Values', 'The core principles that guide how the brand behaves and makes decisions.'],
-  [<Drama />, 'Personality', 'The brand’s human character — for example bold, precise, or approachable — which informs tone and visuals.'],
-  [<Users />, 'Audiences & Personas', 'The defined segments the brand designs for, including their needs, behaviours, and context.'],
-  [<Crown />, 'Archetype', 'The brand’s narrative role — Hero, Sage, Creator, and so on — used to keep its character consistent.'],
-  [<Tag />, 'Tagline', 'A short, memorable line that captures the brand’s promise.'],
+// [icon, key into dls.<tier>.modules.<key>]
+const TIER1_MODULES: [React.ReactNode, string][] = [
+  [<Target />, 'missionVision'],
+  [<Gem />, 'values'],
+  [<Drama />, 'personality'],
+  [<Users />, 'audiences'],
+  [<Crown />, 'archetype'],
+  [<Tag />, 'tagline'],
 ]
 
-const TIER2_FOUNDATIONS: [React.ReactNode, string, string, string[]][] = [
-  [<Palette />, 'Colours', 'The full colour system and the rules for using it — including accessibility.',
-    ['Brand palette', 'Gradients', 'Neutral ramp', 'Semantic (success / error)', 'Contrast pairs', 'Usage do’s & don’ts']],
-  [<Type />, 'Typography', 'The type system — hierarchy, legibility and the voice of text.',
-    ['Brand typefaces', 'System fallbacks', 'Type scale (Display → Caption)', 'Weights & styles', 'Line-height & spacing', 'Script support']],
-  [<Shapes />, 'Iconography', 'A consistent icon system across product and marketing.',
-    ['Icon style', 'Base grid (e.g. 24×24)', 'Stroke weight', 'Categories', 'Size scale', 'Animated variants']],
-  [<Brush />, 'Illustration', 'Rules for custom illustrated artwork.',
-    ['Style guide', 'Illustration palette', 'People & inclusivity', 'Composition rules', 'Use-case library']],
-  [<Camera />, 'Photography', 'Rules for real (non-illustrated) imagery.',
-    ['Mood & style', 'Colour grading', 'Image treatment', 'Stock vs. custom']],
-  [<LayoutGrid />, 'Graphics & Patterns', 'Supporting textures and decorative systems.',
-    ['Background patterns', 'Data-viz style', 'Iconographic patterns', 'Surface effects']],
-  [<MessageSquareQuote />, 'Voice & Tone', 'How the brand sounds — the language equivalent of the visuals.',
-    ['Voice principles', 'Tone by context', 'Vocabulary do’s & don’ts', 'Writing examples', 'Localisation']],
-  [<Images />, 'Moodboard', 'Reference material that anchors abstract style in concrete examples.',
-    ['Inspiration boards', 'Aspirational references', 'Look-and-feel keywords', 'Texture & lighting refs']],
+const TIER2_FOUNDATIONS: [React.ReactNode, string][] = [
+  [<Palette />, 'colours'],
+  [<Type />, 'typography'],
+  [<Shapes />, 'iconography'],
+  [<Brush />, 'illustration'],
+  [<Camera />, 'photography'],
+  [<LayoutGrid />, 'graphics'],
+  [<MessageSquareQuote />, 'voice'],
+  [<Images />, 'moodboard'],
 ]
 
-const TIER3_OUTPUTS: [React.ReactNode, string, string, string[]][] = [
-  [<Monitor />, 'Product & Software', 'Digital interfaces where the system becomes functional UI.',
-    ['Website', 'Web app / dashboards', 'Mobile app', 'Wearables', 'AR / VR']],
-  [<Megaphone />, 'Marketing', 'Outward-facing materials for growth and engagement.',
-    ['Social media', 'Motion / video', 'Ad formats', 'Pitch & sales decks']],
-  [<FileText />, 'Comms & Internal', 'Internal and business-facing communication.',
-    ['Internal decks', 'Reports & analytics', 'Stationery', 'Letterhead & signatures']],
+const TIER3_OUTPUTS: [React.ReactNode, string][] = [
+  [<Monitor />, 'product'],
+  [<Megaphone />, 'marketing'],
+  [<FileText />, 'comms'],
+]
+
+// [tierKey into dls.tiers, colour var, rowKey into dls.glance.<rowKey>{Name,Desc}]
+const ROWS: [string, string, string][] = [
+  ['one', 'var(--tier-1)', 'row1'],
+  ['two', 'var(--tier-2)', 'row2'],
+  ['three', 'var(--tier-3)', 'row3'],
 ]
 
 function ThemeToggle({ className = '' }: { className?: string }) {
+  const { t } = useTranslation()
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
   const isDark = mounted && resolvedTheme === 'dark'
   return (
     <Button variant="outline" size="sm" className={className}
-      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      aria-label={isDark ? t('common.switchToLight') : t('common.switchToDark')}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}>
-      {isDark ? <Sun /> : <Moon />}{isDark ? 'Light' : 'Dark'}
+      {isDark ? <Sun /> : <Moon />}{isDark ? t('common.light') : t('common.dark')}
     </Button>
   )
 }
@@ -96,36 +87,30 @@ function ThemeToggle({ className = '' }: { className?: string }) {
    Fills are the grayscale --tier-N tokens (dls.css), so it recolors with
    the theme. Labels sit inside each band in its own contrasting ink. */
 function TierPyramid() {
+  const { t } = useTranslation()
   return (
-    <svg className="dls-pyramid" viewBox="0 0 480 320" role="img"
-      aria-label="A three-tier pyramid: Tier 1 Brand at the top, Tier 2 Design Foundation in the middle, Tier 3 Design System at the base.">
+    <svg className="dls-pyramid" viewBox="0 0 480 320" role="img" aria-label={t('dls.pyramid.aria')}>
       {/* Tier 3 — base (widest) */}
       <polygon points="120.4,206 359.6,206 420,300 60,300" fill="var(--tier-3)" stroke="var(--border)" />
       <text x="240" y="252" textAnchor="middle" fill="var(--tier-3-ink)">
-        <tspan className="t-tag" fontSize="10" fill="var(--muted-foreground)">TIER 3 · WHERE</tspan>
-        <tspan className="t-title" x="240" dy="20" fontSize="16">Design System</tspan>
+        <tspan className="t-tag" fontSize="10" fill="var(--muted-foreground)">{t('dls.pyramid.tier3Tag')}</tspan>
+        <tspan className="t-title" x="240" dy="20" fontSize="16">{t('dls.pyramid.tier3Title')}</tspan>
       </text>
       {/* Tier 2 — middle */}
       <polygon points="180.2,113 299.8,113 355.7,200 124.3,200" fill="var(--tier-2)" />
       <text x="240" y="150" textAnchor="middle" fill="var(--tier-2-ink)">
-        <tspan className="t-tag" fontSize="9" opacity="0.85">TIER 2 · WHAT</tspan>
-        <tspan className="t-title" x="240" dy="18" fontSize="15">Design Foundation</tspan>
+        <tspan className="t-tag" fontSize="9" opacity="0.85">{t('dls.pyramid.tier2Tag')}</tspan>
+        <tspan className="t-title" x="240" dy="18" fontSize="15">{t('dls.pyramid.tier2Title')}</tspan>
       </text>
       {/* Tier 1 — apex (narrowest) */}
       <polygon points="240,20 295.9,107 184.1,107" fill="var(--tier-1)" />
       <text x="240" y="72" textAnchor="middle" fill="var(--tier-1-ink)">
-        <tspan className="t-tag" fontSize="8" opacity="0.75">TIER 1</tspan>
-        <tspan className="t-title" x="240" dy="15" fontSize="14">Brand</tspan>
+        <tspan className="t-tag" fontSize="8" opacity="0.75">{t('dls.pyramid.tier1Tag')}</tspan>
+        <tspan className="t-title" x="240" dy="15" fontSize="14">{t('dls.pyramid.tier1Title')}</tspan>
       </text>
     </svg>
   )
 }
-
-const ROWS: [string, string, string, string][] = [
-  ['Tier 1', 'Brand foundation', 'var(--tier-1)', 'Defines why the brand exists and who it serves. This tier is pure strategy and contains no visual rules; everything below must trace back to it.'],
-  ['Tier 2', 'Design foundation', 'var(--tier-2)', 'The reusable building blocks — colour, typography, iconography, and voice. This is the brand’s vocabulary; no element here is a finished deliverable.'],
-  ['Tier 3', 'Design system', 'var(--tier-3)', 'The building blocks assembled into finished, shippable work — applications, websites, decks, and campaigns. This is what customers ultimately see.'],
-]
 
 // Icon tile — the library pattern (size-10, bordered, muted ground, size-5 icon),
 // not a bespoke class, so it matches the feature cards across the app.
@@ -151,6 +136,7 @@ function ModuleCard({ icon, title, desc, subs }: { icon: React.ReactNode; title:
 }
 
 export function Dls() {
+  const { t } = useTranslation()
   const [active, setActive] = useState('overview')
   useEffect(() => {
     const secs = Array.from(document.querySelectorAll('.g-section[id]'))
@@ -161,6 +147,12 @@ export function Dls() {
     secs.forEach((s) => obs.observe(s))
     return () => obs.disconnect()
   }, [])
+
+  const NAV: { grp: string; items: [string, string][] }[] = [
+    { grp: t('dls.sidebar.onThisPage'), items: [['overview', t('dls.sidebar.overview')], ['glance', t('dls.sidebar.glance')], ['analogy', t('dls.sidebar.analogy')]] },
+    { grp: t('dls.sidebar.threeTiers'), items: [['tier1', t('dls.sidebar.tier1')], ['tier2', t('dls.sidebar.tier2')], ['tier3', t('dls.sidebar.tier3')]] },
+    { grp: t('dls.sidebar.more'), items: [['principle', t('dls.sidebar.principle')], ['inrepo', t('dls.sidebar.inrepo')]] },
+  ]
 
   return (
     <SidebarProvider>
@@ -193,25 +185,25 @@ export function Dls() {
           <SidebarTrigger />
           <Separator orientation="vertical" className="mr-1 !h-5" />
           <TopNav current="/dls.html" />
-          <ThemeToggle className="ml-auto" />
+          <div className="ml-auto flex items-center gap-2">
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
         </header>
         <div className="mx-auto w-full min-w-0 max-w-7xl px-6 pb-32 lg:px-10">
 
           {/* OVERVIEW / HERO */}
           <section id="overview" className="g-section g-hero">
-            <div className="g-eyebrow">2one · design language system</div>
-            <h1>The design language system, <span className="thin">explained.</span></h1>
+            <div className="g-eyebrow">{t('dls.hero.eyebrow')}</div>
+            <h1>{t('dls.hero.titleLead')} <span className="thin">{t('dls.hero.titleThin')}</span></h1>
             <p>
-              A <b className="text-foreground">Design Language System (DLS)</b> is the complete set of rules, assets, and
-              principles that define how a brand <em>looks</em>, <em>sounds</em>, and <em>behaves</em> across every surface —
-              from a mission statement to a product icon. It is organised into three tiers that move from <b className="text-foreground">strategic
-              intent</b> down to the <b className="text-foreground">finished work a customer sees</b>.
+              <Trans i18nKey="dls.hero.body" components={{ b: <b className="text-foreground" />, em: <em /> }} />
             </p>
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
               {([
-                ['Why & who', 'Tier 1 — Brand', 'Strategy and positioning.'],
-                ['What', 'Tier 2 — Foundation', 'Reusable building blocks.'],
-                ['Where', 'Tier 3 — Output', 'Shipped products and assets.'],
+                [t('dls.hero.card1Tag'), t('dls.hero.card1Title'), t('dls.hero.card1Sub')],
+                [t('dls.hero.card2Tag'), t('dls.hero.card2Title'), t('dls.hero.card2Sub')],
+                [t('dls.hero.card3Tag'), t('dls.hero.card3Title'), t('dls.hero.card3Sub')],
               ] as const).map(([tag, title, sub]) => (
                 <Card key={title}>
                   <CardHeader>
@@ -226,27 +218,27 @@ export function Dls() {
 
           {/* THE THREE TIERS — pyramid + rows */}
           <section id="glance" className="g-section">
-            <div className="g-eyebrow">The model</div><h2>The three tiers, at a glance</h2>
-            <p className="g-lede">The tiers can be read in either direction. Intent defined at the apex cascades <b>down</b> into everything the brand produces, and every finished asset at the base traces back <b>up</b> to the strategy that shaped it.</p>
+            <div className="g-eyebrow">{t('dls.glance.eyebrow')}</div><h2>{t('dls.glance.title')}</h2>
+            <p className="g-lede"><Trans i18nKey="dls.glance.lede" components={{ b: <b /> }} /></p>
             <div className="dls-glance">
               <div>
                 <TierPyramid />
                 <div className="mt-3 flex items-center justify-center gap-6 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1.5"><ArrowDown className="size-3.5" /> intent cascades down</span>
-                  <span className="flex items-center gap-1.5"><ArrowUp className="size-3.5" /> output traces up</span>
+                  <span className="flex items-center gap-1.5"><ArrowDown className="size-3.5" /> {t('dls.glance.cascades')}</span>
+                  <span className="flex items-center gap-1.5"><ArrowUp className="size-3.5" /> {t('dls.glance.traces')}</span>
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                {ROWS.map(([tier, name, color, desc]) => (
-                  <Card key={tier}>
+                {ROWS.map(([tierKey, color, rowKey]) => (
+                  <Card key={tierKey}>
                     <CardHeader className="flex-row items-stretch gap-3 space-y-0">
                       <span className="w-1.5 shrink-0 self-stretch rounded-full" style={{ background: color }} aria-hidden />
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-baseline gap-2">
-                          <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">{tier}</span>
-                          <CardTitle className="text-base">{name}</CardTitle>
+                          <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">{t(`dls.tiers.${tierKey}`)}</span>
+                          <CardTitle className="text-base">{t(`dls.glance.${rowKey}Name`)}</CardTitle>
                         </div>
-                        <CardDescription className="mt-1">{desc}</CardDescription>
+                        <CardDescription className="mt-1">{t(`dls.glance.${rowKey}Desc`)}</CardDescription>
                       </div>
                     </CardHeader>
                   </Card>
@@ -257,37 +249,24 @@ export function Dls() {
 
           {/* ANALOGY */}
           <section id="analogy" className="g-section">
-            <div className="g-eyebrow">For non-design stakeholders</div><h2>A working analogy: language</h2>
-            <p className="g-lede">The name is deliberate. A design <em>language</em> behaves much like a spoken one, and the three tiers map directly onto its structure.</p>
+            <div className="g-eyebrow">{t('dls.analogy.eyebrow')}</div><h2>{t('dls.analogy.title')}</h2>
+            <p className="g-lede"><Trans i18nKey="dls.analogy.lede" components={{ em: <em /> }} /></p>
             <div className="dls-grid three">
-              <Card className="gap-2">
-                <CardHeader>
-                  <Badge variant="outline" className="w-fit">Tier 1</Badge>
-                  <CardTitle className="text-base">The intent behind speaking</CardTitle>
-                  <CardDescription>Who you are addressing and what you mean to convey. This is the <b className="text-foreground">brand</b>: mission, values, personality, and audience.</CardDescription>
-                </CardHeader>
-              </Card>
-              <Card className="gap-2">
-                <CardHeader>
-                  <Badge variant="outline" className="w-fit">Tier 2</Badge>
-                  <CardTitle className="text-base">Vocabulary and grammar</CardTitle>
-                  <CardDescription>The words and rules you assemble sentences from. This is the <b className="text-foreground">design foundation</b>: colour, typography, iconography, and tone of voice — reusable, never a finished sentence on their own.</CardDescription>
-                </CardHeader>
-              </Card>
-              <Card className="gap-2">
-                <CardHeader>
-                  <Badge variant="outline" className="w-fit">Tier 3</Badge>
-                  <CardTitle className="text-base">The conversations themselves</CardTitle>
-                  <CardDescription>The sentences you actually say. This is the <b className="text-foreground">design system in use</b>: the product screens, websites, campaigns, and decks that customers experience.</CardDescription>
-                </CardHeader>
-              </Card>
+              {([['one', 'card1'], ['two', 'card2'], ['three', 'card3']] as const).map(([tierKey, cardKey]) => (
+                <Card key={cardKey} className="gap-2">
+                  <CardHeader>
+                    <Badge variant="outline" className="w-fit">{t(`dls.tiers.${tierKey}`)}</Badge>
+                    <CardTitle className="text-base">{t(`dls.analogy.${cardKey}Title`)}</CardTitle>
+                    <CardDescription><Trans i18nKey={`dls.analogy.${cardKey}Desc`} components={{ b: <b className="text-foreground" /> }} /></CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
             </div>
             <Card className="mt-4">
               <CardContent className="flex items-start gap-3 pt-6 text-sm text-muted-foreground">
                 <IconTile><FileText /></IconTile>
                 <p className="m-0">
-                  An alternative analogy is construction. <b className="text-foreground">Tier 1</b> is the project brief — what is being built and for whom;
-                  <b className="text-foreground"> Tier 2</b> is the materials and the building code; and <b className="text-foreground">Tier 3</b> is the finished, occupied building.
+                  <Trans i18nKey="dls.analogy.construction" components={{ b: <b className="text-foreground" /> }} />
                 </p>
               </CardContent>
             </Card>
@@ -296,39 +275,39 @@ export function Dls() {
           {/* TIER 1 */}
           <section id="tier1" className="g-section">
             <div className="g-eyebrow flex items-center gap-2">
-              <span className="inline-block size-3 rounded-full" style={{ background: 'var(--tier-1)' }} /> Tier 1 · the apex
+              <span className="inline-block size-3 rounded-full" style={{ background: 'var(--tier-1)' }} /> {t('dls.tier1.eyebrow')}
             </div>
-            <h2>Brand foundation — the “why” and “who”</h2>
-            <p className="g-lede">The strategic core of the system. This tier contains <b>no visual rules</b>; it defines why the brand exists and who it serves. Every decision in the tiers below must trace back to it.</p>
+            <h2>{t('dls.tier1.title')}</h2>
+            <p className="g-lede"><Trans i18nKey="dls.tier1.lede" components={{ b: <b /> }} /></p>
             <div className="dls-grid">
-              {TIER1_MODULES.map(([icon, title, desc]) => (
-                <ModuleCard key={title} icon={icon} title={title} desc={desc} />
+              {TIER1_MODULES.map(([icon, key]) => (
+                <ModuleCard key={key} icon={icon} title={t(`dls.tier1.modules.${key}.title`)} desc={t(`dls.tier1.modules.${key}.desc`)} />
               ))}
             </div>
 
             {/* The 2one brand, applied — the real Tier 1 assets, from brand/brand.json */}
             <Separator className="my-8" />
-            <h3 className="text-lg font-semibold tracking-tight">The 2one brand, applied</h3>
-            <p className="g-lede">Tier 1 for 2one itself — pulled from <span className="mono">brand/brand.json</span>, the source every on-brand asset traces back to.</p>
+            <h3 className="text-lg font-semibold tracking-tight">{t('dls.tier1.appliedTitle')}</h3>
+            <p className="g-lede"><Trans i18nKey="dls.tier1.appliedLede" components={{ mono: <span className="mono" /> }} /></p>
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               <Card>
-                <CardHeader><CardTitle className="text-base">Mission · vision · tagline</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="text-base">{t('dls.tier1.missionCard')}</CardTitle></CardHeader>
                 <CardContent className="grid gap-3 text-sm">
-                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Mission</div><p className="mt-1 text-foreground">{brand.mission}</p></div>
-                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Vision</div><p className="mt-1 text-foreground">{brand.vision}</p></div>
-                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Tagline</div><p className="mt-1 text-foreground">{brand.tagline}</p></div>
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">{t('dls.tier1.mission')}</div><p className="mt-1 text-foreground">{brand.mission}</p></div>
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">{t('dls.tier1.vision')}</div><p className="mt-1 text-foreground">{brand.vision}</p></div>
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">{t('dls.tier1.tagline')}</div><p className="mt-1 text-foreground">{brand.tagline}</p></div>
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle className="text-base">Voice · tone · personality</CardTitle><CardDescription>How the brand speaks — match this in any 2one-facing copy.</CardDescription></CardHeader>
+                <CardHeader><CardTitle className="text-base">{t('dls.tier1.voiceCard')}</CardTitle><CardDescription>{t('dls.tier1.voiceCardDesc')}</CardDescription></CardHeader>
                 <CardContent className="grid gap-3 text-sm">
-                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Voice</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.voice.descriptors.map((d) => <Badge key={d} variant="secondary">{d}</Badge>)}</div></div>
-                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Tone</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.tone.descriptors.map((d) => <Badge key={d} variant="secondary">{d}</Badge>)}</div></div>
-                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">Personality</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.personality.map((d) => <Badge key={d} variant="outline">{d}</Badge>)}<Badge variant="outline">Archetype: {brand.archetype.name}</Badge></div></div>
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">{t('dls.tier1.voice')}</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.voice.descriptors.map((d) => <Badge key={d} variant="secondary">{d}</Badge>)}</div></div>
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">{t('dls.tier1.tone')}</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.tone.descriptors.map((d) => <Badge key={d} variant="secondary">{d}</Badge>)}</div></div>
+                  <div><div className="text-xs uppercase tracking-wider text-muted-foreground">{t('dls.tier1.personality')}</div><div className="mt-1.5 flex flex-wrap gap-1.5">{brand.personality.map((d) => <Badge key={d} variant="outline">{d}</Badge>)}<Badge variant="outline">{t('dls.tier1.archetype', { name: brand.archetype.name })}</Badge></div></div>
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle className="text-base">Who it’s for</CardTitle><CardDescription>The personas the mission serves.</CardDescription></CardHeader>
+                <CardHeader><CardTitle className="text-base">{t('dls.tier1.whoFor')}</CardTitle><CardDescription>{t('dls.tier1.whoForDesc')}</CardDescription></CardHeader>
                 <CardContent>
                   <ul className="grid gap-2 text-sm">
                     {brand.personas.map((p) => (
@@ -338,7 +317,7 @@ export function Dls() {
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle className="text-base">The logo</CardTitle><CardDescription>Two fills only — black on light, white on dark. Never recolour, rotate, or distort.</CardDescription></CardHeader>
+                <CardHeader><CardTitle className="text-base">{t('dls.tier1.logo')}</CardTitle><CardDescription>{t('dls.tier1.logoDesc')}</CardDescription></CardHeader>
                 <CardContent className="flex flex-wrap items-center gap-3">
                   <div className="rounded-lg border bg-white p-4"><Logo variant="black" width={96} /></div>
                   <div className="rounded-lg bg-neutral-950 p-4"><Logo variant="white" width={96} /></div>
@@ -350,13 +329,13 @@ export function Dls() {
           {/* TIER 2 */}
           <section id="tier2" className="g-section">
             <div className="g-eyebrow flex items-center gap-2">
-              <span className="inline-block size-3 rounded-full" style={{ background: 'var(--tier-2)' }} /> Tier 2 · the middle
+              <span className="inline-block size-3 rounded-full" style={{ background: 'var(--tier-2)' }} /> {t('dls.tier2.eyebrow')}
             </div>
-            <h2>Design foundation — the building blocks</h2>
-            <p className="g-lede">The reusable building blocks and rules derived from Tier 1 — the brand’s vocabulary. No element in this tier is a finished deliverable; each is a rule or component that Tier 3 assembles into shipped work.</p>
+            <h2>{t('dls.tier2.title')}</h2>
+            <p className="g-lede">{t('dls.tier2.lede')}</p>
             <div className="dls-grid two">
-              {TIER2_FOUNDATIONS.map(([icon, title, desc, subs]) => (
-                <ModuleCard key={title} icon={icon} title={title} desc={desc} subs={subs} />
+              {TIER2_FOUNDATIONS.map(([icon, key]) => (
+                <ModuleCard key={key} icon={icon} title={t(`dls.tier2.modules.${key}.title`)} desc={t(`dls.tier2.modules.${key}.desc`)} subs={t(`dls.tier2.modules.${key}.subs`, { returnObjects: true }) as string[]} />
               ))}
             </div>
           </section>
@@ -364,34 +343,34 @@ export function Dls() {
           {/* TIER 3 */}
           <section id="tier3" className="g-section">
             <div className="g-eyebrow flex items-center gap-2">
-              <span className="inline-block size-3 rounded-full border" style={{ background: 'var(--tier-3)' }} /> Tier 3 · the base
+              <span className="inline-block size-3 rounded-full border" style={{ background: 'var(--tier-3)' }} /> {t('dls.tier3.eyebrow')}
             </div>
-            <h2>Design system — the shipped output</h2>
-            <p className="g-lede">The applied layer, where the Tier 2 foundations are assembled into finished, shippable deliverables — organised by where they are used.</p>
+            <h2>{t('dls.tier3.title')}</h2>
+            <p className="g-lede">{t('dls.tier3.lede')}</p>
             <div className="dls-grid three">
-              {TIER3_OUTPUTS.map(([icon, title, desc, subs]) => (
-                <ModuleCard key={title} icon={icon} title={title} desc={desc} subs={subs} />
+              {TIER3_OUTPUTS.map(([icon, key]) => (
+                <ModuleCard key={key} icon={icon} title={t(`dls.tier3.modules.${key}.title`)} desc={t(`dls.tier3.modules.${key}.desc`)} subs={t(`dls.tier3.modules.${key}.subs`, { returnObjects: true }) as string[]} />
               ))}
             </div>
           </section>
 
           {/* GUIDING PRINCIPLE */}
           <section id="principle" className="g-section">
-            <div className="g-eyebrow">The guiding principle</div><h2>Human-understandable and AI-legible</h2>
-            <p className="g-lede">A well-built DLS is documented clearly enough for a person to apply by hand, and structured precisely enough for an AI system to parse and build from without ambiguity.</p>
+            <div className="g-eyebrow">{t('dls.principle.eyebrow')}</div><h2>{t('dls.principle.title')}</h2>
+            <p className="g-lede">{t('dls.principle.lede')}</p>
             <div className="dls-grid two">
               <Card>
                 <CardHeader>
                   <IconTile><UserRound /></IconTile>
-                  <CardTitle className="text-base">A person can apply it</CardTitle>
-                  <CardDescription>Every rule, token, and asset is documented in plain language, so a new team member can produce on-brand work without a designer present.</CardDescription>
+                  <CardTitle className="text-base">{t('dls.principle.humanTitle')}</CardTitle>
+                  <CardDescription>{t('dls.principle.humanDesc')}</CardDescription>
                 </CardHeader>
               </Card>
               <Card>
                 <CardHeader>
                   <IconTile><Bot /></IconTile>
-                  <CardTitle className="text-base">An AI can build from it</CardTitle>
-                  <CardDescription>Every element is labelled and structured, so an AI assistant can read the system and generate on-brand work directly — without inventing colours, fonts, or components.</CardDescription>
+                  <CardTitle className="text-base">{t('dls.principle.aiTitle')}</CardTitle>
+                  <CardDescription>{t('dls.principle.aiDesc')}</CardDescription>
                 </CardHeader>
               </Card>
             </div>
@@ -399,47 +378,47 @@ export function Dls() {
 
           {/* WHERE IT LIVES IN THIS REPO */}
           <section id="inrepo" className="g-section">
-            <div className="g-eyebrow">Applied to this library</div><h2>Where each tier lives in this library</h2>
-            <p className="g-lede"><span className="mono">@yokesh-2one/design-library</span> implements this three-tier model directly. Each tier maps to specific files in the repository.</p>
+            <div className="g-eyebrow">{t('dls.inrepo.eyebrow')}</div><h2>{t('dls.inrepo.title')}</h2>
+            <p className="g-lede"><Trans i18nKey="dls.inrepo.lede" components={{ mono: <span className="mono" /> }} /></p>
             <div className="dls-map">
               <div className="dls-map-row">
-                <div className="k">Tier 1 · Brand</div>
+                <div className="k">{t('dls.inrepo.tier1Key')}</div>
                 <div className="v">
-                  <p>Brand strategy — mission, values, personality, and voice — is defined in <code>brand/brand.json</code> and <code>brand/BRAND.md</code>.</p>
+                  <p><Trans i18nKey="dls.inrepo.tier1Desc" components={{ code: <code /> }} /></p>
                   <div className="flex flex-wrap gap-2">{['brand/brand.json', 'brand/BRAND.md', 'brand/logo'].map((s) => <Badge key={s} variant="outline" className="font-mono font-normal">{s}</Badge>)}</div>
                 </div>
               </div>
               <div className="dls-map-row">
-                <div className="k">Tier 2 · Foundation</div>
+                <div className="k">{t('dls.inrepo.tier2Key')}</div>
                 <div className="v">
-                  <p>The building blocks — colour, typography, and spacing — are defined as tokens in <code>tokens/</code> and consumed by the components in <code>src/components/ui</code>.</p>
+                  <p><Trans i18nKey="dls.inrepo.tier2Desc" components={{ code: <code /> }} /></p>
                   <div className="flex flex-wrap gap-2">{['tokens/colors.json', 'tokens/typography.json', 'tokens/spacing.json', 'src/components/ui'].map((s) => <Badge key={s} variant="outline" className="font-mono font-normal">{s}</Badge>)}</div>
                 </div>
               </div>
               <div className="dls-map-row">
-                <div className="k">Tier 3 · Output</div>
+                <div className="k">{t('dls.inrepo.tier3Key')}</div>
                 <div className="v">
-                  <p>The assembled, shippable pieces — pre-composed blocks, charts, and AI build recipes — live in <code>src/blocks</code> and <code>recipes/</code>.</p>
+                  <p><Trans i18nKey="dls.inrepo.tier3Desc" components={{ code: <code /> }} /></p>
                   <div className="flex flex-wrap gap-2">{['src/blocks', 'recipes/build-an-app.md', 'recipes/build-a-website.md'].map((s) => <Badge key={s} variant="outline" className="font-mono font-normal">{s}</Badge>)}</div>
                 </div>
               </div>
               <div className="dls-map-row">
-                <div className="k">AI-legible layer</div>
+                <div className="k">{t('dls.inrepo.aiKey')}</div>
                 <div className="v">
-                  <p>A machine-readable index ties the system together. An AI assistant reads these files first, then builds only from the system.</p>
+                  <p>{t('dls.inrepo.aiDesc')}</p>
                   <div className="flex flex-wrap gap-2">{['manifest.json', 'registry.json', 'graph.json'].map((s) => <Badge key={s} variant="outline" className="font-mono font-normal">{s}</Badge>)}</div>
                 </div>
               </div>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild variant="outline" size="sm"><a href="/">← Back to the component catalog</a></Button>
-              <Button asChild variant="outline" size="sm"><a href="/graph.html">Open the knowledge graph →</a></Button>
+              <Button asChild variant="outline" size="sm"><a href="/">{t('dls.inrepo.backToCatalog')}</a></Button>
+              <Button asChild variant="outline" size="sm"><a href="/graph.html">{t('dls.inrepo.openGraph')}</a></Button>
             </div>
           </section>
 
 
           <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">
-            @yokesh-2one/design-library · design language system reference · light and audited dark.
+            {t('common.footerDls')}
           </footer>
         </div>
       </SidebarInset>

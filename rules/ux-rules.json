@@ -1,6 +1,6 @@
 {
   "name": "2one UX Rules — the machine-readable design-decision contract",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "purpose": "The single source of truth for 2one's opinionated UX decisions, structured so AI agents and validators consume them deterministically. Prose lives in docs/building-with-the-dls.md and AGENTS.md; this file is the machine contract the knowledge graph and checks are built from (scripts/build-graph.mjs turns each rule into a `rule:` node with `governed_by` edges; scripts/check-rules.mjs validates it).",
   "severity_levels": {
     "forbidden": "Never do this — a violation is a defect. No escape hatch.",
@@ -10,179 +10,518 @@
     "avoid": "Discouraged. Prefer the stated alternative; use only under constraint."
   },
   "precedence": {
-    "order": ["accessibility", "brand", "consistency", "interaction", "layout", "implementation"],
-    "note": "When two rules conflict, the category earlier in this list wins. Accessibility is never traded away for brand or aesthetics. Within a category, the higher severity wins (forbidden > must > should > may > avoid)."
+    "order": [
+      "accessibility",
+      "data-integrity",
+      "brand",
+      "consistency",
+      "interaction",
+      "completeness",
+      "layout",
+      "implementation"
+    ],
+    "note": "When two rules conflict, the category earlier in this list wins. Accessibility is never traded away for brand or aesthetics, and neither is the truthfulness of displayed data. Within a category, the higher severity wins (forbidden > must > should > may > avoid)."
   },
   "target_macros": {
     "@interactive": "Expands to every interactive/stateful component (scripts/interactive-components.mjs) — the surfaces where state is shown to the user."
   },
   "rules": [
-    { "id": "grayscale", "category": "brand", "severity": "must", "label": "Grayscale foundation — one brand accent, no other hues",
+    {
+      "id": "grayscale",
+      "category": "brand",
+      "severity": "must",
+      "label": "Grayscale foundation — one brand accent, no other hues",
       "statement": "Theme the system on a grayscale foundation. Structure and primary actions stay grayscale (near-black on light, white on dark). The only permitted hues are the single brand accent (--brand, identity #30A1FF) for emphasis and the danger/success validation colours — never any other decorative hue.",
       "rationale": "A grayscale foundation with one disciplined accent is what makes every 2one screen read as one system and keeps recolour/theming deterministic; an open palette does not.",
-      "applies_to": ["token:primary", "token:secondary", "token:muted", "token:accent", "token:background"] },
-
-    { "id": "brand-accent", "category": "brand", "severity": "should", "label": "The brand accent is for emphasis, never state or primary",
+      "applies_to": [
+        "token:primary",
+        "token:secondary",
+        "token:muted",
+        "token:accent",
+        "token:background"
+      ]
+    },
+    {
+      "id": "brand-accent",
+      "category": "brand",
+      "severity": "should",
+      "label": "The brand accent is for emphasis, never state or primary",
       "statement": "Use the brand accent (--brand, identity #30A1FF) only for emphasis — links, the focus ring, and selection/active indicators. It never replaces the grayscale primary action, is never the sole carrier of state (pair it with text/icon, like any colour), and renders through the APCA-accessible token (--brand: brand-700 on light, brand-300 on dark), never the raw identity hex as text or as a solid fill behind a label.",
       "rationale": "One accent used sparingly reads as brand; the same hue spent on primaries, hover surfaces, or bare state signals dilutes it and reintroduces the inconsistency the grayscale foundation removes.",
-      "applies_to": ["token:brand", "token:ring"] },
-
-    { "id": "validation-only", "category": "brand", "severity": "must", "label": "danger/success for state + data trends only",
+      "applies_to": [
+        "token:brand",
+        "token:ring"
+      ]
+    },
+    {
+      "id": "validation-only",
+      "category": "brand",
+      "severity": "must",
+      "label": "danger/success for state + data trends only",
       "statement": "Use danger and success colours only to express (a) validation state (error/success) and (b) data-trend deltas — growth/decline in metrics, KPIs and data-viz — and in BOTH cases always pair the hue with a direction arrow, icon or text so meaning never rests on colour alone. Never for emphasis, branding, or decoration.",
       "rationale": "Reserving the two hues for state and trend keeps their meaning unambiguous; pairing each with a non-colour cue keeps it accessible (WCAG 1.4.1).",
-      "applies_to": ["token:destructive", "token:success"] },
-
-    { "id": "pill-buttons", "category": "brand", "severity": "must", "label": "Buttons are pills (radius-full)",
+      "applies_to": [
+        "token:destructive",
+        "token:success"
+      ]
+    },
+    {
+      "id": "pill-buttons",
+      "category": "brand",
+      "severity": "must",
+      "label": "Buttons are pills (radius-full)",
       "statement": "Buttons use the fully-rounded pill radius — the 2one signature. Do not square them off.",
       "rationale": "The pill is the single most recognisable 2one form cue.",
-      "applies_to": ["component:button", "radius:full"] },
-
-    { "id": "logo-untouchable", "category": "brand", "severity": "forbidden", "label": "Logo: never recolour/rotate/distort",
+      "applies_to": [
+        "component:button",
+        "radius:full"
+      ]
+    },
+    {
+      "id": "logo-untouchable",
+      "category": "brand",
+      "severity": "forbidden",
+      "label": "Logo: never recolour/rotate/distort",
       "statement": "Never recolour, rotate, stretch, or distort the logo. Use the provided black/white marks on their intended grounds.",
       "rationale": "A modified mark stops being the brand.",
-      "applies_to": ["component-2one:logo"] },
-
-    { "id": "no-color-alone", "category": "accessibility", "severity": "must", "label": "Never convey state by colour alone",
+      "applies_to": [
+        "component-2one:logo"
+      ]
+    },
+    {
+      "id": "no-color-alone",
+      "category": "accessibility",
+      "severity": "must",
+      "label": "Never convey state by colour alone",
       "statement": "State (error, success, selected, active) must be carried by an icon and/or text — never colour alone. An invalid field needs an icon plus a message, not just a red border.",
       "rationale": "Colour-only state is invisible to colour-blind and low-vision users; it is a brand AND accessibility rule.",
-      "applies_to": ["token:destructive", "token:success", "@interactive"] },
-
-    { "id": "focus-visible", "category": "accessibility", "severity": "must", "label": "Visible focus on every interactive element",
+      "applies_to": [
+        "token:destructive",
+        "token:success",
+        "@interactive"
+      ]
+    },
+    {
+      "id": "focus-visible",
+      "category": "accessibility",
+      "severity": "must",
+      "label": "Visible focus on every interactive element",
       "statement": "Every interactive element must show a clear focus-visible ring (via the --ring token). Never remove the outline without an equal-or-better replacement.",
       "rationale": "Keyboard users navigate by the focus ring; removing it strands them.",
-      "applies_to": ["@interactive", "token:ring"] },
-
-    { "id": "error-semantics", "category": "accessibility", "severity": "must", "label": "Form errors are programmatically associated",
+      "applies_to": [
+        "@interactive",
+        "token:ring"
+      ]
+    },
+    {
+      "id": "error-semantics",
+      "category": "accessibility",
+      "severity": "must",
+      "label": "Form errors are programmatically associated",
       "statement": "A field error must set aria-invalid and link its message with aria-describedby, and show icon+text (see no-color-alone).",
       "rationale": "Screen readers only announce errors that are wired to the control.",
-      "applies_to": ["component:input", "component:field", "component:form"] },
-
-    { "id": "reduced-motion", "category": "accessibility", "severity": "must", "label": "All motion respects prefers-reduced-motion",
+      "applies_to": [
+        "component:input",
+        "component:field",
+        "component:form"
+      ]
+    },
+    {
+      "id": "reduced-motion",
+      "category": "accessibility",
+      "severity": "must",
+      "label": "All motion respects prefers-reduced-motion",
       "statement": "Every transition/animation must be disabled or reduced under prefers-reduced-motion. Motion is purposeful (opacity/transform), never decorative.",
       "rationale": "Motion can trigger vestibular disorders; it must be opt-out-able by the OS setting.",
-      "applies_to": ["component:carousel", "component:sonner"] },
-
-    { "id": "build-from-library", "category": "consistency", "severity": "must", "label": "Build from the library — never hand-roll parallel chrome",
+      "applies_to": [
+        "component:carousel",
+        "component:sonner"
+      ]
+    },
+    {
+      "id": "build-from-library",
+      "category": "consistency",
+      "severity": "must",
+      "label": "Build from the library — never hand-roll parallel chrome",
       "statement": "Compose real 2one components. Never hand-roll a parallel sidebar, card, badge, or 'stage' box for something the library already provides.",
       "rationale": "Parallel chrome is the #1 source of inconsistency and responsive/a11y bugs.",
-      "applies_to": ["component:card", "component:sidebar", "component:button"] },
-
-    { "id": "tokens-only", "category": "consistency", "severity": "must", "label": "Theme only through tokens — no hard-coded hex or second palette",
+      "applies_to": [
+        "component:card",
+        "component:sidebar",
+        "component:button"
+      ]
+    },
+    {
+      "id": "tokens-only",
+      "category": "consistency",
+      "severity": "must",
+      "label": "Theme only through tokens — no hard-coded hex or second palette",
       "statement": "Every colour comes from a DLS token. No hard-coded hex, no parallel palette.",
       "rationale": "Hard-coded colour drifts from the tokens and breaks recolour + theming.",
-      "applies_to": ["token:background", "token:primary", "token:muted", "token:border"] },
-
-    { "id": "one-container", "category": "consistency", "severity": "must", "label": "One container language — every panel is a real Card",
+      "applies_to": [
+        "token:background",
+        "token:primary",
+        "token:muted",
+        "token:border"
+      ]
+    },
+    {
+      "id": "one-container",
+      "category": "consistency",
+      "severity": "must",
+      "label": "One container language — every panel is a real Card",
       "statement": "Every panel is a real Card — same border, radius, padding, shadow. Do not invent bespoke boxes, and do not nest a Card in a Card.",
       "rationale": "One container language is what makes screens feel like one product.",
-      "applies_to": ["component:card"] },
-
-    { "id": "lucide-only", "category": "consistency", "severity": "must", "label": "Icons: lucide only",
+      "applies_to": [
+        "component:card"
+      ]
+    },
+    {
+      "id": "lucide-only",
+      "category": "consistency",
+      "severity": "must",
+      "label": "Icons: lucide only",
       "statement": "Use lucide-react for every icon. Do not mix a second icon set.",
       "rationale": "One icon library keeps weight, stroke, and metaphor consistent.",
-      "applies_to": ["component:button"] },
-
-    { "id": "theming", "category": "consistency", "severity": "must", "label": "Theme via ThemeProvider — light + audited dark",
+      "applies_to": [
+        "component:button"
+      ]
+    },
+    {
+      "id": "theming",
+      "category": "consistency",
+      "severity": "must",
+      "label": "Theme via ThemeProvider — light + audited dark",
       "statement": "Switch themes with the exported ThemeProvider (light + audited dark). Never hand-roll a third palette, a brand hue, or data-* dark hacks.",
       "rationale": "Both shipped themes are APCA-audited; a hand-rolled palette bypasses the audit.",
-      "applies_to": ["token:background"] },
-
-    { "id": "multi-theme-audit", "category": "consistency", "severity": "must", "label": "Dark is not invert-and-ship",
+      "applies_to": [
+        "token:background"
+      ]
+    },
+    {
+      "id": "multi-theme-audit",
+      "category": "consistency",
+      "severity": "must",
+      "label": "Dark is not invert-and-ship",
       "statement": "Audit every rendered surface×text pair in BOTH themes and keep component colours token-driven so the audit matches the render.",
       "rationale": "A component that hardcodes text-white passes the token audit while rendering unreadable.",
-      "applies_to": ["token:destructive", "token:border", "token:muted"] },
-
-    { "id": "one-primary", "category": "interaction", "severity": "should", "label": "One primary action per view",
+      "applies_to": [
+        "token:destructive",
+        "token:border",
+        "token:muted"
+      ]
+    },
+    {
+      "id": "one-primary",
+      "category": "interaction",
+      "severity": "should",
+      "label": "One primary action per view",
       "statement": "Each view/major section has exactly one primary (filled) action. Everything else is outline/ghost/secondary.",
       "rationale": "Competing primaries destroy the visual hierarchy that tells users what to do.",
-      "applies_to": ["component:button"] },
-
-    { "id": "destructive-confirm", "category": "interaction", "severity": "must", "label": "Destructive actions confirm + use the destructive variant",
+      "applies_to": [
+        "component:button"
+      ]
+    },
+    {
+      "id": "destructive-confirm",
+      "category": "interaction",
+      "severity": "must",
+      "label": "Destructive actions confirm + use the destructive variant",
       "statement": "An irreversible action must use the destructive button variant AND require confirmation via AlertDialog before it runs.",
       "rationale": "Undo-less loss demands a deliberate second step and an unmistakable colour.",
-      "applies_to": ["component:alert-dialog", "component:button"] },
-
-    { "id": "loading-state", "category": "interaction", "severity": "should", "label": "Async work shows a loading state",
+      "applies_to": [
+        "component:alert-dialog",
+        "component:button"
+      ]
+    },
+    {
+      "id": "loading-state",
+      "category": "completeness",
+      "severity": "should",
+      "label": "Async work shows a loading state",
       "statement": "An async action shows a loading state (Spinner in the trigger; Skeleton for content) and disables re-entry — never a dead click.",
       "rationale": "Silent latency reads as a broken UI and causes double-submits.",
-      "applies_to": ["component:button", "component:spinner", "component:skeleton"] },
-
-    { "id": "empty-state", "category": "interaction", "severity": "should", "label": "Empty collections render an Empty state",
+      "applies_to": [
+        "component:button",
+        "component:spinner",
+        "component:skeleton"
+      ]
+    },
+    {
+      "id": "empty-state",
+      "category": "completeness",
+      "severity": "should",
+      "label": "Empty collections render an Empty state",
       "statement": "A collection with no items renders the Empty component (icon + message + primary next action) — not a blank area.",
       "rationale": "A blank region reads as a bug; an empty state tells the user what to do next.",
-      "applies_to": ["component:empty"] },
-
-    { "id": "menu-toggle-affordance", "category": "interaction", "severity": "must", "label": "Menu toggle shows open vs close",
+      "applies_to": [
+        "component:empty"
+      ]
+    },
+    {
+      "id": "menu-toggle-affordance",
+      "category": "interaction",
+      "severity": "must",
+      "label": "Menu toggle shows open vs close",
       "statement": "A toggle-able menu/sidebar shows a hamburger to open and an X (close) when it is open — never the open icon while already open. Reflect the state with aria-expanded and a matching label (Open menu / Close menu).",
       "rationale": "Showing only the open affordance while the menu is open leaves no clear way to close it and misreports state to assistive tech. SidebarTrigger implements this.",
-      "applies_to": ["component:sidebar", "component:button"] },
-
-    { "id": "one-spacing-scale", "category": "layout", "severity": "must", "label": "One 8px spacing scale",
+      "applies_to": [
+        "component:sidebar",
+        "component:button"
+      ]
+    },
+    {
+      "id": "one-spacing-scale",
+      "category": "layout",
+      "severity": "must",
+      "label": "One 8px spacing scale",
       "statement": "Use the 8px spacing scale via Tailwind utilities (gap-4, p-6, mt-6). No ad-hoc inline margins or off-scale pixel values.",
       "rationale": "Inconsistent gaps are the single most visible 'AI-generated' tell.",
-      "applies_to": ["radius:md"] },
-
-    { "id": "width-by-content", "category": "layout", "severity": "should", "label": "Cap width by content type",
+      "applies_to": [
+        "radius:md"
+      ]
+    },
+    {
+      "id": "width-by-content",
+      "category": "layout",
+      "severity": "should",
+      "label": "Cap width by content type",
       "statement": "A reading-width cap is for long-form prose only. App/component layouts get a generous responsive cap (max-w-7xl) or go fluid; cap only the prose inside.",
       "rationale": "A reading cap on an app wastes half a large monitor in empty gutters.",
-      "applies_to": [] },
-
-    { "id": "keep-tokens-alive", "category": "implementation", "severity": "should", "label": "Reading a @theme token at runtime? Keep it alive",
+      "applies_to": []
+    },
+    {
+      "id": "keep-tokens-alive",
+      "category": "implementation",
+      "severity": "should",
+      "label": "Reading a @theme token at runtime? Keep it alive",
       "statement": "Tailwind v4 tree-shakes unused ramp vars. If you read var(--color-<ramp>-<step>) at runtime, safelist the ramp utilities; otherwise prefer the always-live semantic tokens.",
       "rationale": "An un-referenced ramp var is absent from :root and paints blank.",
-      "applies_to": ["token:accent", "token:destructive", "token:success"] },
-
-    { "id": "scan-what-you-render", "category": "implementation", "severity": "should", "label": "Tailwind only keeps classes it can SEE",
+      "applies_to": [
+        "token:accent",
+        "token:destructive",
+        "token:success"
+      ]
+    },
+    {
+      "id": "scan-what-you-render",
+      "category": "implementation",
+      "severity": "should",
+      "label": "Tailwind only keeps classes it can SEE",
       "statement": "@source every folder you render. An arbitrary value (h-[250px]) used in exactly one place is the canary — if it does nothing, the folder was never scanned.",
       "rationale": "A class in an un-scanned folder is never generated at all.",
-      "applies_to": ["component:chart", "component:card"] },
-
-    { "id": "fixed-vs-theme-color", "category": "implementation", "severity": "must", "label": "Brand marks need a FIXED ground",
+      "applies_to": [
+        "component:chart",
+        "component:card"
+      ]
+    },
+    {
+      "id": "fixed-vs-theme-color",
+      "category": "implementation",
+      "severity": "must",
+      "label": "Brand marks need a FIXED ground",
       "statement": "Demo the logo on a fixed ground (bg-white / bg-neutral-950), never a theme token. In-app marks must be theme-adaptive (.dark swap or currentColor).",
       "rationale": "The white logo on bg-foreground vanishes in dark (foreground flips near-white).",
-      "applies_to": ["component-2one:logo"] },
-
-    { "id": "destructive-intent", "category": "interaction", "severity": "must", "label": "Destructive styling requires destructive intent",
+      "applies_to": [
+        "component-2one:logo"
+      ]
+    },
+    {
+      "id": "destructive-intent",
+      "category": "interaction",
+      "severity": "must",
+      "label": "Destructive styling requires destructive intent",
       "statement": "Reserve destructive styling (the danger colour) for actions that delete or irreversibly change data. Never use destructive styling for ordinary navigation or non-destructive actions.",
       "rationale": "Destructive colour is a warning; spending it on navigation trains users to ignore it and misreads risk.",
-      "applies_to": ["component:button"] },
-    { "id": "tooltip-not-essential", "category": "accessibility", "severity": "must", "label": "Never put essential information only in a Tooltip",
+      "applies_to": [
+        "component:button"
+      ]
+    },
+    {
+      "id": "tooltip-not-essential",
+      "category": "accessibility",
+      "severity": "must",
+      "label": "Never put essential information only in a Tooltip",
       "statement": "Tooltips are supplementary. Any information the user MUST perceive to succeed (required, error, or instruction) must be visible without hover or focus discovery — not tooltip-only.",
       "rationale": "Tooltips are unreachable on touch and are skipped by many assistive contexts; essential info behind one is lost.",
-      "applies_to": ["component:tooltip"] },
-    { "id": "mobile-sheet-over-dialog", "category": "interaction", "severity": "should", "label": "Prefer a Sheet over a Dialog on mobile",
+      "applies_to": [
+        "component:tooltip"
+      ]
+    },
+    {
+      "id": "mobile-sheet-over-dialog",
+      "category": "interaction",
+      "severity": "should",
+      "label": "Prefer a Sheet over a Dialog on mobile",
       "statement": "On mobile (useIsMobile), present a Dialog's content as a Sheet. Render the trigger at every width; switch the presentation, not the availability.",
       "rationale": "A desktop-sized Dialog is cramped or unreachable on mobile; the Sheet is the reachable equivalent (docs/building-with-the-dls.md §19).",
-      "applies_to": ["component:dialog", "component:sheet"] },
-
-    { "id": "filter-select-all", "category": "interaction", "severity": "should", "label": "Filters offer Select all + Deselect all",
+      "applies_to": [
+        "component:dialog",
+        "component:sheet"
+      ]
+    },
+    {
+      "id": "filter-select-all",
+      "category": "interaction",
+      "severity": "should",
+      "label": "Filters offer Select all + Deselect all",
       "statement": "Any multi-select filter (a set of toggleable options that includes/excludes items) must provide Select all and Deselect all (or Clear) controls, so the whole set can be reset in one action instead of toggling every option by hand.",
       "rationale": "Toggling a long filter option-by-option to include everything or start from empty is slow and error-prone; a bulk Select all / Deselect all is the expected, faster affordance and keeps every 2one filter consistent.",
-      "applies_to": ["component:checkbox", "component:toggle-group"] },
-
-    { "id": "no-hardcoded-ui-data", "category": "consistency", "severity": "must", "label": "UI counts and lists are generated, not hand-typed",
+      "applies_to": [
+        "component:checkbox",
+        "component:toggle-group"
+      ]
+    },
+    {
+      "id": "no-hardcoded-ui-data",
+      "category": "consistency",
+      "severity": "must",
+      "label": "UI counts and lists are generated, not hand-typed",
       "statement": "Any count, badge number, or list shown in the UI derives from the generated source (manifest.json / graph.json) — never a hand-typed literal.",
       "rationale": "Hand-typed numbers drift the moment the repo grows — a nav badge read 198 while the graph held 213. Deriving from source keeps the UI honest by construction (docs/building-with-the-dls.md §20).",
-      "applies_to": [] },
-
-    { "id": "mono-for-code-only", "category": "consistency", "severity": "should", "label": "Monospace is for code, not chrome",
+      "applies_to": []
+    },
+    {
+      "id": "mono-for-code-only",
+      "category": "consistency",
+      "severity": "should",
+      "label": "Monospace is for code, not chrome",
       "statement": "Use the mono font only for code blocks and literal commands/paths. Product chrome, labels and prose use the UI font (Inter/Satoshi).",
       "rationale": "Monospace in chrome reads as a developer sampler, not a product, and undercuts the SaaS feel (docs/building-with-the-dls.md §21).",
-      "applies_to": [] },
-
-    { "id": "pages-over-scroll", "category": "layout", "severity": "should", "label": "Split a product into destination pages",
+      "applies_to": []
+    },
+    {
+      "id": "pages-over-scroll",
+      "category": "layout",
+      "severity": "should",
+      "label": "Split a product into destination pages",
       "statement": "A product is a set of destination pages (Dashboard, Components, Guide, Graph), not one endless scroll. Keep the global menu short and destination-oriented; deep section lists live on the page, not in the sidebar.",
       "rationale": "One long everything-page is a sampler, not a product — it buries the hierarchy and the way around (docs/building-with-the-dls.md §22).",
-      "applies_to": [] },
-
-    { "id": "content-page-chrome", "category": "layout", "severity": "should", "label": "Content pages: header + breadcrumb, not the app menu",
+      "applies_to": []
+    },
+    {
+      "id": "content-page-chrome",
+      "category": "layout",
+      "severity": "should",
+      "label": "Content pages: header + breadcrumb, not the app menu",
       "statement": "A content/reading page (an explainer, an article) uses a simple header with a clickable logo and a breadcrumb back to the dashboard — not the full app sidebar. Every page has an obvious way home.",
       "rationale": "The app menu on a reading page is noise; a breadcrumb + logo is the clearer, product-standard way back (docs/building-with-the-dls.md §22).",
-      "applies_to": ["component:sidebar", "component:breadcrumb"] },
-
-    { "id": "one-system-all-surfaces", "category": "consistency", "severity": "must", "label": "One system across every surface — even bespoke ones",
+      "applies_to": [
+        "component:sidebar",
+        "component:breadcrumb"
+      ]
+    },
+    {
+      "id": "one-system-all-surfaces",
+      "category": "consistency",
+      "severity": "must",
+      "label": "One system across every surface — even bespoke ones",
       "statement": "Every surface shares the logo, fonts, tokens and theme — including surfaces that cannot be a component shell (e.g. a data-viz canvas). A page that opts out of the shell still opts into the system.",
       "rationale": "A single off-system page (different fonts, no logo, its own palette) breaks the 'one product' feel more than any missing feature (docs/building-with-the-dls.md §23).",
-      "applies_to": ["component-2one:logo"] }
+      "applies_to": [
+        "component-2one:logo"
+      ]
+    },
+    {
+      "id": "error-state",
+      "category": "completeness",
+      "severity": "must",
+      "label": "Async work has a visible failure path",
+      "statement": "Any surface that loads data renders an explicit error state — a message saying what failed and an action to retry. A failed fetch must never leave the loading state up or fall through to the empty state.",
+      "rationale": "Loading and empty are the two states everyone draws; error is the one everyone omits, and it is the state the user is most likely to be stuck in. Falling through to \"empty\" tells them there is no data when in fact the request failed.",
+      "applies_to": [
+        "component:alert",
+        "component:empty",
+        "state:error"
+      ]
+    },
+    {
+      "id": "interactive-states",
+      "category": "completeness",
+      "severity": "must",
+      "label": "Every control defines hover, focus, active and disabled",
+      "statement": "A hand-rolled interactive element (a div or span with onClick, a bare <button>) must define hover, focus-visible, active and disabled treatments. Reaching for the library Button instead is always the better answer, because it carries all four already.",
+      "rationale": "A draft that shows only the resting state is not a specification — a developer has to invent the other four, which is exactly the drift the system exists to prevent.",
+      "applies_to": [
+        "@interactive",
+        "state:hover",
+        "state:focus",
+        "state:active",
+        "state:disabled"
+      ]
+    },
+    {
+      "id": "both-themes",
+      "category": "completeness",
+      "severity": "must",
+      "label": "A draft is delivered in both themes",
+      "statement": "Every screen in a draft is rendered and reviewed in light AND dark. Dark is not invert-and-ship: re-audit every rendered pair, and keep component colours token-driven so the audit matches the render.",
+      "rationale": "Both themes ship and both are audited, so a draft covering one is half a specification. Advisory here by nature — whether a screen was rendered twice is a property of the delivered set, not of any one file, and belongs to a draft-level audit.",
+      "applies_to": [
+        "token:background",
+        "token:foreground",
+        "token:card"
+      ]
+    },
+    {
+      "id": "chart-baseline",
+      "category": "data-integrity",
+      "severity": "must",
+      "label": "Value axes start at zero",
+      "statement": "Bar and area charts begin the value axis at zero. A truncated axis is permissible only on a line chart showing rate of change, and only with the truncation labelled.",
+      "rationale": "Bar length and area encode magnitude, so a truncated baseline exaggerates differences — the most common way a chart tells a lie its author did not intend. In a draft full of invented data this teaches a false story to everyone who reviews it.",
+      "applies_to": [
+        "component:chart",
+        "token:chart-1"
+      ]
+    },
+    {
+      "id": "tabular-numerics",
+      "category": "data-integrity",
+      "severity": "should",
+      "label": "Numbers that are compared are tabular",
+      "statement": "Figures in a column, or set side by side for comparison, use font-variant-numeric: tabular-nums so digits align.",
+      "rationale": "Proportional digits make columns ragged and defeat the comparison the table exists for. The practice is already used in the blocks; without a rule it drifts.",
+      "applies_to": [
+        "component:table",
+        "component:chart"
+      ]
+    },
+    {
+      "id": "unambiguous-formats",
+      "category": "data-integrity",
+      "severity": "must",
+      "label": "Dates, units and currency are unambiguous",
+      "statement": "Write dates as ISO (2026-03-04) or with the month named (4 Mar 2026) — never all-numeric slash form. Always show the unit and the currency.",
+      "rationale": "03/04/2026 is two different days depending on the reader, and a bare number is not a measurement. Draft data is invented, which is exactly when nobody checks the format.",
+      "applies_to": [
+        "component:table",
+        "component:chart"
+      ]
+    },
+    {
+      "id": "placeholder-marked",
+      "category": "data-integrity",
+      "severity": "must",
+      "label": "Invented data is visibly marked as placeholder",
+      "statement": "Sample content in a draft is labelled as sample — a caption, a watermark, or a banner on the screen. Never present invented figures in a way a reviewer could mistake for real.",
+      "rationale": "A draft is made of fake data by definition, and drafts get screenshotted into decks. A plausible invented number that escapes its context becomes a claim nobody meant to make. Advisory here: whether a label reads as a disclaimer is a judgement about the delivered draft, not a property of a file.",
+      "applies_to": [
+        "component:badge",
+        "component:skeleton"
+      ]
+    },
+    {
+      "id": "no-chartjunk",
+      "category": "data-integrity",
+      "severity": "should",
+      "label": "No decoration on data marks",
+      "statement": "Data marks carry no gradients, drop shadows, 3D or texture. Ink goes to data, not to ornament; grids and axes recede.",
+      "rationale": "Decoration on a mark competes with the value it encodes and, with gradients, actively distorts perceived magnitude. Advisory: distinguishing a legitimate area fill from ornament needs judgement a regex does not have.",
+      "applies_to": [
+        "component:chart",
+        "token:chart-1"
+      ]
+    }
   ]
 }

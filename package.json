@@ -2,7 +2,7 @@
   "name": "@2one/design-library",
   "version": "0.2.0",
   "type": "module",
-  "description": "2one Design Language System — shadcn/ui components re-skinned to the 2one tokens (grayscale, light + audited dark, pill buttons, Satoshi + Inter).",
+  "description": "2one Design Language System \u2014 shadcn/ui components re-skinned to the 2one tokens (grayscale, light + audited dark, pill buttons, Satoshi + Inter).",
   "license": "MIT",
   "private": true,
   "engines": {
@@ -57,16 +57,19 @@
     "check:i18n": "node scripts/check-i18n.mjs",
     "check:meta": "npm run build:meta && git diff --exit-code -- tokens integrations manifest.json graph.json CLAUDE.md GEMINI.md .cursorrules .github/copilot-instructions.md",
     "build:meta": "npm run tokens && npm run manifest && npm run graph && npm run graph:validate && npm run validate",
-    "verify": "npm run typecheck && npm run check:exports && npm run validate && npm run graph:validate && npm run graph:test && npm run check:usage && npm run check:i18n && npm run a11y && npm run check:meta && npm run test:fixture && npm run build",
+    "verify": "npm run typecheck && npm run check:exports && npm run validate && npm run graph:validate && npm run graph:test && npm run check:usage && npm run check:i18n && npm run a11y && npm run check:package && npm run check:meta && npm run evals && npm run test:fixture && npm run build",
     "graph": "node scripts/build-graph.mjs",
     "graph:validate": "node scripts/graph-validate.mjs",
     "graph:test": "node scripts/graph-decision-tests.mjs",
     "graph:decide": "node scripts/graph-decide.mjs",
     "what-uses": "node scripts/what-uses.mjs",
     "info": "node scripts/dls-info.mjs",
+    "init": "node scripts/init-payload.mjs",
     "ai-entries": "node scripts/build-ai-entries.mjs",
     "build:library": "node scripts/build-2one-library.mjs",
-    "test:fixture": "node scripts/test-fixture.mjs"
+    "test:fixture": "node scripts/test-fixture.mjs",
+    "check:package": "node scripts/check-package.mjs",
+    "evals": "node scripts/run-evals.mjs"
   },
   "peerDependencies": {
     "react": ">=18",

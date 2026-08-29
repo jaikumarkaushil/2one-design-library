@@ -45,7 +45,8 @@
     "primaryRamp": "neutral",
     "ownComponentsInUi": [
       "toolbar"
-    ]
+    ],
+    "ownComponentNodeType": "component-2one"
   },
   "identity": "dls.identity.json"
 }

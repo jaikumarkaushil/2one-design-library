@@ -20,6 +20,7 @@ const [cmd, ...rest] = process.argv.slice(2)
 const COMMANDS = {
   info: 'dls-info.mjs',
   check: 'check-usage.mjs',
+  init: 'init-payload.mjs',
 }
 
 if (!cmd || cmd === '--help' || cmd === '-h' || !COMMANDS[cmd]) {
@@ -30,6 +31,9 @@ if (!cmd || cmd === '--help' || cmd === '-h' || !COMMANDS[cmd]) {
     npx 2one info  [--json]           report the live state of this project
     npx 2one check <path> [--json]    audit code against the 2one design rules
                                       (--warnings makes warnings fail too)
+    npx 2one init  <repo> [--json]    read a design-system repo and write the
+                                      dls.config.json that makes it a payload
+                                      (--dry-run to inspect, --force to replace)
 
   Typical loop when generating UI:
     1. npx 2one info --json           learn what is installed and how to import

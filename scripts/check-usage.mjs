@@ -75,6 +75,32 @@ const ownRamps = (() => {
   } catch { return new Set() }
 })()
 
+/*
+  The names a validation colour actually appears under in code.
+
+  `rules.validationHues` names the RAMPS (danger, success). Components reach for
+  the SEMANTIC alias instead — shadcn calls the danger ramp `destructive` — so a
+  rule matching only the ramp names missed `variant="destructive"`, which is the
+  overwhelmingly common case and the one that prompted the rule.
+
+  Rather than hardcode that alias, resolve it: any semantic token whose value is
+  a colour drawn from a validation ramp is a validation token, whatever it is
+  called. A payload that names its ramp `alert` and its token `warn` is covered
+  without knowing either name in advance.
+*/
+const VALIDATION_NAMES = (() => {
+  const hues = (cfg.rules.validationHues ?? []).filter(Boolean)
+  const names = new Set(hues)
+  try {
+    const c = JSON.parse(readFileSync(join(cfg.path('out.tokens'), 'colors.json'), 'utf8'))
+    const swatches = new Set(hues.flatMap((h) => Object.values(c.ramps?.[h] ?? {})).map((v) => String(v).toLowerCase()))
+    for (const [name, value] of Object.entries(c.semantic ?? {})) {
+      if (swatches.has(String(value).toLowerCase())) names.add(name.replace(/-foreground$/, ''))
+    }
+  } catch { /* tokens unreadable — ramp names alone */ }
+  return [...names]
+})()
+
 const knownTokens = new Set()
 if (graph) {
   for (const n of graph.nodes) {
@@ -118,10 +144,78 @@ const FOREIGN_ICONS = new RegExp(
 const WORDMARK = cfg.rules.wordmark ?? cfg.name
 const SPACING_BASE = cfg.rules.spacingBase ?? 4
 
+/*
+  ---- the authored rules ----
+
+  Until now this file and rules/ux-rules.json were two disjoint vocabularies.
+  The payload authored 32 rules with ids like `no-color-alone` and severities
+  like `must`; this file carried 12 unrelated detectors with ids like
+  `color-only-state` and severities it chose itself. Nothing connected them, so
+  `check-rules` could report "32 UX rules valid" and `check` could report "no
+  violations" while 23 of those rules had no mechanism behind them at all. Both
+  greens were true and together they said nothing.
+
+  So: the AUTHORED rule is the identity, and a detector here is one
+  IMPLEMENTATION of it. Each detector declares `implements`. Severity and
+  wording then come from the payload, because how strictly a system holds its
+  own rule is the payload's call, not the engine's — and the same detector can
+  be an error for one client and a warning for another without a code change.
+
+  Two consequences worth stating:
+    - a payload that ships rules but omits one has DECLINED that rule, and its
+      detector goes quiet. Silence is now a decision someone made.
+    - a payload with no rules file at all behaves exactly as before, so this
+      lands without a flag day.
+*/
+const authored = (() => {
+  const p = cfg.rel('rules')
+  if (!p) return null
+  try {
+    const raw = JSON.parse(readFileSync(join(root, p), 'utf8'))
+    const list = Array.isArray(raw) ? raw : raw.rules
+    return Array.isArray(list) ? new Map(list.map((r) => [r.id, r])) : null
+  } catch { return null } // absent → every detector runs at its built-in severity
+})()
+
+// `may` is not in this payload's vocabulary but costs nothing to map, and a
+// payload that adds it should not have its rule silently dropped to `error`.
+const SEVERITY = { must: 'error', forbidden: 'error', should: 'warn', may: 'warn' }
+
+/*
+  Blank out comment bodies, preserving every byte offset so reported line
+  numbers still point at the real source.
+
+  Any rule that treats the PRESENCE of a string as proof of compliance has to
+  do this first. The motion rule stands down when it sees a reduced-motion
+  guard — and a file whose comment merely mentioned "prefers-reduced-motion"
+  switched it off. The eval case written to prove the rule fires disabled it in
+  its own header comment, which is as neat a demonstration of the failure as
+  could be arranged.
+*/
+/*
+  A non-colour cue that carries meaning alongside a hue.
+
+  Two rules need this and they must not drift apart. `validation-only` permits
+  danger/success for data-trend deltas as well as validation state, in both
+  cases only when the hue is PAIRED with a direction arrow, icon or text — so a
+  metric card showing −12.4% in danger beside a TrendingDown is conforming, and
+  the same card without the icon is not. `no-color-alone` asks the same
+  question. One definition, two callers.
+*/
+const SIGNAL = /aria-invalid|aria-describedby|FieldError|role=["']alert["']|Trending(?:Up|Down)|Arrow(?:Up|Down)|Chevron(?:Up|Down)/
+
+const stripComments = (s) => {
+  const blank = (t) => t.replace(/[^\n]/g, ' ')
+  return s
+    .replace(/\/\*[\s\S]*?\*\//g, blank)
+    .replace(/(^|[^:])\/\/[^\n]*/g, (m, p) => p + blank(m.slice(p.length)))
+}
+
 /** @type {{id:string,severity:'error'|'warn',test:(ctx:any)=>{line:number,detail:string}[]}[]} */
 const RULES = [
   {
     id: 'hardcoded-color',
+    implements: 'tokens-only',
     severity: 'error',
     why: 'Hard-coded colour drifts from the tokens and breaks re-theming. Use the semantic utilities (bg-primary, text-muted-foreground, border).',
     test: ({ lines }) =>
@@ -134,6 +228,7 @@ const RULES = [
   },
   {
     id: 'foreign-palette',
+    implements: 'grayscale',
     severity: 'error',
     why: `Only this system's own ramps (${[...ownRamps].join(', ') || 'none declared'}) may be used. Any other palette is a second palette by definition.`,
     test: ({ lines }) =>
@@ -145,6 +240,7 @@ const RULES = [
   },
   {
     id: 'invented-token',
+    implements: 'tokens-only',
     severity: 'error',
     why: 'This token does not exist in the system. Check graph.json or tokens/colors.json for the real name — a plausible-sounding token silently renders as nothing.',
     test: ({ lines }) => {
@@ -191,6 +287,7 @@ const RULES = [
   */
   {
     id: 'unknown-import',
+    implements: 'build-from-library',
     severity: 'error',
     why: `Imported from ${PKG_SPECIFIER ?? 'the design system package'}, which does not export it. Compose it from real primitives instead — building it locally is fine, importing something that does not exist is a build error.`,
     test: ({ src }) => {
@@ -225,6 +322,7 @@ const RULES = [
   },
   {
     id: 'foreign-icons',
+    implements: 'lucide-only',
     severity: 'error',
     why: `${OWN_ICONS} only. A second icon set is one of the most visible "AI-generated" tells.`,
     test: ({ lines }) =>
@@ -232,6 +330,7 @@ const RULES = [
   },
   {
     id: 'typeset-wordmark',
+    implements: 'logo-untouchable',
     severity: 'error',
     why: 'The wordmark is an asset, never type. Import Logo (React) or inline brand/logo/svg/*.svg.',
     test: ({ src, lines }) => {
@@ -251,6 +350,7 @@ const RULES = [
   },
   {
     id: 'placeholder-brand-mark',
+    implements: 'logo-untouchable',
     severity: 'error',
     why: `A brand slot exists (sr-only "${WORDMARK}" or aria-label) but the real mark is absent — a generic icon is standing in for the wordmark. Import the Logo component.`,
     test: ({ src, lines }) => {
@@ -264,6 +364,7 @@ const RULES = [
   },
   {
     id: 'multiple-primary-buttons',
+    implements: 'one-primary',
     severity: 'error',
     why: 'One primary action per view. Pair a secondary/outline with it for lesser actions.',
     test: ({ src }) => {
@@ -279,6 +380,7 @@ const RULES = [
   },
   {
     id: 'inline-spacing',
+    implements: 'one-spacing-scale',
     severity: 'warn',
     why: 'One 8px spacing scale via Tailwind utilities. Ad-hoc inline margins are the most visible inconsistency tell (rule 3).',
     test: ({ lines }) =>
@@ -291,6 +393,7 @@ const RULES = [
   },
   {
     id: 'off-scale-spacing',
+    implements: 'one-spacing-scale',
     severity: 'warn',
     why: `Arbitrary spacing values sit off the ${SPACING_BASE}px scale. Prefer a scale step (gap-4, p-6).`,
     test: ({ lines }) =>
@@ -302,6 +405,7 @@ const RULES = [
   },
   {
     id: 'handrolled-card',
+    implements: 'one-container',
     severity: 'warn',
     why: 'Every panel is a real Card — same border, radius, padding, shadow (rule 4). Do not build a parallel container.',
     test: ({ lines }) =>
@@ -317,13 +421,14 @@ const RULES = [
   },
   {
     id: 'color-only-state',
+    implements: 'no-color-alone',
     severity: 'warn',
     why: 'Never signal state by colour alone — pair with an icon or text, plus aria-invalid (rule 5, non-negotiable).',
     test: ({ src, lines }) => {
       // A non-colour signal can be validation semantics OR a trend direction cue
       // (arrow/chevron) — a data delta coloured success/danger beside a
       // TrendingDown/ArrowDown icon is not colour-alone (rule: validation-only).
-      const hasSignal = /aria-invalid|aria-describedby|FieldError|role=["']alert["']|Trending(?:Up|Down)|Arrow(?:Up|Down)|Chevron(?:Up|Down)/.test(src)
+      const hasSignal = SIGNAL.test(stripComments(src))
       if (hasSignal) return []
       return lines.flatMap((l, i) =>
         /\b(?:border|text|ring)-destructive\b/.test(l)
@@ -332,7 +437,318 @@ const RULES = [
       )
     },
   },
+
+  /*
+    ---- detectors added when the authored rules were wired in ----
+
+    These six implement rules that had been sitting in ux-rules.json with
+    nothing behind them. They were chosen by running the checker over an
+    app-shaped component — a subscription-tier picker for a streaming build —
+    that broke six authored rules and returned "✓ no violations". Every one of
+    them is a mistake a model makes constantly and a reviewer stops noticing.
+
+    Each is deliberately narrow. A checker that cries wolf gets switched off,
+    which costs more than the rule was worth.
+  */
+  {
+    id: 'chromatic-decoration',
+    implements: 'validation-only',
+    severity: 'error',
+    why: 'The only chromatic tokens are for validation state. Using them to decorate a badge, a tier or a category makes them stop reading as "something is wrong".',
+    test: ({ src }) => {
+      /*
+        Two things legitimately carry a validation hue: a surface REPORTING
+        state (Alert, FormMessage) and a control PERFORMING a destructive
+        action (a Delete button, a Delete menu item) — the latter is governed
+        by destructive-intent, not by this rule. Anything else wearing the
+        colour is decoration, which is what the rule forbids.
+      */
+      const VALIDATION_HOSTS = /^(?:Alert|FormMessage|FieldError|Toast|Toaster|Button)|(?:Item|Action|Trigger)$/
+      if (SIGNAL.test(stripComments(src)) || /FormMessage/.test(stripComments(src))) return []
+      if (!VALIDATION_NAMES.length) return []
+      const hue = new RegExp(`\\b(?:${VALIDATION_NAMES.join('|')})\\b`)
+      return [...src.matchAll(/<([A-Z][\w]*)\b([^>]*)>/g)]
+        .filter((m) => !VALIDATION_HOSTS.test(m[1]) && hue.test(m[2]))
+        .map((m) => ({
+          line: src.slice(0, m.index).split('\n').length,
+          detail: `<${m[1]}> is styled with a validation hue but carries no validation state`,
+        }))
+    },
+  },
+  {
+    id: 'unguarded-motion',
+    implements: 'reduced-motion',
+    severity: 'error',
+    why: 'Transform and keyframe animation must be gated on prefers-reduced-motion (Tailwind: the motion-reduce: variant). Vestibular disorders make unguarded movement genuinely painful, not merely annoying.',
+    test: ({ src, lines }) => {
+      if (/motion-reduce:|prefers-reduced-motion|useReducedMotion/.test(stripComments(src))) return []
+      /*
+        Only movement, not every transition. `transition-colors duration-150`
+        is ubiquitous, harmless, and flagging it would bury the real cases —
+        which are transforms and keyframe animations.
+      */
+      const keyframe = /\banimate-(?!none\b)[a-z0-9-]+/
+      const transform = /\b(?:transition-transform|(?:hover|focus|group-hover):(?:scale|-?translate|rotate|skew)-)/
+      return lines.flatMap((l, i) => {
+        const long = Number(l.match(/\bduration-(\d+)\b/)?.[1] ?? 0) >= 300
+        const hit = keyframe.test(l) || (transform.test(l) && long)
+        return hit ? [{ line: i + 1, detail: `${l.trim().slice(0, 70)} — no motion-reduce: variant in this file` }] : []
+      })
+    },
+  },
+  {
+    id: 'literal-content-array',
+    implements: 'no-hardcoded-ui-data',
+    severity: 'error',
+    why: 'Content belongs in data, not in the component that renders it. A literal array of records inlined next to the JSX is the single most common way generated UI ships fake product data that nobody notices until a demo.',
+    test: ({ src, file }) => {
+      if (!/<\/|\/>/.test(src)) return [] // not a view
+      /*
+        A block or page pattern is a TEMPLATE, and placeholder content is what it is for — a
+        pricing block ships three specimen tiers precisely so a consumer can
+        replace them. Run without this exemption the rule reported the payload's
+        own marketing blocks as violations, which would have taught everyone to
+        ignore it. The rule bites where it should: once that block is copied
+        into an app, it is no longer a template and the placeholder data is
+        exactly the fake product data this rule exists to catch.
+      */
+      const here = file.replace(/\\/g, '/')
+      const templateDirs = ['blocks', 'patterns'].map((k) => { try { return cfg.rel(k) } catch { return null } }).filter(Boolean)
+      if (templateDirs.some((d) => here.includes(`/${d}/`))) return []
+      const out = []
+      // Module-scope `const NAME = [{ … }]` with at least two records, whose
+      // NAME is then mapped in the JSX. Arrays of strings are config, not
+      // content, so the opening `[{` is load-bearing.
+      for (const m of src.matchAll(/^const\s+([A-Za-z_$][\w$]*)\s*(?::[^=]*)?=\s*\[\s*\{/gm)) {
+        const name = m[1]
+        let depth = 0
+        let end = m.index + m[0].lastIndexOf('[')
+        for (let i = end; i < src.length; i++) {
+          if (src[i] === '[') depth++
+          else if (src[i] === ']' && --depth === 0) { end = i; break }
+        }
+        const body = src.slice(m.index, end)
+        const records = (body.match(/\{/g) ?? []).length
+        if (records < 2) continue
+        if (!new RegExp(`\\b${name}\\s*(?:\\?\\.)?\\.map\\s*\\(`).test(src)) continue
+        out.push({
+          line: src.slice(0, m.index).split('\n').length,
+          detail: `${name} — ${records} records of UI content hardcoded in the view`,
+          name,
+        })
+      }
+      return out
+    },
+  },
+  {
+    id: 'no-empty-state',
+    implements: 'empty-state',
+    severity: 'warn',
+    why: 'A list rendered straight from .map() shows nothing at all when the collection is empty — indistinguishable from a broken page. Give it an empty state.',
+    test: ({ src, lines }) => {
+      if (/\.length\s*(?:===?|<|>|\?|&&|\|\|)|isEmpty|EmptyState|No results|\bnothing\b/i.test(stripComments(src))) return []
+      /*
+        Only OPTIONAL chains — `items?.map(...)`.
+
+        A plain `.map()` is usually over data the file itself owns: a literal
+        constant, or a field of one (`col.links`, `t.features`). Flagging those
+        produced four findings against the payload's own blocks, none of which
+        could ever render empty. The optional chain is the author stating that
+        the collection may be absent — and then rendering nothing when it is,
+        which is the actual bug this rule describes.
+
+        This misses a required-but-empty array. That is the right trade: a rule
+        with false positives gets switched off, and then it catches nothing.
+      */
+      return lines.flatMap((l, i) => {
+        const m = l.match(/([A-Za-z_$][\w$.]*)\s*\?\.map\s*\(/)
+        return m && /[<{]/.test(l) ? [{ line: i + 1, detail: `${m[1]} is mapped with no empty branch` }] : []
+      })
+    },
+  },
+  {
+    id: 'suppressed-focus-ring',
+    implements: 'focus-visible',
+    severity: 'error',
+    why: 'Removing the outline without providing a focus-visible replacement makes the UI unusable by keyboard. This is the most common accessibility regression in generated code because the outline is the first thing that looks wrong.',
+    test: ({ src, lines }) => {
+      if (/focus-visible:/.test(stripComments(src))) return []
+      return lines.flatMap((l, i) =>
+        /\boutline-none\b|\boutline:\s*none\b/.test(l)
+          ? [{ line: i + 1, detail: 'outline removed with no focus-visible: replacement in this file' }]
+          : []
+      )
+    },
+  },
+  /*
+    ---- L4: draft completeness ----
+
+    A draft's job is to specify, and a specification that shows only the happy
+    path is not one — a developer has to invent the rest, which is the drift
+    the system exists to prevent. These check that a state was DRAWN, not that
+    it looks right.
+
+    `both-themes` has no detector on purpose: whether a screen was rendered
+    twice is a property of the delivered set, not of any one file, and belongs
+    to a draft-level audit. It stays authored and advisory rather than being
+    faked with a regex that would pass on any file mentioning `dark:`.
+  */
+  {
+    id: 'no-error-state',
+    implements: 'error-state',
+    severity: 'error',
+    why: 'A surface that loads data must render an explicit failure path. Loading and empty get drawn; error is the one that gets omitted, and it is the state the user is most likely to be stuck in.',
+    test: ({ src, lines }) => {
+      const code = stripComments(src)
+      // Only surfaces that actually load something.
+      const loads = /use(?:Query|SWR|Suspense|Fetch)\b|\bfetch\s*\(|\bawait\s|\.then\s*\(/.test(code)
+      if (!loads) return []
+      if (/isError|hasError|\berror\b|onError|catch\s*[({]|ErrorBoundary|<Alert/.test(code)) return []
+      const at = lines.findIndex((l) => /use(?:Query|SWR|Suspense|Fetch)\b|\bfetch\s*\(|\bawait\s/.test(l))
+      return [{ line: at + 1, detail: 'loads data but renders no error state — a failure falls through to loading or empty' }]
+    },
+  },
+  {
+    id: 'handrolled-control',
+    implements: 'interactive-states',
+    severity: 'error',
+    why: 'A hand-rolled control must define hover, focus-visible, active and disabled. Using the library Button is always the better answer — it carries all four already.',
+    test: ({ src }) => {
+      const code = stripComments(src)
+      const out = []
+      /*
+        Only HAND-ROLLED controls. The library Button carries all four states
+        internally, so checking every <Button> would report the system against
+        itself. What this catches is the div-with-onClick and the bare
+        <button> — the two shapes that ship with a resting state and nothing
+        else.
+      */
+      for (const m of code.matchAll(/<(button|div|span|li)\b([^>]*)>/g)) {
+        const attrs = m[2]
+        const clickable = m[1] === 'button' || /\bonClick\s*=/.test(attrs)
+        if (!clickable) return out
+        const missing = ['hover:', 'focus-visible:', 'active:', 'disabled'].filter((s) => !attrs.includes(s))
+        if (missing.length < 2) continue
+        out.push({
+          line: code.slice(0, m.index).split('\n').length,
+          detail: `hand-rolled <${m[1]}> control missing ${missing.join(', ')} — use the library Button`,
+        })
+      }
+      return out
+    },
+  },
+
+  /*
+    ---- L5: data-display integrity ----
+
+    A draft is made of invented data, and drafts get screenshotted into decks.
+    That makes truthfulness of the display a first-order concern here in a way
+    it is not for a component library — which is why `data-integrity` sits
+    directly after accessibility in the precedence order.
+
+    `placeholder-marked` and `no-chartjunk` are authored without detectors.
+    Whether a caption reads as a disclaimer, and whether an area fill is
+    ornament or encoding, are judgements a regex does not have; asserting them
+    mechanically would produce exactly the noise that gets a checker disabled.
+  */
+  {
+    id: 'truncated-axis',
+    implements: 'chart-baseline',
+    severity: 'error',
+    why: 'Bar length and area encode magnitude, so a value axis that does not start at zero exaggerates differences — the most common way a chart lies without its author intending it.',
+    test: ({ src, lines }) => {
+      const code = stripComments(src)
+      if (!/<(?:Bar|Area)\b/.test(code)) return [] // line charts may legitimately truncate
+      return lines.flatMap((l, i) => {
+        const m = l.match(/domain=\{\[\s*([^,\]]+)/)
+        if (!m) return []
+        const low = m[1].trim().replace(/['"]/g, '')
+        return low === '0' || low === 'dataMin' ? [] : [{ line: i + 1, detail: `bar/area chart with value axis starting at ${low}, not 0` }]
+      })
+    },
+  },
+  {
+    id: 'ambiguous-date',
+    implements: 'unambiguous-formats',
+    severity: 'error',
+    why: 'An all-numeric slash date is two different days depending on the reader. Use ISO (2026-03-04) or name the month (4 Mar 2026).',
+    test: ({ src }) => {
+      /*
+        A date sits inside a sentence — "Renews 03/04/2026" — so requiring it
+        to be flush against the quote or tag missed every real one. Match it
+        anywhere, and exclude what else uses slashes: import paths and URLs by
+        line, and path segments by the leading lookbehind. Aspect ratios and
+        fractions (16/9, w-1/2) have only two parts and never match.
+      */
+      return stripComments(src).split('\n').flatMap((l, i) => {
+        if (/\bfrom\s+['"]|https?:|:\/\//.test(l)) return []
+        return [...l.matchAll(/(?<![\w/.])(\d{1,2}\/\d{1,2}\/\d{2,4})(?![\w/])/g)].map((m) => ({
+          line: i + 1,
+          detail: `"${m[1]}" is ambiguous — day/month order is reader-dependent`,
+        }))
+      })
+    },
+  },
+  {
+    id: 'proportional-figures',
+    implements: 'tabular-numerics',
+    severity: 'warn',
+    why: 'Figures set in a column need tabular-nums, or proportional digits make the column ragged and defeat the comparison the table exists for.',
+    test: ({ src, lines }) => {
+      const code = stripComments(src)
+      if (/tabular-nums|tabular_nums/.test(code)) return []
+      if (!/<(?:TableCell|td)\b/.test(code)) return []
+      const at = lines.findIndex((l) => /<(?:TableCell|td)\b/.test(l))
+      return [{ line: at + 1, detail: 'table of figures with no tabular-nums — digits will not align down the column' }]
+    },
+  },
+  {
+    id: 'mono-outside-code',
+    implements: 'mono-for-code-only',
+    severity: 'warn',
+    why: 'The monospace face is reserved for code, keys and identifiers. Used for body copy or numbers it reads as a terminal, not as this system.',
+    test: ({ src, lines }) => {
+      if (/<(?:code|pre|kbd)\b|<Code\b|<Kbd\b/.test(stripComments(src))) return []
+      return lines.flatMap((l, i) =>
+        /\bfont-mono\b/.test(l) ? [{ line: i + 1, detail: 'font-mono with no code element in this file' }] : []
+      )
+    },
+  },
 ]
+
+/*
+  ---- resolve each detector against the payload ----
+
+  Severity and prose come from the authored rule where there is one. A detector
+  whose rule the payload does not carry is dropped: shipping a rules file and
+  leaving a rule out of it is how a payload declines that rule.
+*/
+const ACTIVE = RULES.map((r) => {
+  const a = authored?.get(r.implements)
+  if (authored && !a) return null
+  if (!a) return r
+  return {
+    ...r,
+    severity: SEVERITY[a.severity] ?? r.severity,
+    label: a.label,
+    why: [a.statement, a.rationale].filter(Boolean).join(' '),
+  }
+}).filter(Boolean)
+
+/*
+  ---- coverage ----
+
+  The number that was missing. "✓ no violations" is only meaningful alongside
+  how many of the system's rules could have produced one; without it a clean
+  run reads as "this conforms" when it means "none of the rules I can check
+  were broken". Reporting the uncovered rules turns the advisory ones from
+  invisible into merely unenforced, which is a different and honest claim.
+*/
+const covered = new Set(ACTIVE.map((r) => r.implements).filter(Boolean))
+const uncovered = authored ? [...authored.values()].filter((r) => !covered.has(r.id)) : []
+const coverage = authored
+  ? { total: authored.size, checked: covered.size, advisory: uncovered.map((r) => ({ id: r.id, severity: r.severity, label: r.label })) }
+  : null
 
 // ---- collect files ----
 const CODE = new Set(['.tsx', '.jsx', '.ts', '.js', '.html'])
@@ -382,12 +798,15 @@ const findings = []
 for (const file of files) {
   const src = readFileSync(file, 'utf8')
   const lines = src.split('\n')
-  for (const rule of RULES) {
-    for (const hit of rule.test({ src, lines })) {
+  for (const rule of ACTIVE) {
+    for (const hit of rule.test({ src, lines, file })) {
       findings.push({
         file: relative(root, file).replace(/\\/g, '/'),
         line: hit.line,
         rule: rule.id,
+        // The authored rule this detector enforces — the id a payload author,
+        // the graph and graph-decide all know it by.
+        enforces: rule.implements ?? null,
         severity: rule.severity,
         detail: hit.detail,
         why: rule.why,
@@ -400,11 +819,14 @@ const errors = findings.filter((f) => f.severity === 'error')
 const warns = findings.filter((f) => f.severity === 'warn')
 
 if (asJson) {
-  console.log(JSON.stringify({ scanned: files.length, errors: errors.length, warnings: warns.length, findings }, null, 2))
+  console.log(JSON.stringify({ scanned: files.length, errors: errors.length, warnings: warns.length, coverage, findings }, null, 2))
 } else {
-  console.log(`\n  check-usage — ${files.length} file(s) scanned against the ${cfg.name} rules\n`)
+  const scope = coverage ? `${coverage.checked} of ${coverage.total} ${cfg.name} rules` : `the ${cfg.name} rules`
+  console.log(`\n  check-usage — ${files.length} file(s) scanned against ${scope}\n`)
   if (!findings.length) {
-    console.log('  ✓ no violations\n')
+    // Never "✓ no violations" unqualified — that is the sentence that made an
+    // inert rule look like a passing one for weeks.
+    console.log(coverage ? `  ✓ no violations of the ${coverage.checked} checkable rules\n` : '  ✓ no violations\n')
   } else {
     let current = ''
     for (const f of [...errors, ...warns]) {
@@ -417,6 +839,16 @@ if (asJson) {
       console.log(`                 ${f.why}`)
     }
     console.log(`\n  ${errors.length} error(s), ${warns.length} warning(s)\n`)
+  }
+
+  if (coverage?.advisory.length) {
+    const musts = coverage.advisory.filter((r) => r.severity === 'must' || r.severity === 'forbidden')
+    console.log(
+      `  ${coverage.advisory.length} rule(s) are ADVISORY — written in ${cfg.rel('rules')} but not mechanically checked` +
+        (musts.length ? `, ${musts.length} of them "must"` : '') + '.',
+    )
+    if (args.includes('--coverage')) for (const r of coverage.advisory) console.log(`    · ${r.id.padEnd(26)} ${r.severity.padEnd(9)} ${r.label}`)
+    else console.log('  Re-run with --coverage to list them. A clean run does not mean these hold.\n')
   }
 }
 

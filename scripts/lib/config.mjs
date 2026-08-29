@@ -45,9 +45,27 @@ const DEFAULTS = {
     barrel: 'src/index.ts',
     brand: { structured: 'brand/brand.json', prose: 'brand/BRAND.md', logo: 'brand/logo' },
     out: { tokens: 'tokens', manifest: 'manifest.json', graph: 'graph.json', dtcg: 'tokens/tokens.dtcg.json' },
+    /*
+      The AUTHORED layer — the part of the system a person writes rather than
+      the engine derives. All three are optional: a payload with tokens and
+      components but no authored rules still produces a valid derived graph,
+      it just cannot answer "what should I build". Treating them as required
+      would make the minimum viable payload much larger than it needs to be.
+    */
+    schemas: 'schema',
+    rules: 'rules/ux-rules.json',
+    ontology: 'graph/ontology.json',
+    decisions: 'graph/decisions.json',
   },
   rules: {
     wordmark: null,
+    /*
+      The ramp every neutral surface is built from. 2one calls it `neutral`;
+      a payload may call it `slate`, `gray`, `sand`. Hardcoding the name made
+      validate report "neutral ramp missing" against a payload whose ramp was
+      simply named something else.
+    */
+    neutralRamp: 'neutral',
     iconLibrary: 'lucide-react',
     iconLibraryLabel: 'lucide',
     spacingBase: 4,

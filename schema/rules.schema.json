@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/yokesh-2one/2one-design-library/schema/rules.schema.json",
+  "title": "UX rules contract",
+  "description": "The authored rule layer. A payload writes these; the engine implements detectors against them and takes severity and wording from here. The lifecycle fields (since / deprecated / superseded_by) and the deprecations ledger are what make a rule set safe to change: check-rules-compat reads them to tell a real revision from a silent one.",
+  "type": "object",
+  "required": ["version", "severity_levels", "precedence", "rules"],
+  "additionalProperties": true,
+  "properties": {
+    "name": { "type": "string" },
+    "purpose": { "type": "string" },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semver for the contract itself. MUST be raised whenever a rule is removed, re-categorised, or has its severity changed — check-rules-compat fails the build otherwise."
+    },
+    "severity_levels": {
+      "type": "object",
+      "description": "The severity vocabulary this payload uses, each mapped to what a violation means. The engine maps must/forbidden to error and should/may to warning.",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string" }
+    },
+    "precedence": {
+      "type": "object",
+      "required": ["order"],
+      "properties": {
+        "order": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "Categories, most-wins-first. When two rules conflict the earlier category wins."
+        },
+        "note": { "type": "string" }
+      }
+    },
+    "target_macros": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/rule" }
+    },
+    "deprecations": {
+      "type": "array",
+      "description": "The ledger of rules that once existed and no longer do. A removal is legal only if it is recorded here — otherwise a rule can vanish and every consumer's check simply stops testing for it, with nothing to notice.",
+      "items": {
+        "type": "object",
+        "required": ["id", "since", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "description": "The id of the rule that was removed." },
+          "since": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "Contract version in which it was removed." },
+          "superseded_by": { "type": "string", "description": "The rule id that now covers this ground, if any." },
+          "reason": { "type": "string", "description": "Why it went. A removal with no reason is indistinguishable from an accident." }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "rule": {
+      "type": "object",
+      "required": ["id", "category", "severity", "label", "statement", "rationale", "applies_to"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Stable identifier. Renaming one is a removal plus an addition — record it in deprecations." },
+        "category": { "type": "string", "description": "Must appear in precedence.order." },
+        "severity": { "type": "string", "description": "Must be a key of severity_levels." },
+        "label": { "type": "string", "description": "Short human name, shown in reports." },
+        "statement": { "type": "string", "minLength": 20, "description": "What to do, in the imperative. This is the text an agent reads." },
+        "rationale": { "type": "string", "minLength": 20, "description": "Why. Without it the rule cannot be argued with, only obeyed or ignored." },
+        "applies_to": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Graph node ids, or a macro from target_macros. Validated against graph.json as a typo guard."
+        },
+        "since": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "Contract version this rule was introduced in." },
+        "deprecated": { "type": "boolean", "description": "Still published and still checked, but on its way out. Prefer superseded_by so readers know where to go." },
+        "superseded_by": { "type": "string", "description": "The rule id that replaces this one." }
+      }
+    }
+  }
+}

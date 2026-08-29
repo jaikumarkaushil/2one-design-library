@@ -21,6 +21,7 @@ const COMMANDS = {
   info: 'dls-info.mjs',
   check: 'check-usage.mjs',
   init: 'init-payload.mjs',
+  promote: 'promote-component.mjs',
 }
 
 if (!cmd || cmd === '--help' || cmd === '-h' || !COMMANDS[cmd]) {
@@ -34,6 +35,9 @@ if (!cmd || cmd === '--help' || cmd === '-h' || !COMMANDS[cmd]) {
     npx 2one init  <repo> [--json]    read a design-system repo and write the
                                       dls.config.json that makes it a payload
                                       (--dry-run to inspect, --force to replace)
+    npx 2one promote <file>           take a component built in a project and
+                                      move it into the design system itself
+                                      (refuses unless it passes every rule)
 
   Typical loop when generating UI:
     1. npx 2one info --json           learn what is installed and how to import

@@ -36,6 +36,7 @@
       "alert",
       "ok"
     ],
-    "signature": "Acme buttons are square."
+    "signature": "Acme buttons are square.",
+    "neutralRamp": "slate"
   }
 }

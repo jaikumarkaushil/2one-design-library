@@ -31,12 +31,22 @@ const J = (p) => JSON.parse(R(p))
 const ls = (rel, f = () => true) => existsSync(join(root, rel)) ? readdirSync(join(root, rel)).filter(f) : []
 const baseName = (f) => f.replace(/\.[^.]+$/, '')
 
-const ontology = J('graph/ontology.json')
-const decisions = J('graph/decisions.json')
+/*
+  The authored layer is optional. A payload with tokens and components but no
+  rules/ontology still yields a valid DERIVED graph — it simply cannot answer
+  "what should I build". Reading these unconditionally made build-graph crash
+  on any payload that had not authored them yet, which is every payload on day
+  one.
+*/
+const optional = (key, fallback) => {
+  try { return J(cfg.rel(key)) } catch { return fallback }
+}
+const ontology = optional('ontology', { node_classes: {} })
+const decisions = optional('decisions', {})
 
 // ---- ontology helpers: node type -> class, and the authored type set ----
 const TYPE_CLASS = {}
-for (const [cls, def] of Object.entries(ontology.node_classes)) for (const t of def.node_types) TYPE_CLASS[t] = cls
+for (const [cls, def] of Object.entries(ontology.node_classes ?? {})) for (const t of def.node_types ?? []) TYPE_CLASS[t] = cls
 const classOf = (type) => TYPE_CLASS[type] || 'Unknown'
 const AUTHORED_TYPES = new Set(['rule', 'brand', 'persona', 'intent', 'context', 'state', 'a11y', 'pattern', 'variant', 'ai-component'])
 const provOfType = (type) => (AUTHORED_TYPES.has(type) ? 'explicit' : 'derived')
@@ -51,10 +61,10 @@ const addEdge = (source, target, type, prov = 'derived', extra = {}) => {
   if (nodes.has(source) && nodes.has(target)) edges.push({ source, target, type, prov, ...extra })
 }
 
-const colors = J('tokens/colors.json')
-const type = J('tokens/typography.json')
-const space = J('tokens/spacing.json')
-const brand = J('brand/brand.json')
+const colors = J(`${cfg.rel('out.tokens')}/colors.json`)
+const type = J(`${cfg.rel('out.tokens')}/typography.json`)
+const space = J(`${cfg.rel('out.tokens')}/spacing.json`)
+const brand = J(cfg.rel('brand.structured'))
 
 // ================= DERIVED LAYER =================
 
@@ -73,12 +83,19 @@ for (const k of SEMANTIC) { const r = hexToRamp[(colors.semantic[k] || '').toLow
 
 // ---- COMPONENT nodes + composed_of edges (parse the source for token classes) ----
 const titleize = (s) => s.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join('')
+/*
+  The own-component node type is payload-named. 2one's graph ids are
+  `component-2one:<name>`, and consumers key on that prefix, so it cannot
+  simply be renamed. It is config-driven instead: 2one pins the existing
+  value, any other payload gets a neutral `component-own`.
+*/
+const OWN_TYPE = cfg.rules.ownComponentNodeType ?? 'component-own'
 const componentFiles = [
-  ...ls('src/components/ui', (f) => f.endsWith('.tsx')).map((f) => ['component', 'src/components/ui/' + f, baseName(f)]),
-  ...ls('src/components', (f) => f.endsWith('.tsx')).map((f) => ['component-2one', 'src/components/' + f, baseName(f)]),
+  ...ls(cfg.rel('components'), (f) => f.endsWith('.tsx')).map((f) => ['component', `${cfg.rel('components')}/${f}`, baseName(f)]),
+  ...ls(cfg.rel('ownComponents'), (f) => f.endsWith('.tsx')).map((f) => [OWN_TYPE, `${cfg.rel('ownComponents')}/${f}`, baseName(f)]),
 ]
 const kindByName = new Map(componentFiles.map(([kind, , name]) => [name, kind]))
-const compId = (name) => `${kindByName.get(name) === 'component-2one' ? 'component-2one' : 'component'}:${name}`
+const compId = (name) => `${kindByName.get(name) === OWN_TYPE ? OWN_TYPE : 'component'}:${name}`
 for (const [kind, path, name] of componentFiles) addNode(compId(name), kind, titleize(name), { path })
 
 const utilRe = (tok) => new RegExp(`\\b(?:bg|text|border|ring|fill|stroke|from|to|via|outline|placeholder|divide|caret|decoration|shadow)-${tok}(?:/\\d+)?\\b`)
@@ -89,7 +106,10 @@ for (const [, path, name] of componentFiles) {
   for (const k of Object.keys(space.radius)) if (new RegExp(`\\brounded-${k}\\b`).test(src)) addEdge(compId(name), `radius:${k}`, 'composed_of', 'derived')
   for (const k of Object.keys(type.scale)) if (new RegExp(`\\btext-${k}\\b`).test(src)) addEdge(compId(name), `type:${k}`, 'composed_of', 'derived')
 }
-// Button is a pill via the globals.css [data-slot=button] override, not its own class
+// Payload-specific: 2one's button is a pill via a [data-slot=button] override
+// rather than its own class, so the edge cannot be parsed out of the source.
+// addEdge is a no-op when either node is absent, so a payload without a
+// `button` component or a `full` radius simply skips it.
 addEdge('component:button', 'radius:full', 'composed_of', 'derived')
 
 // ---- component → component composition (parse imports of @/components/...) ----
@@ -132,17 +152,17 @@ const addTemplate = (id, label, ttype, files) => {
   for (const f of files) for (const c of importedComponents(R(f))) used.add(c)
   for (const c of used) if (nodes.has(compId(c))) addEdge(id, compId(c), 'uses', 'derived')
 }
-for (const f of ls('src/blocks', (f) => f.endsWith('.tsx'))) addTemplate(`block:${baseName(f)}`, baseName(f), 'template-block', ['src/blocks/' + f])
-if (existsSync(join(root, 'src/blocks/dashboard-plain')))
-  addTemplate('block:dashboard-plain', 'dashboard-plain', 'template-block', ls('src/blocks/dashboard-plain', (f) => f.endsWith('.tsx')).map((f) => 'src/blocks/dashboard-plain/' + f))
-for (const f of ls('src/blocks/marketing', (f) => f.endsWith('.tsx'))) addTemplate(`block:marketing-${baseName(f)}`, `marketing/${baseName(f)}`, 'template-block', ['src/blocks/marketing/' + f])
-for (const f of ls('src/blocks/charts', (f) => f.endsWith('.tsx'))) addTemplate(`chart:${baseName(f)}`, baseName(f), 'template-chart', ['src/blocks/charts/' + f])
+for (const f of ls(cfg.rel('blocks'), (f) => f.endsWith('.tsx'))) addTemplate(`block:${baseName(f)}`, baseName(f), 'template-block', [`${cfg.rel('blocks')}/${f}`])
+if (existsSync(join(root, `${cfg.rel('blocks')}/dashboard-plain`)))
+  addTemplate('block:dashboard-plain', 'dashboard-plain', 'template-block', ls(`${cfg.rel('blocks')}/dashboard-plain`, (f) => f.endsWith('.tsx')).map((f) => `${cfg.rel('blocks')}/dashboard-plain/${f}`))
+for (const f of ls(`${cfg.rel('blocks')}/marketing`, (f) => f.endsWith('.tsx'))) addTemplate(`block:marketing-${baseName(f)}`, `marketing/${baseName(f)}`, 'template-block', [`${cfg.rel('blocks')}/marketing/${f}`])
+for (const f of ls(`${cfg.rel('blocks')}/charts`, (f) => f.endsWith('.tsx'))) addTemplate(`chart:${baseName(f)}`, baseName(f), 'template-chart', [`${cfg.rel('blocks')}/charts/${f}`])
 
 // ---- RULE nodes from the authoritative contract rules/ux-rules.json ----
 // Fulfils that file's stated contract: each UX rule becomes a `rule:` node with
 // governed_by edges. Rule metadata rides along (severity→priority, category→tier,
 // statement + rationale as evidence) so the decision engine can reason and cite.
-const uxRules = J('rules/ux-rules.json')
+const uxRules = optional('rules', { rules: [] })
 const SEV_PRIORITY = { forbidden: 'FORBIDDEN', must: 'MANDATORY', should: 'PREFERRED', may: 'ALLOWED', avoid: 'AVOID' }
 const SEV_KIND = { forbidden: 'constraint', must: 'constraint', should: 'guideline', may: 'guideline', avoid: 'antipattern' }
 const resolveInteractive = (name) => (nodes.has(`component-2one:${name}`) ? `component-2one:${name}` : `component:${name}`)
@@ -152,7 +172,7 @@ for (const r of uxRules.rules) {
     kind: SEV_KIND[r.severity] || 'guideline',
     priority: SEV_PRIORITY[r.severity] || 'ALLOWED',
     severity: r.severity, tier: r.category, category: r.category,
-    statement: r.statement, rationale: r.rationale, source: 'rules/ux-rules.json',
+    statement: r.statement, rationale: r.rationale, source: cfg.rel('rules'),
   })
   for (const t of expandTargets(r.applies_to)) if (nodes.has(t)) addEdge(t, `rule:${r.id}`, 'governed_by', 'explicit')
 }
@@ -181,14 +201,14 @@ addEdge('brand:voice', 'rule:one-container', 'embodies', 'explicit')
 // ================= AUTHORED DECISION LAYER (graph/decisions.json) =================
 
 // 1. nodes (intents, contexts, states, a11y requirements, patterns, variants, new rules)
-for (const [group, list] of Object.entries(decisions.nodes)) {
+for (const [group, list] of Object.entries(decisions.nodes ?? {})) {
   for (const n of list) {
     const { id, label, ...rest } = n
     addNode(id, group, label || id, rest)
   }
 }
 // specializes edges for variants
-for (const v of decisions.nodes.variant || []) if (v.specializes) addEdge(v.id, v.specializes, 'specializes', 'explicit', { evidence: v.source })
+for (const v of decisions.nodes?.variant ?? []) if (v.specializes) addEdge(v.id, v.specializes, 'specializes', 'explicit', { evidence: v.source })
 
 // 2. enrich existing (structural) rules with priority/tier/kind/applies_to metadata
 const targetEdgeDir = (t, rid) => {
@@ -210,7 +230,7 @@ for (const [rid, meta] of Object.entries(decisions.enrich_rules || {})) {
 }
 
 // 3. new rules' applies_to / applies_when → edges
-for (const r of decisions.nodes.rule || []) {
+for (const r of decisions.nodes?.rule ?? []) {
   for (const t of r.applies_to || []) {
     if (!nodes.has(t)) { warnings.push(`rule ${r.id}: applies_to missing node ${t}`); continue }
     const e = targetEdgeDir(t, r.id)
@@ -220,7 +240,7 @@ for (const r of decisions.nodes.rule || []) {
 }
 
 // 4. decision edges
-for (const e of decisions.edges) {
+for (const e of decisions.edges ?? []) {
   if (!nodes.has(e.source)) { warnings.push(`edge: missing source ${e.source}`); continue }
   if (!nodes.has(e.target)) { warnings.push(`edge: missing target ${e.target}`); continue }
   const extra = {}
@@ -231,8 +251,14 @@ for (const e of decisions.edges) {
 }
 
 // ================= ONTOLOGY CONFORMANCE (deterministic warnings) =================
+/*
+  Skipped entirely when the payload has authored no ontology. Validating against
+  an empty schema would report every derived edge as an "unknown edge type" —
+  a wall of violations that says nothing except "you have not written an
+  ontology yet", which the payload already knows.
+*/
 const violations = []
-for (const e of edges) {
+for (const e of ontology.edge_types ? edges : []) {
   const spec = ontology.edge_types[e.type]
   if (!spec) { violations.push(`unknown edge type "${e.type}" (${e.source} → ${e.target})`); continue }
   const sn = nodes.get(e.source), tn = nodes.get(e.target)
@@ -256,15 +282,17 @@ const stats = {
   ontology_violations: violations.length,
 }
 
-writeFileSync(join(root, 'graph.json'), JSON.stringify({
-  name: '2one DLS knowledge graph',
-  description: 'Semantic decision graph for the 2one Design System. Two layers: derived (parsed from source) and authored (graph/decisions.json — intents, rules, preferences). Nodes carry an ontology class + provenance; edges carry provenance + decision priority. Reason over it with scripts/graph-decide.mjs. Generated by scripts/build-graph.mjs.',
+writeFileSync(join(root, cfg.rel('out.graph')), JSON.stringify({
+  name: cfg.identity?.graph_name ?? `${cfg.name} knowledge graph`,
+  description:
+    cfg.identity?.graph_description ??
+    `Semantic decision graph for the ${cfg.name} design system. Two layers: derived (parsed from source) and authored (${cfg.rel('decisions')} — intents, rules, preferences). Nodes carry an ontology class + provenance; edges carry provenance + decision priority. Reason over it with scripts/graph-decide.mjs. Generated by scripts/build-graph.mjs.`,
   generated_for: J('package.json').version,
-  ontology: 'graph/ontology.json',
+  ontology: cfg.rel('ontology'),
   stats, nodes: nodeArr, edges: edgeArr,
 }, null, 2) + '\n')
 
-console.log(`graph.json — ${stats.nodes} nodes, ${stats.edges} edges`)
+console.log(`${cfg.rel('out.graph')} — ${stats.nodes} nodes, ${stats.edges} edges`)
 console.log('  class:', JSON.stringify(stats.by_class))
 console.log('  prov :', JSON.stringify(stats.by_provenance))
 if (warnings.length) { console.log(`\n  ${warnings.length} authoring warning(s):`); warnings.forEach((w) => console.log('   ! ' + w)) }

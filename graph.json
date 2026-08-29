@@ -4,8 +4,8 @@
   "generated_for": "0.2.0",
   "ontology": "graph/ontology.json",
   "stats": {
-    "nodes": 306,
-    "edges": 887,
+    "nodes": 314,
+    "edges": 920,
     "by_node_type": {
       "a11y": 8,
       "ai-component": 7,
@@ -21,7 +21,7 @@
       "package": 13,
       "token-radius": 7,
       "ramp": 21,
-      "rule": 34,
+      "rule": 42,
       "state": 10,
       "token-color": 36,
       "token-type": 10,
@@ -37,7 +37,7 @@
       "Intent": 19,
       "Package": 13,
       "Foundation": 74,
-      "Rule": 34,
+      "Rule": 42,
       "State": 10
     },
     "by_edge_type": {
@@ -50,7 +50,7 @@
       "derived_from": 26,
       "embodies": 6,
       "forbidden_with": 1,
-      "governed_by": 124,
+      "governed_by": 157,
       "has_contrast": 18,
       "inappropriate_for": 4,
       "overrides": 1,
@@ -66,11 +66,11 @@
     },
     "by_provenance": {
       "nodes": {
-        "explicit": 101,
+        "explicit": 109,
         "derived": 205
       },
       "edges": {
-        "explicit": 234,
+        "explicit": 267,
         "derived": 653
       }
     },
@@ -1748,6 +1748,21 @@
       "hex": "#15803d"
     },
     {
+      "id": "rule:both-themes",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "A draft is delivered in both themes",
+      "kind": "constraint",
+      "priority": "MANDATORY",
+      "severity": "must",
+      "tier": "completeness",
+      "category": "completeness",
+      "statement": "Every screen in a draft is rendered and reviewed in light AND dark. Dark is not invert-and-ship: re-audit every rendered pair, and keep component colours token-driven so the audit matches the render.",
+      "rationale": "Both themes ship and both are audited, so a draft covering one is half a specification. Advisory here by nature — whether a screen was rendered twice is a property of the delivered set, not of any one file, and belongs to a draft-level audit.",
+      "source": "rules/ux-rules.json"
+    },
+    {
       "id": "rule:brand-accent",
       "type": "rule",
       "class": "Rule",
@@ -1775,6 +1790,21 @@
       "category": "consistency",
       "statement": "Compose real 2one components. Never hand-roll a parallel sidebar, card, badge, or 'stage' box for something the library already provides.",
       "rationale": "Parallel chrome is the #1 source of inconsistency and responsive/a11y bugs.",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:chart-baseline",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Value axes start at zero",
+      "kind": "constraint",
+      "priority": "MANDATORY",
+      "severity": "must",
+      "tier": "data-integrity",
+      "category": "data-integrity",
+      "statement": "Bar and area charts begin the value axis at zero. A truncated axis is permissible only on a line chart showing rate of change, and only with the truncation labelled.",
+      "rationale": "Bar length and area encode magnitude, so a truncated baseline exaggerates differences — the most common way a chart tells a lie its author did not intend. In a draft full of invented data this teaches a false story to everyone who reviews it.",
       "source": "rules/ux-rules.json"
     },
     {
@@ -1831,8 +1861,8 @@
       "kind": "guideline",
       "priority": "PREFERRED",
       "severity": "should",
-      "tier": "interaction",
-      "category": "interaction",
+      "tier": "completeness",
+      "category": "completeness",
       "statement": "A collection with no items renders the Empty component (icon + message + primary next action) — not a blank area.",
       "rationale": "A blank region reads as a bug; an empty state tells the user what to do next.",
       "source": "rules/ux-rules.json"
@@ -1850,6 +1880,21 @@
       "category": "accessibility",
       "statement": "A field error must set aria-invalid and link its message with aria-describedby, and show icon+text (see no-color-alone).",
       "rationale": "Screen readers only announce errors that are wired to the control.",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:error-state",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Async work has a visible failure path",
+      "kind": "constraint",
+      "priority": "MANDATORY",
+      "severity": "must",
+      "tier": "completeness",
+      "category": "completeness",
+      "statement": "Any surface that loads data renders an explicit error state — a message saying what failed and an action to retry. A failed fetch must never leave the loading state up or fall through to the empty state.",
+      "rationale": "Loading and empty are the two states everyone draws; error is the one everyone omits, and it is the state the user is most likely to be stuck in. Falling through to \"empty\" tells them there is no data when in fact the request failed.",
       "source": "rules/ux-rules.json"
     },
     {
@@ -1913,6 +1958,21 @@
       "source": "rules/ux-rules.json"
     },
     {
+      "id": "rule:interactive-states",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Every control defines hover, focus, active and disabled",
+      "kind": "constraint",
+      "priority": "MANDATORY",
+      "severity": "must",
+      "tier": "completeness",
+      "category": "completeness",
+      "statement": "A hand-rolled interactive element (a div or span with onClick, a bare <button>) must define hover, focus-visible, active and disabled treatments. Reaching for the library Button instead is always the better answer, because it carries all four already.",
+      "rationale": "A draft that shows only the resting state is not a specification — a developer has to invent the other four, which is exactly the drift the system exists to prevent.",
+      "source": "rules/ux-rules.json"
+    },
+    {
       "id": "rule:keep-tokens-alive",
       "type": "rule",
       "class": "Rule",
@@ -1936,8 +1996,8 @@
       "kind": "guideline",
       "priority": "PREFERRED",
       "severity": "should",
-      "tier": "interaction",
-      "category": "interaction",
+      "tier": "completeness",
+      "category": "completeness",
       "statement": "An async action shows a loading state (Spinner in the trigger; Skeleton for content) and disables re-entry — never a dead click.",
       "rationale": "Silent latency reads as a broken UI and causes double-submits.",
       "source": "rules/ux-rules.json"
@@ -2030,6 +2090,21 @@
       "category": "consistency",
       "statement": "Audit every rendered surface×text pair in BOTH themes and keep component colours token-driven so the audit matches the render.",
       "rationale": "A component that hardcodes text-white passes the token audit while rendering unreadable.",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:no-chartjunk",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "No decoration on data marks",
+      "kind": "guideline",
+      "priority": "PREFERRED",
+      "severity": "should",
+      "tier": "data-integrity",
+      "category": "data-integrity",
+      "statement": "Data marks carry no gradients, drop shadows, 3D or texture. Ink goes to data, not to ornament; grids and axes recede.",
+      "rationale": "Decoration on a mark competes with the value it encodes and, with gradients, actively distorts perceived magnitude. Advisory: distinguishing a legitimate area fill from ornament needs judgement a regex does not have.",
       "source": "rules/ux-rules.json"
     },
     {
@@ -2153,6 +2228,21 @@
       "source": "rules/ux-rules.json"
     },
     {
+      "id": "rule:placeholder-marked",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Invented data is visibly marked as placeholder",
+      "kind": "constraint",
+      "priority": "MANDATORY",
+      "severity": "must",
+      "tier": "data-integrity",
+      "category": "data-integrity",
+      "statement": "Sample content in a draft is labelled as sample — a caption, a watermark, or a banner on the screen. Never present invented figures in a way a reviewer could mistake for real.",
+      "rationale": "A draft is made of fake data by definition, and drafts get screenshotted into decks. A plausible invented number that escapes its context becomes a claim nobody meant to make. Advisory here: whether a label reads as a disclaimer is a judgement about the delivered draft, not a property of a file.",
+      "source": "rules/ux-rules.json"
+    },
+    {
       "id": "rule:reduced-motion",
       "type": "rule",
       "class": "Rule",
@@ -2180,6 +2270,21 @@
       "category": "implementation",
       "statement": "@source every folder you render. An arbitrary value (h-[250px]) used in exactly one place is the canary — if it does nothing, the folder was never scanned.",
       "rationale": "A class in an un-scanned folder is never generated at all.",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:tabular-numerics",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Numbers that are compared are tabular",
+      "kind": "guideline",
+      "priority": "PREFERRED",
+      "severity": "should",
+      "tier": "data-integrity",
+      "category": "data-integrity",
+      "statement": "Figures in a column, or set side by side for comparison, use font-variant-numeric: tabular-nums so digits align.",
+      "rationale": "Proportional digits make columns ragged and defeat the comparison the table exists for. The practice is already used in the blocks; without a rule it drifts.",
       "source": "rules/ux-rules.json"
     },
     {
@@ -2225,6 +2330,21 @@
       "category": "accessibility",
       "statement": "Tooltips are supplementary. Any information the user MUST perceive to succeed (required, error, or instruction) must be visible without hover or focus discovery — not tooltip-only.",
       "rationale": "Tooltips are unreachable on touch and are skipped by many assistive contexts; essential info behind one is lost.",
+      "source": "rules/ux-rules.json"
+    },
+    {
+      "id": "rule:unambiguous-formats",
+      "type": "rule",
+      "class": "Rule",
+      "prov": "explicit",
+      "label": "Dates, units and currency are unambiguous",
+      "kind": "constraint",
+      "priority": "MANDATORY",
+      "severity": "must",
+      "tier": "data-integrity",
+      "category": "data-integrity",
+      "statement": "Write dates as ISO (2026-03-04) or with the month named (4 Mar 2026) — never all-numeric slash form. Always show the unit and the currency.",
+      "rationale": "03/04/2026 is two different days depending on the reader, and a bare number is not a measurement. Draft data is invented, which is exactly when nobody checks the format.",
       "source": "rules/ux-rules.json"
     },
     {
@@ -6161,8 +6281,20 @@
       "prov": "explicit"
     },
     {
+      "source": "component:alert",
+      "target": "rule:error-state",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
       "source": "component:alert-dialog",
       "target": "rule:destructive-confirm",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:badge",
+      "target": "rule:placeholder-marked",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6193,6 +6325,12 @@
     {
       "source": "component:button",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:button",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6240,6 +6378,12 @@
     },
     {
       "source": "component:calendar",
+      "target": "rule:interactive-states",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:calendar",
       "target": "rule:no-color-alone",
       "type": "governed_by",
       "prov": "explicit"
@@ -6270,7 +6414,31 @@
     },
     {
       "source": "component:chart",
+      "target": "rule:chart-baseline",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:chart",
+      "target": "rule:no-chartjunk",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:chart",
       "target": "rule:scan-what-you-render",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:chart",
+      "target": "rule:tabular-numerics",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:chart",
+      "target": "rule:unambiguous-formats",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6288,6 +6456,12 @@
     },
     {
       "source": "component:checkbox",
+      "target": "rule:interactive-states",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:checkbox",
       "target": "rule:no-color-alone",
       "type": "governed_by",
       "prov": "explicit"
@@ -6295,6 +6469,12 @@
     {
       "source": "component:command",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:command",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6317,6 +6497,12 @@
       "prov": "explicit"
     },
     {
+      "source": "component:empty",
+      "target": "rule:error-state",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
       "source": "component:field",
       "target": "rule:error-semantics",
       "type": "governed_by",
@@ -6325,6 +6511,12 @@
     {
       "source": "component:field",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:field",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6348,6 +6540,12 @@
     },
     {
       "source": "component:form",
+      "target": "rule:interactive-states",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:form",
       "target": "rule:no-color-alone",
       "type": "governed_by",
       "prov": "explicit"
@@ -6361,6 +6559,12 @@
     {
       "source": "component:input",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:input",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6373,6 +6577,12 @@
     {
       "source": "component:input-otp",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:input-otp",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6385,6 +6595,12 @@
     {
       "source": "component:native-select",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:native-select",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6397,6 +6613,12 @@
     {
       "source": "component:pagination",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:pagination",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6409,6 +6631,12 @@
     {
       "source": "component:radio-group",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:radio-group",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6421,6 +6649,12 @@
     {
       "source": "component:select",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:select",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6461,8 +6695,20 @@
       "prov": "explicit"
     },
     {
+      "source": "component:skeleton",
+      "target": "rule:placeholder-marked",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
       "source": "component:slider",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:slider",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6492,13 +6738,37 @@
     },
     {
       "source": "component:switch",
+      "target": "rule:interactive-states",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:switch",
       "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:table",
+      "target": "rule:tabular-numerics",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:table",
+      "target": "rule:unambiguous-formats",
       "type": "governed_by",
       "prov": "explicit"
     },
     {
       "source": "component:tabs",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:tabs",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6511,6 +6781,12 @@
     {
       "source": "component:textarea",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:textarea",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6523,6 +6799,12 @@
     {
       "source": "component:toggle",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:toggle",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6541,6 +6823,12 @@
     {
       "source": "component:toggle-group",
       "target": "rule:focus-visible",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "component:toggle-group",
+      "target": "rule:interactive-states",
       "type": "governed_by",
       "prov": "explicit"
     },
@@ -6617,6 +6905,12 @@
     },
     {
       "source": "token:background",
+      "target": "rule:both-themes",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "token:background",
       "target": "rule:grayscale",
       "type": "governed_by",
       "prov": "explicit"
@@ -6652,6 +6946,24 @@
       "prov": "explicit"
     },
     {
+      "source": "token:card",
+      "target": "rule:both-themes",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "token:chart-1",
+      "target": "rule:chart-baseline",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "token:chart-1",
+      "target": "rule:no-chartjunk",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
       "source": "token:destructive",
       "target": "rule:keep-tokens-alive",
       "type": "governed_by",
@@ -6672,6 +6984,12 @@
     {
       "source": "token:destructive",
       "target": "rule:validation-only",
+      "type": "governed_by",
+      "prov": "explicit"
+    },
+    {
+      "source": "token:foreground",
+      "target": "rule:both-themes",
       "type": "governed_by",
       "prov": "explicit"
     },

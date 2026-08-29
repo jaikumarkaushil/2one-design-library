@@ -18,10 +18,33 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join, resolve, relative, dirname } from 'node:path'
 
+import { config as cfg } from './lib/config.mjs'
+
 const cwd = process.cwd()
 const asJson = process.argv.includes('--json')
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')) } catch { return null } }
-const PKG = '@2one/design-library'
+
+/*
+  Which design system is this? Read it — do not assume it.
+
+  Everything below used to say "2one": the package name, the grayscale palette
+  line, the pill-button signature, the GitHub URL blocks are copied from. Run
+  from a project consuming a DIFFERENT payload, the command reported another
+  system's facts as if they were theirs. `info` is the one command whose whole
+  purpose is to report only what it can observe, so an unobservable constant
+  baked into it is precisely the bug it exists to prevent.
+
+  In a consumer, cfg resolves to the installed package's own dls.config.json
+  (it ships in `files`), so the engine describes the payload it was installed
+  alongside rather than the one it was written for.
+*/
+const PKG = cfg.packageName ?? '@2one/design-library'
+const NAME = cfg.name ?? 'design system'
+const themeInfo = cfg.identity?.system?.theme ?? {}
+// The @source probe must match the installed directory name under
+// node_modules, not the literal "design-library".
+const PKG_DIR = PKG.split('/').pop()
+const reEscape = (v) => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const consumerPkg = readJson(join(cwd, 'package.json'))
 const deps = { ...(consumerPkg?.dependencies ?? {}), ...(consumerPkg?.devDependencies ?? {}) }
@@ -35,8 +58,8 @@ const present = Boolean(installedPkg)
 // Component list: from source when in the repo, from the built types otherwise.
 const components = (() => {
   if (inRepo) {
-    const ui = join(cwd, 'src/components/ui')
-    const own = join(cwd, 'src/components')
+    const ui = cfg.path('components')
+    const own = cfg.path('ownComponents')
     const a = existsSync(ui) ? readdirSync(ui).filter((f) => f.endsWith('.tsx')).map((f) => f.replace('.tsx', '')) : []
     const b = existsSync(own) ? readdirSync(own).filter((f) => f.endsWith('.tsx')).map((f) => f.replace('.tsx', '')) : []
     return [...a, ...b].sort()
@@ -44,14 +67,21 @@ const components = (() => {
   const dts = join(installedRoot, 'dist/index.d.ts')
   if (!existsSync(dts)) return []
   const src = readFileSync(dts, 'utf8')
-  // The barrel is `export * from './components/ui/<name>'`. Matching only
-  // `export { … } from` returned zero here, which a cold test caught — the
-  // command reported "0 components" while 57 were installed.
-  return [
-    ...new Set(
-      [...src.matchAll(/export\s+(?:\*|\{[^}]*\})\s+from\s+['"]\.\/components\/(?:ui\/)?([a-z0-9-]+)['"]/g)].map((m) => m[1])
-    ),
-  ].sort()
+  /*
+    The barrel is `export * from './<component-dir>/<name>'`. Matching only
+    `export { … } from` returned zero here, which a cold test caught — the
+    command reported "0 components" while 57 were installed.
+
+    The directories come from the payload config rather than a literal
+    './components/ui', which only described 2one's layout. `src/` is stripped
+    because the build flattens it away in dist.
+  */
+  const distDir = (k) => reEscape(cfg.rel(k).replace(/^src\//, ''))
+  const re = new RegExp(
+    `export\\s+(?:\\*|\\{[^}]*\\})\\s+from\\s+['"]\\./(?:${distDir('components')}|${distDir('ownComponents')})/([a-z0-9-]+)['"]`,
+    'g',
+  )
+  return [...new Set([...src.matchAll(re)].map((m) => m[1]))].sort()
 })()
 
 // Resolution is done from the CONSUMER's tree, not the engine's — the engine
@@ -94,7 +124,7 @@ const cssTarget = cssFiles[0] ?? null
 const sourcePath = cssTarget
   ? `${relative(dirname(cssTarget), join(cwd, 'node_modules')).replaceAll('\\', '/')}/${PKG}/dist`
   : `./node_modules/${PKG}/dist`
-const sourced = inRepo ? true : /@source[^\n]*design-library/.test(cssText)
+const sourced = inRepo ? true : new RegExp(`@source[^\\n]*${reEscape(PKG_DIR)}`).test(cssText)
 const stylesImported = inRepo ? true : new RegExp(`@import\\s+['"]${PKG.replace('/', '\\/')}\\/styles`).test(cssText)
 
 const framework = deps.next ? 'next' : deps.vite || deps['@vitejs/plugin-react'] ? 'vite' : deps['react-scripts'] ? 'cra' : deps.react ? 'react' : 'unknown'
@@ -127,7 +157,7 @@ const hoistedDependency = (name) => {
   }
 }
 
-const icons = hoistedDependency('lucide-react')
+const icons = hoistedDependency(cfg.rules.iconLibrary ?? 'lucide-react')
 // recharts primitives (<BarChart>, <XAxis>, …) are not re-exported by the
 // library's ChartContainer — composing a chart means importing them from
 // recharts directly, the same hoisting trap as icons.
@@ -166,19 +196,27 @@ if (present && !inRepo) {
 const info = {
   dls: {
     installed: present,
-    context: inRepo ? 'inside the DLS repo (use @/ imports from src/)' : 'consuming project (import from the package)',
+    context: inRepo ? `inside the ${NAME} repo (use @/ imports from source)` : 'consuming project (import from the package)',
     version: installedPkg?.version ?? null,
-    import: inRepo ? "import { Button } from '@/components/ui/button'" : `import { Button } from '${PKG}'`,
+    // The in-repo example points at the payload's own component directory —
+    // `@/components/ui/button` is 2one's path, not everyone's.
+    import: inRepo
+      ? `import { Button } from '@/${cfg.rel('components').replace(/^src\//, '')}/button'`
+      : `import { Button } from '${PKG}'`,
   },
   project: { framework, tailwind: tailwind ?? null, theme_imported: stylesImported, package_scanned_by_tailwind: sourced },
   system: {
-    themes: ['light', 'dark'],
-    theme_switch: 'wrap the app in the exported ThemeProvider',
-    palette: 'grayscale foundation + one brand accent (#30A1FF, --brand) for emphasis; danger/success for validation state only',
+    themes: themeInfo.modes ?? ['light', 'dark'],
+    theme_switch: themeInfo.switch ?? 'wrap the app in the exported ThemeProvider',
+    palette:
+      themeInfo.hues ??
+      (cfg.rules.grayscaleOnly
+        ? `grayscale — no brand hue${cfg.rules.validationHues?.length ? `; ${cfg.rules.validationHues.join('/')} for validation state only` : ''}`
+        : `see ${cfg.rel('out.tokens')}/colors.json`),
     icons,
     charts,
-    signature: 'buttons are pills (radius-full)',
-    fonts: { heading: 'Satoshi', body: 'Inter' },
+    signature: cfg.rules.signature ?? null,
+    fonts: themeInfo.fonts ?? null,
   },
   components: { count: components.length, names: components },
   // Blocks are copy-paste templates, not package exports — they import via the
@@ -188,13 +226,13 @@ const info = {
   // they LOOK present in a consumer — which is exactly the wrong impression.)
   blocks: inRepo
     ? {
-        available_locally: (existsSync(join(cwd, 'src/blocks')) ? readdirSync(join(cwd, 'src/blocks')) : [])
+        available_locally: (existsSync(cfg.path('blocks')) ? readdirSync(cfg.path('blocks')) : [])
           .filter((f) => f.endsWith('.tsx'))
           .map((f) => f.replace('.tsx', '')),
       }
     : {
         available_locally: [],
-        copy_from: 'https://github.com/yokesh-2one/2one-design-library/tree/main/src/blocks',
+        copy_from: cfg.repoUrl ? `${cfg.repoUrl}/tree/main/${cfg.rel('blocks')}` : null,
         note: 'Blocks are templates you copy and adapt, not package exports.',
       },
   problems,
@@ -203,18 +241,19 @@ const info = {
 if (asJson) {
   console.log(JSON.stringify(info, null, 2))
 } else {
-  console.log(`\n  2one DLS — ${info.dls.installed ? `v${info.dls.version}` : 'NOT INSTALLED'}`)
+  console.log(`\n  ${NAME} — ${info.dls.installed ? `v${info.dls.version}` : 'NOT INSTALLED'}`)
   console.log(`  context   ${info.dls.context}`)
   console.log(`  import    ${info.dls.import}`)
   console.log(`  project   ${framework}${tailwind ? ` · tailwind ${tailwind}` : ''}`)
   console.log(`  system    ${info.system.palette}`)
   const icons = info.system.icons
   const iconLabel = icons.direct_dependency
-    ? `lucide-react ${icons.direct_dependency}`
+    ? `${icons.library} ${icons.direct_dependency}`
     : icons.resolvable
-      ? 'lucide-react (via the library — not a direct dep)'
-      : 'lucide-react (not resolvable)'
-  console.log(`            themes: light + dark · icons: ${iconLabel} · ${info.system.signature}`)
+      ? `${icons.library} (via the library — not a direct dep)`
+      : `${icons.library} (not resolvable)`
+  const sig = info.system.signature ? ` · ${info.system.signature}` : ''
+  console.log(`            themes: ${info.system.themes.join(' + ')} · icons: ${iconLabel}${sig}`)
   const nBlocks = info.blocks.available_locally.length
   console.log(`  available ${components.length} components${nBlocks ? `, ${nBlocks} blocks` : ''}`)
   if (problems.length) {

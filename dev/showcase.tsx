@@ -405,11 +405,6 @@ Run  npx 2one check <path>  and fix everything it reports (it exits non-zero on 
 
 I want to build a social media application for me and my friends.
 
-Core features / workflows:
-1. Should be able to post daily updates
-2. Option to upload photos and videos
-3. Tag friends and comment on posts
-
 Design system — read it first
 Use the 2one Design Library: https://github.com/yokesh-2one/2one-design-library
 Read manifest.json FIRST — it is the machine-readable index and the instructions_for_ai contract. Then, before building, summarise:

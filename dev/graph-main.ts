@@ -413,8 +413,11 @@ function translateStatic() {
   // Global nav (mirrors dev/global-nav.tsx). `.topnav a` order: the flat
   // destinations, then the three links inside the Help menu.
   const navKeys = ['nav.overview', 'nav.components', 'nav.graph', 'nav.dls', 'overview.sidebar.faq', 'overview.sidebar.support']
-  document.querySelectorAll('.topnav a').forEach((a, i) => { if (navKeys[i]) a.textContent = gt(navKeys[i]) })
+  document.querySelectorAll('.topnav-flat a').forEach((a, i) => { if (navKeys[i]) a.textContent = gt(navKeys[i]) })
   set('.nav-help summary span', gt('common.help'))
+  // Mobile menu (same order as navKeys): label its links + the current-page trigger.
+  document.querySelectorAll('.nav-menu .nav-help-menu a').forEach((a, i) => { if (navKeys[i]) a.textContent = gt(navKeys[i]) })
+  set('.nav-menu-label', gt('nav.graph'))
   const brand = document.querySelector('.brandlink'); if (brand) brand.setAttribute('aria-label', gt('common.dashboardAria'))
   // Inspiration panel
   set('#pnl-inspiration .pnl-head span', gt('graph.inspiration.title'))
@@ -440,8 +443,10 @@ function translateStatic() {
 
 // Help menu: close the <details> disclosure when clicking outside it (mirrors
 // the React DropdownMenu's dismiss-on-outside-click).
-const helpEl = document.querySelector('.nav-help') as HTMLDetailsElement | null
-if (helpEl) document.addEventListener('click', (e) => { if (helpEl.open && !helpEl.contains(e.target as Node)) helpEl.open = false })
+document.querySelectorAll('.nav-help').forEach((el) => {
+  const d = el as HTMLDetailsElement
+  document.addEventListener('click', (e) => { if (d.open && !d.contains(e.target as Node)) d.open = false })
+})
 
 // deep-link: /graph.html?node=<id> opens focused on that node (from the catalog)
 const initId = new URLSearchParams(location.search).get('node')

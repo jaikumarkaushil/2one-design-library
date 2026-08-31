@@ -45,7 +45,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
 import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader,
+  Sidebar, SidebarClose, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader,
   SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem,
   SidebarProvider, SidebarTrigger, useSidebar,
 } from '@/components/ui/sidebar'
@@ -199,10 +199,13 @@ function TopBarLogo() {
   const { state, isMobile } = useSidebar()
   if (state === 'expanded' && !isMobile) return null
   return (
-    <a href="/" className="flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('common.dashboardAria')}>
-      <Logo variant="black" width={46} className="dark:hidden" />
-      <Logo variant="white" width={46} className="hidden dark:block" />
-    </a>
+    <>
+      <a href="/" className="flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('common.dashboardAria')}>
+        <Logo variant="black" width={46} className="dark:hidden" />
+        <Logo variant="white" width={46} className="hidden dark:block" />
+      </a>
+      <Separator orientation="vertical" className="mx-1 !h-5" />
+    </>
   )
 }
 
@@ -212,7 +215,6 @@ export function Showcase() {
 
   const NAV = [
     { grp: t('common.onThisPage'), items: [['overview', t('overview.sidebar.overview'), ''], ['use', t('overview.sidebar.howToUse'), '']] },
-    { grp: t('common.help'), items: [['faq', t('overview.sidebar.faq'), ''], ['support', t('overview.sidebar.support'), '']] },
   ]
 
   useEffect(() => {
@@ -228,10 +230,13 @@ export function Showcase() {
         {/* App shell — the library's own Sidebar, not bespoke chrome */}
         <Sidebar>
           <SidebarHeader>
-            <a href="/" className="flex items-center gap-2.5 px-2 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('common.dashboardAria')}>
-              <Logo variant="black" width={52} className="dark:hidden" />
-              <Logo variant="white" width={52} className="hidden dark:block" />
-            </a>
+            <div className="flex items-center justify-between gap-2">
+              <a href="/" className="flex items-center gap-2.5 px-2 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('common.dashboardAria')}>
+                <Logo variant="black" width={52} className="dark:hidden" />
+                <Logo variant="white" width={52} className="hidden dark:block" />
+              </a>
+              <SidebarClose />
+            </div>
           </SidebarHeader>
           <SidebarContent>
             {NAV.map((g, i) => (
@@ -256,7 +261,6 @@ export function Showcase() {
           <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
             <SidebarTrigger />
             <TopBarLogo />
-            <Separator orientation="vertical" className="mr-1 !h-5" />
             <TopNav current="/" />
             <div className="ml-auto flex items-center gap-2">
               <LanguageToggle />
@@ -366,6 +370,45 @@ Core features / workflows:
 1. [Feature or workflow step]
 2. [Feature or workflow step]
 3. [Feature or workflow step]
+
+Design system — read it first
+Use the 2one Design Library: https://github.com/yokesh-2one/2one-design-library
+Read manifest.json FIRST — it is the machine-readable index and the instructions_for_ai contract. Then, before building, summarise:
+- the components, tokens and brand foundations that exist
+- the templates relevant to this build (blocks, charts, page patterns, and Components for AI Interface if this is an assistant UI)
+Use the knowledge graph for decisions (which component fits an intent, what a change touches): node scripts/graph-decide.mjs and npm run what-uses.
+
+Build only from the system
+- Compose from the real 2one components, tokens and templates — never hand-roll a parallel component or style. If the library has no primitive for something, say so instead of inventing one.
+- Colour: grayscale foundation + one brand accent (--brand, #30A1FF) for emphasis only (links, focus, selection). danger/success only for validation state and data-trend deltas, always paired with an icon/arrow. Charts use the --chart-1..5 categorical palette. Never introduce another hue.
+- Icons: lucide only. Buttons are pills; one primary action per view.
+- Never convey state or a trend by colour alone — pair it with an icon or text.
+
+Accessibility
+Meet the 2one accessibility bar: WCAG AA + the APCA thresholds the repo audits, in light and dark. Non-negotiable — it outranks brand and aesthetics.
+
+Accuracy
+Answer and decide only from what is actually in the repo, and cite the file. If a token, component or rule is not there, say so; never guess.
+
+After generating
+Run  npx 2one check <path>  and fix everything it reports (it exits non-zero on a violation). The final result must read as 2one — voice, tone, and visual identity.`} />
+                </CardContent>
+              </Card>
+
+              <Card className="mt-4 min-w-0">
+                <CardHeader>
+                  <CardTitle className="text-base">{t('overview.use.example.title')}</CardTitle>
+                  <CardDescription>{t('overview.use.example.desc')}</CardDescription>
+                </CardHeader>
+                <CardContent className="min-w-0">
+                  <CodeBlock code={`Prompt for Building with the 2one Design Library
+
+I want to build a social media application for me and my friends.
+
+Core features / workflows:
+1. Should be able to post daily updates
+2. Option to upload photos and videos
+3. Tag friends and comment on posts
 
 Design system — read it first
 Use the 2one Design Library: https://github.com/yokesh-2one/2one-design-library

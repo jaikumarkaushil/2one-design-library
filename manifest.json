@@ -55,6 +55,7 @@
     },
     "how_to_use": {
       "what is in here": "Read this manifest's index + README.md.",
+      "install / consume it in an app": "docs/consuming.md — the exact Vite + Tailwind v4 setup, including the @source line that silently ships unstyled components if omitted. Don't reverse-engineer setup from dev/ (that's the internal sampler, not a consumer template).",
       "brand foundation (mission, voice, personas)": "brand/brand.json (structured) or brand/BRAND.md (prose).",
       "colours / type / spacing": "tokens/colors.json, tokens/typography.json, tokens/spacing.json (canonical machine-readable).",
       "a component spec": "src/components/ui/<name>.tsx; naming follows shadcn/ui.",

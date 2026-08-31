@@ -25,6 +25,10 @@ content). If the user is evaluating, take the defaults, say which, and continue.
 After generating, run npx 2one check <path> and fix what it reports. It exits
 non-zero on a violation.
 
+To consume this in a fresh app — the install and the Tailwind v4 @source wiring that
+silently ships unstyled components if you skip it — follow docs/consuming.md. Don't
+reverse-engineer setup from dev/; that's the internal sampler, not a consumer template.
+
 Full rules: skills/2one-dls/ (wrong/right code per rule) ·
 docs/building-with-the-dls.md · docs/accessibility.md
 Offline Q&A: guide-app/knowledge-base.md

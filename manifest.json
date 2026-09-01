@@ -56,6 +56,7 @@
     "how_to_use": {
       "what is in here": "Read this manifest's index + README.md.",
       "install / consume it in an app": "docs/consuming.md — the exact Vite + Tailwind v4 setup, including the @source line that silently ships unstyled components if omitted. Don't reverse-engineer setup from dev/ (that's the internal sampler, not a consumer template).",
+      "avatar / image placeholders": "docs/placeholders.md — the sanctioned on-brand way to fill an image slot (AvatarFallback monogram; a muted surface + lucide icon), since photography and illustration are absent (index.assets.absent).",
       "brand foundation (mission, voice, personas)": "brand/brand.json (structured) or brand/BRAND.md (prose).",
       "colours / type / spacing": "tokens/colors.json, tokens/typography.json, tokens/spacing.json (canonical machine-readable).",
       "a component spec": "src/components/ui/<name>.tsx; naming follows shadcn/ui.",
@@ -581,7 +582,170 @@
         "useFormField",
         "useIsMobile",
         "useSidebar"
-      ]
+      ],
+      "variants": {
+        "alert": {
+          "groups": {
+            "variant": [
+              "default",
+              "destructive"
+            ]
+          },
+          "defaults": {
+            "variant": "default"
+          }
+        },
+        "badge": {
+          "groups": {
+            "variant": [
+              "default",
+              "secondary",
+              "destructive",
+              "outline",
+              "ghost",
+              "link"
+            ]
+          },
+          "defaults": {
+            "variant": "default"
+          }
+        },
+        "button-group": {
+          "groups": {
+            "orientation": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "defaults": {
+            "orientation": "horizontal"
+          }
+        },
+        "button": {
+          "groups": {
+            "variant": [
+              "default",
+              "destructive",
+              "outline",
+              "secondary",
+              "ghost",
+              "link"
+            ],
+            "size": [
+              "default",
+              "xs",
+              "sm",
+              "lg",
+              "icon",
+              "icon-xs",
+              "icon-sm",
+              "icon-lg"
+            ]
+          },
+          "defaults": {
+            "variant": "default",
+            "size": "default"
+          }
+        },
+        "empty": {
+          "groups": {
+            "variant": [
+              "default",
+              "icon"
+            ]
+          },
+          "defaults": {
+            "variant": "default"
+          }
+        },
+        "field": {
+          "groups": {
+            "orientation": [
+              "vertical",
+              "horizontal",
+              "responsive"
+            ]
+          },
+          "defaults": {
+            "orientation": "vertical"
+          }
+        },
+        "input-group": {
+          "groups": {
+            "align": [
+              "inline-start",
+              "inline-end",
+              "block-start",
+              "block-end"
+            ]
+          },
+          "defaults": {
+            "align": "inline-start"
+          }
+        },
+        "item": {
+          "groups": {
+            "variant": [
+              "default",
+              "outline",
+              "muted"
+            ],
+            "size": [
+              "default",
+              "sm"
+            ]
+          },
+          "defaults": {
+            "variant": "default",
+            "size": "default"
+          }
+        },
+        "sidebar": {
+          "groups": {
+            "variant": [
+              "default",
+              "outline"
+            ],
+            "size": [
+              "default",
+              "sm",
+              "lg"
+            ]
+          },
+          "defaults": {
+            "variant": "default",
+            "size": "default"
+          }
+        },
+        "tabs": {
+          "groups": {
+            "variant": [
+              "default",
+              "line"
+            ]
+          },
+          "defaults": {
+            "variant": "default"
+          }
+        },
+        "toggle": {
+          "groups": {
+            "variant": [
+              "default",
+              "outline"
+            ],
+            "size": [
+              "default",
+              "sm",
+              "lg"
+            ]
+          },
+          "defaults": {
+            "variant": "default",
+            "size": "default"
+          }
+        }
+      }
     },
     "templates": {
       "tier": 3,
@@ -661,6 +825,186 @@
         ],
         "spec": [
           {
+            "id": "pattern:comment-thread",
+            "label": "Comment thread",
+            "tier": 3,
+            "kind": "section-pattern",
+            "purpose": "Show a thread of comments and let the reader add one — a list of author + comment rows plus a single reply composer.",
+            "when_to_use": "Comments under a post, an issue, or an article; a discussion thread.",
+            "when_not_to_use": "A real-time chat transcript (use a dedicated messaging surface) or a single testimonial (use the marketing/testimonial block).",
+            "composition": [
+              "Thread — a list of Items, each with the commenter Avatar (leading), name + timestamp, and the comment body; nested replies indent one step",
+              "Composer — a Textarea for the reply and exactly one filled Button (Reply / Post), disabled until non-empty",
+              "Separators between the thread and the composer"
+            ],
+            "composes": {
+              "components": [
+                "item",
+                "avatar",
+                "textarea",
+                "button",
+                "separator"
+              ]
+            },
+            "primary_action": "Exactly one filled Button — Post/Reply on the composer. Per-comment actions (reply, like) are ghost.",
+            "responsive": "Full-width in the reading column; nested replies indent by a fixed step and never force horizontal scroll.",
+            "accessibility": [
+              "the Textarea has a real Label (or aria-label)",
+              "per-comment actions are icon + text/sr-only, never colour alone",
+              "each comment's author name is its accessible heading"
+            ],
+            "content": "Ships realistic 2one placeholder comments — adapt the CONTENT, keep the STRUCTURE.",
+            "anti_patterns": [
+              "two primary Buttons (Post and Cancel both filled)",
+              "a submit control with no accessible label",
+              "signalling 'liked'/'resolved' by colour alone"
+            ],
+            "governed_by": [
+              "one-primary",
+              "no-color-alone",
+              "tokens-only",
+              "pill-buttons"
+            ],
+            "assumptions": [
+              "Comments, authors and timestamps are PLACEHOLDER 2one content — replace with real data.",
+              "The single primary action is Post/Reply on the composer.",
+              "Reply nesting is one level of indent; deepen only if the product needs it."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "shadcn ships no comments block (canonical blocks are dashboard, sidebar, login, signup — https://ui.shadcn.com/blocks). Composed from shadcn PRIMITIVES (Item, Avatar, Textarea, Button, Separator); every part a real, in-repo component.",
+              "shadcn_primitives": [
+                "item",
+                "avatar",
+                "textarea",
+                "button",
+                "separator"
+              ],
+              "two_one_blocks": [],
+              "checked_against": "https://ui.shadcn.com/blocks"
+            }
+          },
+          {
+            "id": "pattern:feed-item",
+            "label": "Feed item",
+            "tier": 3,
+            "kind": "section-pattern",
+            "purpose": "Show one post in a feed — author, timestamp, body, optional media, and a row of low-emphasis reactions.",
+            "when_to_use": "A repeating unit in a social/activity feed (a status update, a shared photo, an activity entry).",
+            "when_not_to_use": "A single hero article or a data row — use a full page layout or a Table instead.",
+            "composition": [
+              "Header — an Item with the author Avatar (leading), name + timestamp (title/description), and an overflow menu (trailing)",
+              "Body — the post text, and any media via the placeholder pattern (a muted surface + lucide icon) when no image is loaded",
+              "Actions — a Separator, then a row of ghost Buttons (like / comment / share), each an icon + a count, never colour alone"
+            ],
+            "composes": {
+              "components": [
+                "card",
+                "avatar",
+                "item",
+                "button",
+                "badge",
+                "separator"
+              ]
+            },
+            "primary_action": "None — a feed item deliberately has no primary. Its reactions are all low-emphasis (ghost) Buttons so no single item competes with the app's primary action.",
+            "responsive": "Full-width within the feed column; the media slot keeps its aspect ratio (aspect-video) and never exceeds the card width.",
+            "accessibility": [
+              "each reaction is an icon + a text/number label (or sr-only), never colour alone",
+              "the media placeholder carries role=img + an aria-label, never a bare icon",
+              "the whole item is a Card region; the author name is the accessible heading"
+            ],
+            "content": "Ships realistic 2one placeholder copy (author, timestamp, a short update) — adapt the CONTENT, keep the STRUCTURE.",
+            "anti_patterns": [
+              "a filled primary Button on a feed item (it competes with the app's real primary)",
+              "signalling 'liked' by colour alone with no icon/label change",
+              "embedding an invented stock photo instead of the sanctioned media placeholder"
+            ],
+            "governed_by": [
+              "no-color-alone",
+              "tokens-only",
+              "pill-buttons"
+            ],
+            "assumptions": [
+              "Author, timestamp and body are PLACEHOLDER 2one content — replace with real data.",
+              "Reactions are like / comment / share; adjust to the product's real actions.",
+              "Media is optional; when absent, use the docs/placeholders.md media slot rather than a stock image."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "shadcn ships no feed/social block (canonical blocks are dashboard, sidebar, login, signup — https://ui.shadcn.com/blocks). So this pattern mirrors no shadcn template; it composes shadcn PRIMITIVES (Card, Avatar, Item, Button, Badge, Separator) — every part a real, in-repo component.",
+              "shadcn_primitives": [
+                "card",
+                "avatar",
+                "item",
+                "button",
+                "badge",
+                "separator"
+              ],
+              "two_one_blocks": [],
+              "checked_against": "https://ui.shadcn.com/blocks"
+            }
+          },
+          {
+            "id": "pattern:media-gallery",
+            "label": "Media gallery",
+            "tier": 3,
+            "kind": "section-pattern",
+            "purpose": "Show a set of images/videos as a browsable grid or carousel, with a lightbox for the full view.",
+            "when_to_use": "A photo/video collection on a profile or post — a gallery, an album, an attachment strip.",
+            "when_not_to_use": "A single hero image (render it inline) or a data-heavy chart set (use the charts blocks).",
+            "composition": [
+              "Grid/strip — thumbnails in a responsive grid, or a Carousel on narrow widths; each thumbnail a Card with the media (or the placeholder surface when not loaded)",
+              "Lightbox — a Dialog that opens the selected item full-size, with prev/next ghost Buttons",
+              "Empty — the Empty component when the gallery has no items"
+            ],
+            "composes": {
+              "components": [
+                "card",
+                "carousel",
+                "dialog",
+                "button",
+                "empty"
+              ]
+            },
+            "primary_action": "None at rest; inside the lightbox the close and prev/next are ghost/outline. No filled primary competes with the app's.",
+            "responsive": "A multi-column grid at md+; a single-item Carousel below md. Thumbnails keep a fixed aspect ratio (aspect-square/aspect-video) and never overflow the row.",
+            "accessibility": [
+              "every thumbnail has descriptive alt text; a placeholder uses role=img + aria-label",
+              "the lightbox Dialog traps and restores focus; prev/next are keyboard operable",
+              "any caption over media sits on a scrim, never directly on the image"
+            ],
+            "content": "Ships the sanctioned media placeholders (a muted surface + a lucide icon) where no real image exists — never an invented stock photo.",
+            "anti_patterns": [
+              "embedding invented stock imagery instead of the docs/placeholders.md media slot",
+              "text laid directly over an image with no scrim",
+              "a filled primary Button inside the gallery competing with the page's primary"
+            ],
+            "governed_by": [
+              "no-color-alone",
+              "tokens-only",
+              "width-by-content"
+            ],
+            "assumptions": [
+              "Media are PLACEHOLDER slots — wire real images/videos, and use docs/placeholders.md where none exist.",
+              "The lightbox is a Dialog; swap for a route if deep-linking to an item is required.",
+              "Grid density (columns) is a starting point — tune to the real media count."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "shadcn ships no gallery block (canonical blocks are dashboard, sidebar, login, signup — https://ui.shadcn.com/blocks). Composed from shadcn PRIMITIVES (Card, Carousel, Dialog, Button, Empty); every part a real, in-repo component.",
+              "shadcn_primitives": [
+                "card",
+                "carousel",
+                "dialog",
+                "button",
+                "empty"
+              ],
+              "two_one_blocks": [],
+              "checked_against": "https://ui.shadcn.com/blocks"
+            }
+          },
+          {
             "id": "pattern:pricing-page",
             "label": "Pricing page",
             "tier": 3,
@@ -729,6 +1073,68 @@
                 "marketing/faq",
                 "marketing/cta-banner"
               ],
+              "checked_against": "https://ui.shadcn.com/blocks"
+            }
+          },
+          {
+            "id": "pattern:profile-header",
+            "label": "Profile header",
+            "tier": 3,
+            "kind": "section-pattern",
+            "purpose": "Introduce a person or account at the top of a profile — avatar, name/handle, a short bio, key stats, and the single primary relationship action.",
+            "when_to_use": "The header of a user/account/organisation profile page.",
+            "when_not_to_use": "A compact author byline inside a feed item — use the feed-item header (an Item) instead.",
+            "composition": [
+              "Identity — a large Avatar, the display name, and a muted @handle",
+              "Bio — one or two lines of description",
+              "Stats — a small row (posts / followers / following) as label + number, separated by a Separator",
+              "Action — exactly one filled Button (Follow / Edit profile); any secondary action is outline or ghost",
+              "Optional status/role Badges (outline)"
+            ],
+            "composes": {
+              "components": [
+                "card",
+                "avatar",
+                "button",
+                "badge",
+                "separator"
+              ]
+            },
+            "primary_action": "Exactly one filled Button — the relationship action (Follow, or Edit profile on your own profile). Message / more are outline or ghost.",
+            "responsive": "Avatar + identity stack on mobile and sit inline at sm+; the stats row wraps rather than scrolls.",
+            "accessibility": [
+              "the display name is the section heading (aria-labelledby)",
+              "stats are label + number, never a number alone",
+              "the primary action has a real accessible name, not just an icon"
+            ],
+            "content": "Ships realistic 2one placeholder identity (name, handle, bio, stats) — adapt the CONTENT, keep the STRUCTURE.",
+            "anti_patterns": [
+              "two competing filled Buttons (Follow AND Message both primary)",
+              "a per-user coloured avatar ring for warmth (a second decorative hue — see the expressive-warmth decision)",
+              "stats as bare numbers with no label"
+            ],
+            "governed_by": [
+              "one-primary",
+              "no-color-alone",
+              "tokens-only",
+              "pill-buttons"
+            ],
+            "assumptions": [
+              "Name, handle, bio and stats are PLACEHOLDER 2one content — replace with real data.",
+              "The single primary action is Follow (or Edit profile on the viewer's own profile).",
+              "Avatar uses the AvatarFallback monogram when no photo exists (docs/placeholders.md)."
+            ],
+            "references": {
+              "shadcn_block": null,
+              "note": "shadcn ships no profile block (canonical blocks are dashboard, sidebar, login, signup — https://ui.shadcn.com/blocks). Composed from shadcn PRIMITIVES (Card, Avatar, Button, Badge, Separator); every part a real, in-repo component.",
+              "shadcn_primitives": [
+                "card",
+                "avatar",
+                "button",
+                "badge",
+                "separator"
+              ],
+              "two_one_blocks": [],
               "checked_against": "https://ui.shadcn.com/blocks"
             }
           }

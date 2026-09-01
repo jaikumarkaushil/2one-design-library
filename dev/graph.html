@@ -156,6 +156,21 @@
   .rel li:hover{border-color:var(--sel);background:var(--chip)}
   .hint{position:absolute;left:16px;bottom:12px;font-family:var(--sans);font-size:11px;color:var(--ink-3);pointer-events:none}
   .tip{position:absolute;pointer-events:none;font-family:var(--sans);font-size:11px;background:var(--ink);color:var(--bg);padding:4px 8px;border-radius:var(--r-field);transform:translate(-50%,-160%);white-space:nowrap;opacity:0}
+
+  /* ── Mobile: the floating 300–330px panels overflow a phone, so the canvas fills the
+        screen and the panels dock as sheets — node context at the top, controls at the
+        bottom — matching the app's mobile shell (full-width, no side gutters). ── */
+  @media (max-width:640px){
+    header{gap:8px;padding:0 12px}
+    .stats,.hsep{display:none}                 /* reclaim the narrow header row */
+    .theme-btn{padding:8px}
+    .theme-btn span{display:none}              /* icon-only theme + language toggles */
+    .ctx{top:8px;left:8px;right:8px;width:auto;max-width:none;max-height:42vh}
+    .ctx.empty{display:none}                   /* no empty prompt hogging the top */
+    .rail{top:auto;bottom:8px;left:8px;right:8px;width:auto;max-width:none;max-height:48vh;gap:8px}
+    .hint{display:none}                        /* "drag/scroll" cues are desktop-only */
+    .tip{display:none}                         /* no hover on touch */
+  }
 </style>
 </head>
 <body>

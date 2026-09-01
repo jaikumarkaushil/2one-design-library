@@ -225,13 +225,16 @@
     "mobile": {
       "eyebrow": "Components · 2one-only",
       "title": "Mobile & brand",
-      "lede": "The three components shadcn has no equivalent for.",
+      "lede": "The 2one-only components shadcn has no equivalent for.",
       "signIn": "Sign in",
       "home": "Home",
       "search": "Search",
       "alerts": "Alerts",
       "profile": "Profile",
-      "logoMeta": "black on light / white on dark"
+      "logoMeta": "black on light / white on dark",
+      "brandMeta": "the wordmark's home in product chrome",
+      "mediaMeta": "the sanctioned “no image yet” surface",
+      "noPhoto": "No photo yet"
     },
     "actions": {
       "eyebrow": "Components",

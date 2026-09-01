@@ -225,13 +225,16 @@
     "mobile": {
       "eyebrow": "Composants · propres à 2one",
       "title": "Mobile et marque",
-      "lede": "Les trois composants pour lesquels shadcn n’a pas d’équivalent.",
+      "lede": "Les composants propres à 2one pour lesquels shadcn n’a pas d’équivalent.",
       "signIn": "Se connecter",
       "home": "Accueil",
       "search": "Recherche",
       "alerts": "Alertes",
       "profile": "Profil",
-      "logoMeta": "noir sur clair / blanc sur sombre"
+      "logoMeta": "noir sur clair / blanc sur sombre",
+      "brandMeta": "la place du logotype dans l’interface produit",
+      "mediaMeta": "la surface « pas encore d’image » sanctionnée",
+      "noPhoto": "Pas encore de photo"
     },
     "actions": {
       "eyebrow": "Composants",

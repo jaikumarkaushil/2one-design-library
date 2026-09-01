@@ -62,6 +62,7 @@ import {
 import { Logo } from '@/components/logo'
 import { AppBar } from '@/components/app-bar'
 import { BottomNavItem } from '@/components/bottom-nav-item'
+import { MediaPlaceholder } from '@/components/media-placeholder'
 import { TopNav } from './global-nav'
 import { LanguageToggle } from './i18n/language-toggle'
 
@@ -495,6 +496,22 @@ export function Components() {
               <div className="g-grid2">
                 <Block title="AppBar" className="col">
                   <div className="w-80 rounded-xl border overflow-hidden"><AppBar title={t('components.mobile.signIn')} onBack={() => {}} trailingSlot={<Avatar className="size-7"><AvatarFallback>Y</AvatarFallback></Avatar>} /></div>
+                </Block>
+                <Block title="AppBar · brand" meta={t('components.mobile.brandMeta')} className="col">
+                  {/* the wordmark's first-class home in product chrome (brand slot) */}
+                  <div className="w-80 rounded-xl border overflow-hidden">
+                    <AppBar
+                      title={t('components.mobile.home')}
+                      brand={<><Logo variant="black" width={46} className="dark:hidden" /><Logo variant="white" width={46} className="hidden dark:block" /></>}
+                      trailingSlot={<Avatar className="size-7"><AvatarFallback>Y</AvatarFallback></Avatar>}
+                    />
+                  </div>
+                </Block>
+                <Block title="MediaPlaceholder" meta={t('components.mobile.mediaMeta')} className="col">
+                  <div className="grid w-full grid-cols-2 gap-3">
+                    <MediaPlaceholder ratio={16 / 9} label={t('components.mobile.noPhoto')} />
+                    <MediaPlaceholder ratio={1} />
+                  </div>
                 </Block>
                 <Block title="BottomNavItem" className="col">
                   <div className="flex w-80 rounded-xl border overflow-hidden">

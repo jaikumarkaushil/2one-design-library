@@ -208,6 +208,44 @@ addEventListener('mouseup', () => { if (dragNode && !moved) select(dragNode); el
 cv.addEventListener('wheel', (e) => { e.preventDefault(); const f = e.deltaY < 0 ? 1.12 : 0.89, rect = cv.getBoundingClientRect(),
   mx = e.clientX - rect.left - W / 2, my = e.clientY - rect.top - H / 2; ox = mx - (mx - ox) * f; oy = my - (my - oy) * f; scale = Math.max(0.2, Math.min(4, scale * f)) }, { passive: false })
 
+// Touch: one finger pans / drags a node (a tap selects); two fingers pinch-zoom.
+// The canvas was mouse-only, so it was unusable on a phone — this makes it navigable.
+let pinchD = 0
+cv.addEventListener('touchstart', (e) => {
+  const rect = cv.getBoundingClientRect()
+  if (e.touches.length === 1) {
+    const sx = e.touches[0].clientX - rect.left, sy = e.touches[0].clientY - rect.top
+    const n = pick(sx, sy); moved = false
+    if (n) dragNode = n; else panning = true
+    px0 = sx; py0 = sy
+  } else if (e.touches.length === 2) {
+    dragNode = null; panning = false; moved = true
+    pinchD = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY)
+  }
+}, { passive: true })
+cv.addEventListener('touchmove', (e) => {
+  const rect = cv.getBoundingClientRect()
+  if (e.touches.length === 2) {
+    e.preventDefault()
+    const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY)
+    if (pinchD) {
+      const f = d / pinchD
+      const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left - W / 2
+      const my = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top - H / 2
+      ox = mx - (mx - ox) * f; oy = my - (my - oy) * f; scale = Math.max(0.2, Math.min(4, scale * f))
+    }
+    pinchD = d
+  } else if (e.touches.length === 1) {
+    const sx = e.touches[0].clientX - rect.left, sy = e.touches[0].clientY - rect.top
+    if (dragNode) { e.preventDefault(); dragNode.x = worldX(sx); dragNode.y = worldY(sy); dragNode.vx = dragNode.vy = 0; alpha = Math.max(alpha, 0.2); moved = true }
+    else if (panning) { e.preventDefault(); ox += sx - px0; oy += sy - py0; px0 = sx; py0 = sy; moved = true }
+  }
+}, { passive: false })
+cv.addEventListener('touchend', () => {
+  if (dragNode && !moved) select(dragNode); else if (panning && !moved) select(null)
+  dragNode = null; panning = false; pinchD = 0
+})
+
 function centerOn(n: any) { ox = -n.x * scale; oy = -n.y * scale }
 
 function select(n: any) {
@@ -218,8 +256,10 @@ function select(n: any) {
   // sync selection to the URL so a node is shareable / deep-linkable from the catalog
   history.replaceState(null, '', n ? '?node=' + encodeURIComponent(n.id) : location.pathname)
   const panel = document.getElementById('panel')!; panel.replaceChildren()
-  if (!n) { panel.className = 'empty'; panel.textContent = gt('graph.panel.empty'); return }
-  panel.className = ''
+  // Keep the base `ctx` class in both states — it carries the panel's Card styling and
+  // (on mobile) its top-sheet docking; only the `empty` modifier toggles.
+  if (!n) { panel.className = 'ctx empty'; panel.textContent = gt('graph.panel.empty'); return }
+  panel.className = 'ctx'
   const meta = TYPES[n.type] || {}
   const col = meta.semantic ? (n.passes === false ? cvarv('--bad') : cvarv('--ok')) : nodeColor(n.type)
   const trow = el('div', 'n-type'); const d0 = el('span', 'dot'); d0.style.background = col; trow.appendChild(d0); trow.appendChild(document.createTextNode(typeLabel(n.type))); panel.appendChild(trow)
@@ -447,6 +487,13 @@ document.querySelectorAll('.nav-help').forEach((el) => {
   const d = el as HTMLDetailsElement
   document.addEventListener('click', (e) => { if (d.open && !d.contains(e.target as Node)) d.open = false })
 })
+
+// On a phone the controls dock as a bottom sheet — start it collapsed so it opens as a
+// compact bar of headers (tap to expand) instead of covering the canvas on load.
+if (matchMedia('(max-width:640px)').matches) {
+  const s = document.getElementById('pnl-selection')
+  if (s) { s.classList.add('collapsed'); s.querySelector('.pnl-head')?.setAttribute('aria-expanded', 'false') }
+}
 
 // deep-link: /graph.html?node=<id> opens focused on that node (from the catalog)
 const initId = new URLSearchParams(location.search).get('node')

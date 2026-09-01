@@ -136,7 +136,10 @@ Compiling and a green audit are **not** "done." **Look** at the page — at mult
 (ultrawide/laptop/mobile) **and in both themes** — spot-checking dialogs, inputs, cards,
 tables, a chart, and brand marks. The APCA audit passed while the dark destructive button
 was unreadable and the logo was invisible; only looking caught them. Run `npm run a11y`
-after any token change, and remove dead CSS as you go.
+after any token change, and remove dead CSS as you go. When you **can't** get a live
+preview, the browser-free fallback is `npm run verify:themes` — it proves the palette
+actually swaps light↔dark (a core token left at its light value fails). It's a smoke test,
+not a substitute for looking, but it catches "invert-and-ship" with no browser.
 
 ## 17. Change a component's colour with its `variant`, not a `className`
 To recolour a component, use its **`variant` prop** (`<Button variant="destructive">`),
@@ -145,7 +148,9 @@ never a raw colour utility (`<Button className="bg-destructive">`). `twMerge` de
 `data-slot`/CVA rule that `twMerge` can't see as conflicting — so your `bg-*` className
 and the variant's base **both** apply, and the variant usually wins the cascade. A
 destructive button written as `className="bg-destructive"` silently rendered as the
-primary. Reach for the variant; add a new variant to the component if none fits.
+primary. Reach for the variant; add a new variant to the component if none fits. Which
+`variant` / `size` values a component actually has (and their defaults) is listed in
+`manifest.json → index.components.variants` — check there instead of opening the source.
 
 ## 18. Critical actions must never require horizontal scroll — use `Toolbar`
 An action bar that overflows its width must **wrap**, never hide controls behind an

@@ -1,0 +1,43 @@
+{
+  "id": "pattern:feed-item",
+  "label": "Feed item",
+  "tier": 3,
+  "kind": "section-pattern",
+  "purpose": "Show one post in a feed — author, timestamp, body, optional media, and a row of low-emphasis reactions.",
+  "when_to_use": "A repeating unit in a social/activity feed (a status update, a shared photo, an activity entry).",
+  "when_not_to_use": "A single hero article or a data row — use a full page layout or a Table instead.",
+  "composition": [
+    "Header — an Item with the author Avatar (leading), name + timestamp (title/description), and an overflow menu (trailing)",
+    "Body — the post text, and any media via the placeholder pattern (a muted surface + lucide icon) when no image is loaded",
+    "Actions — a Separator, then a row of ghost Buttons (like / comment / share), each an icon + a count, never colour alone"
+  ],
+  "composes": {
+    "components": ["card", "avatar", "item", "button", "badge", "separator"]
+  },
+  "primary_action": "None — a feed item deliberately has no primary. Its reactions are all low-emphasis (ghost) Buttons so no single item competes with the app's primary action.",
+  "responsive": "Full-width within the feed column; the media slot keeps its aspect ratio (aspect-video) and never exceeds the card width.",
+  "accessibility": [
+    "each reaction is an icon + a text/number label (or sr-only), never colour alone",
+    "the media placeholder carries role=img + an aria-label, never a bare icon",
+    "the whole item is a Card region; the author name is the accessible heading"
+  ],
+  "content": "Ships realistic 2one placeholder copy (author, timestamp, a short update) — adapt the CONTENT, keep the STRUCTURE.",
+  "anti_patterns": [
+    "a filled primary Button on a feed item (it competes with the app's real primary)",
+    "signalling 'liked' by colour alone with no icon/label change",
+    "embedding an invented stock photo instead of the sanctioned media placeholder"
+  ],
+  "governed_by": ["no-color-alone", "tokens-only", "pill-buttons"],
+  "assumptions": [
+    "Author, timestamp and body are PLACEHOLDER 2one content — replace with real data.",
+    "Reactions are like / comment / share; adjust to the product's real actions.",
+    "Media is optional; when absent, use the docs/placeholders.md media slot rather than a stock image."
+  ],
+  "references": {
+    "shadcn_block": null,
+    "note": "shadcn ships no feed/social block (canonical blocks are dashboard, sidebar, login, signup — https://ui.shadcn.com/blocks). So this pattern mirrors no shadcn template; it composes shadcn PRIMITIVES (Card, Avatar, Item, Button, Badge, Separator) — every part a real, in-repo component.",
+    "shadcn_primitives": ["card", "avatar", "item", "button", "badge", "separator"],
+    "two_one_blocks": [],
+    "checked_against": "https://ui.shadcn.com/blocks"
+  }
+}

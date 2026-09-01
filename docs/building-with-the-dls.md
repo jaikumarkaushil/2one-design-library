@@ -11,7 +11,7 @@ trace back to breaking one of these rules.
 
 ## 1. Build *from* the library, not beside it
 Compose real components — `Card`, `Sidebar` / `SidebarInset`, `Button`, `Badge`,
-`Input`, `Table`, … from `@yokesh-2one/design-library` (or `src/components/ui/` in
+`Input`, `Table`, … from `@2one/design-library` (or `src/components/ui/` in
 this repo). **Never hand-roll a parallel chrome** (a custom sidebar, a bespoke
 "stage" box) for something the library already provides. If you're writing CSS for
 a sidebar, card, or badge — stop and use the component.
@@ -166,7 +166,7 @@ that existed only on desktop was dead on mobile. Render the trigger **always**; 
 the *existence*:
 
 ```tsx
-import { useIsMobile, Sheet, SheetContent, SheetTrigger, Button } from '@yokesh-2one/design-library'
+import { useIsMobile, Sheet, SheetContent, SheetTrigger, Button } from '@2one/design-library'
 
 function DetailsPanel({ children }: { children: React.ReactNode }) {
   const isMobile = useIsMobile()
@@ -196,7 +196,7 @@ itself**. Machine rule: `no-hardcoded-ui-data` (`rules/ux-rules.json`).
 Use the **mono** font only for **code blocks and literal commands/paths**
 (`npm run a11y`, `tokens/*.json`). Everything else — headers, labels, nav,
 prose — uses the UI font (Inter / Satoshi). A monospace header
-(`@yokesh-2one/design-library · shadcn · 2one-themed`) reads as a *dev sampler*,
+(`@2one/design-library · shadcn · 2one-themed`) reads as a *dev sampler*,
 not a product, and quietly undercuts the whole SaaS feel. Machine rule:
 `mono-for-code-only`.
 

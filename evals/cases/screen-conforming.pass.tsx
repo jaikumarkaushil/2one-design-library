@@ -6,7 +6,8 @@ export function SignIn() {
   return (
     <Card className="max-w-sm">
       <CardHeader>
-        <Logo variant="black" width={96} />
+        <Logo variant="black" width={96} className="dark:hidden" />
+        <Logo variant="white" width={96} className="hidden dark:block" />
         <CardTitle>Sign in</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">

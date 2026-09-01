@@ -17,6 +17,7 @@
     node scripts/check-usage.mjs <file|dir> [...]     # defaults to the payload's blocks
     node scripts/check-usage.mjs --json <file>        # machine-readable
     node scripts/check-usage.mjs --warnings <file>    # warnings fail too
+    node scripts/check-usage.mjs --draft <file>       # + a review checklist of the advisory "must" rules a static run can't judge
 
   Exit code: 1 if any error-severity finding (or any finding with --warnings).
 */
@@ -28,6 +29,7 @@ const root = cfg.root
 const args = process.argv.slice(2)
 const asJson = args.includes('--json')
 const strict = args.includes('--warnings')
+const draft = args.includes('--draft')
 const targets = args.filter((a) => !a.startsWith('--'))
 
 /*
@@ -394,6 +396,38 @@ const RULES = [
             detail: `<Logo> inside <${tag}> with no explicit width — the button icon rule can distort the wordmark to a 16px square`,
           })
         }
+      }
+      return out
+    },
+  },
+  {
+    // Mechanises the "must" rule fixed-vs-theme-color. A <Logo> paints a FIXED
+    // fill (black or white per variant), so an IN-APP mark has to adapt to the
+    // theme — a .dark variant swap (variant="black" dark:hidden paired with
+    // variant="white" hidden dark:block) or currentColor — OR sit on a FIXED
+    // ground (bg-white / bg-neutral-950). A single fixed-variant Logo on a theme
+    // surface vanishes in the other theme (a black mark disappears on the dark
+    // ground). This caught a real one: login-05 shipped a bare <Logo/> invisible
+    // in dark. It was advisory-only, so nothing flagged it — exactly the gap
+    // between "passes the checks" and "looks right" this closes.
+    id: 'fixed-vs-theme-color',
+    implements: 'fixed-vs-theme-color',
+    severity: 'error',
+    why: 'A Logo has a FIXED fill, so an in-app mark must be theme-adaptive (a .dark variant swap or currentColor) or sit on a FIXED ground (bg-white / bg-neutral-950). A single fixed-variant Logo on a theme surface vanishes in the other theme.',
+    test: ({ src }) => {
+      const code = stripComments(src)
+      const FIXED_GROUND = /bg-(?:white|black|(?:neutral|zinc|slate|gray|stone)-\d{2,3})\b/
+      const out = []
+      for (const m of code.matchAll(/<Logo\b([^>]*?)\/?>/g)) {
+        const attrs = m[1]
+        // Adaptive: this tag carries a dark: utility (one half of a .dark swap) or currentColor.
+        if (/\bdark:/.test(attrs) || /currentColor/i.test(attrs)) continue
+        // Fixed ground: a literal-colour background on an enclosing element nearby.
+        if (FIXED_GROUND.test(code.slice(Math.max(0, m.index - 280), m.index))) continue
+        out.push({
+          line: code.slice(0, m.index).split('\n').length,
+          detail: '<Logo> is not theme-adaptive and has no fixed ground — a fixed-fill mark vanishes in the other theme. Pair variant="black" dark:hidden with variant="white" hidden dark:block, or place it on bg-white / bg-neutral-950.',
+        })
       }
       return out
     },
@@ -897,8 +931,17 @@ if (asJson) {
       `  ${coverage.advisory.length} rule(s) are ADVISORY — written in ${cfg.rel('rules')} but not mechanically checked` +
         (musts.length ? `, ${musts.length} of them "must"` : '') + '.',
     )
-    if (args.includes('--coverage')) for (const r of coverage.advisory) console.log(`    · ${r.id.padEnd(26)} ${r.severity.padEnd(9)} ${r.label}`)
-    else console.log('  Re-run with --coverage to list them. A clean run does not mean these hold.\n')
+    if (draft && musts.length) {
+      // --draft: a static run cannot judge these, so PROMPT the reviewer by name —
+      // a "must" is never silently skipped. Confirm each by eye before shipping.
+      console.log('\n  Draft review — confirm each advisory "must" by eye (a static run can\'t):')
+      for (const r of musts) console.log(`    ☐ ${r.id.padEnd(24)} ${r.label}`)
+      console.log('')
+    } else if (args.includes('--coverage')) {
+      for (const r of coverage.advisory) console.log(`    · ${r.id.padEnd(26)} ${r.severity.padEnd(9)} ${r.label}`)
+    } else {
+      console.log('  Re-run with --coverage to list them, or --draft for a review checklist of the "must" rules. A clean run does not mean these hold.\n')
+    }
   }
   // The unmissable line. A clean run is a STATIC check of the rules it can
   // mechanise — it says nothing about sizing, proportion, or visual consistency,

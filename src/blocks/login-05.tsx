@@ -23,7 +23,8 @@ export function LoginForm({
               href="#"
               className="flex flex-col items-center gap-2 font-medium"
             >
-              <Logo width={96} />
+              <Logo variant="black" width={96} className="dark:hidden" />
+              <Logo variant="white" width={96} className="hidden dark:block" />
               <span className="sr-only">2one</span>
             </a>
             <h1 className="text-xl font-bold">Welcome to 2one</h1>

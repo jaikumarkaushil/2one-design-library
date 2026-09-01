@@ -277,3 +277,22 @@
 [data-slot="button-group"] > [data-slot="button"]:not(:first-child):not(:last-child) { border-radius: 0; }
 [data-slot="button-group"] > [data-slot="button"]:first-child { border-radius: var(--radius-full) 0 0 var(--radius-full); }
 [data-slot="button-group"] > [data-slot="button"]:last-child { border-radius: 0 var(--radius-full) var(--radius-full) 0; }
+/* An asChild Radix trigger (Tooltip/Dropdown/Popover/Dialog/Sheet/… Trigger) swaps
+   data-slot away from "button", so a <Button> used as a trigger loses [data-slot=
+   "button"] and with it the pill, falling back to the cva base rounded-md. The
+   Button still carries data-variant (Radix Slot merges the child's props), so
+   re-assert the pill on the button-bearing trigger slots, scoped by [data-variant]
+   so ONLY an actual Button matches — a bare trigger or a right-click area (a div)
+   does not. Select's trigger is input-like (sets data-size, never data-variant) and
+   is deliberately absent, so it keeps radius-md. Guarded by scripts/check-pill.mjs. */
+[data-slot="tooltip-trigger"][data-variant],
+[data-slot="popover-trigger"][data-variant],
+[data-slot="dropdown-menu-trigger"][data-variant],
+[data-slot="context-menu-trigger"][data-variant],
+[data-slot="menubar-trigger"][data-variant],
+[data-slot="dialog-trigger"][data-variant],
+[data-slot="alert-dialog-trigger"][data-variant],
+[data-slot="sheet-trigger"][data-variant],
+[data-slot="drawer-trigger"][data-variant],
+[data-slot="hover-card-trigger"][data-variant],
+[data-slot="collapsible-trigger"][data-variant] { border-radius: var(--radius-full); }

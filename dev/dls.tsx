@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader,
+  Sidebar, SidebarClose, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader,
   SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
   SidebarProvider, SidebarTrigger,
 } from '@/components/ui/sidebar'
@@ -158,9 +158,12 @@ export function Dls() {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <div className="flex items-center gap-2.5 px-2 py-1.5">
-            <Logo variant="black" width={52} className="dark:hidden" />
-            <Logo variant="white" width={52} className="hidden dark:block" />
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5 px-2 py-1.5">
+              <Logo variant="black" width={52} className="dark:hidden" />
+              <Logo variant="white" width={52} className="hidden dark:block" />
+            </div>
+            <SidebarClose />
           </div>
         </SidebarHeader>
         <SidebarContent>
@@ -183,7 +186,6 @@ export function Dls() {
       <SidebarInset className="min-w-0">
         <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
           <SidebarTrigger />
-          <Separator orientation="vertical" className="mr-1 !h-5" />
           <TopNav current="/dls.html" />
           <div className="ml-auto flex items-center gap-2">
             <LanguageToggle />

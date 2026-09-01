@@ -16,7 +16,7 @@
   },
   "nav": {
     "overview": "Overview",
-    "components": "Components",
+    "components": "Design language system",
     "aiComponents": "Components for AI Interface",
     "graph": "Knowledge graph",
     "dls": "What is a DLS?"
@@ -32,7 +32,7 @@
       "eyebrow": "Design language system · delivered as a product",
       "titleLead": "Ship on-brand product & marketing,",
       "titleThin": "without the guesswork.",
-      "body": "2one is a design language system for <b>product development and product marketing</b> — the components, tokens, brand, and the rules that bind them. A <b>knowledge graph</b> makes the system opinionated and deterministic, so people <em>and</em> AI build interfaces that already feel like 2one.",
+      "body": "Origin is a design language system for <b>product development and product marketing</b> — the components, tokens, brand, and the rules that bind them. A <b>knowledge graph</b> makes the system opinionated and deterministic, so people and AI build interfaces that already feel like 2one.",
       "exploreGraph": "Explore the knowledge graph",
       "readGuide": "Read the guide"
     },
@@ -90,6 +90,10 @@
       "prompt": {
         "title": "The build prompt",
         "desc": "Copy it, fill in the [brackets], and paste it into your AI assistant."
+      },
+      "example": {
+        "title": "Example — the prompt, filled in",
+        "desc": "The same prompt with the [brackets] filled in, here for a small social app — so you can see what to write."
       },
       "runLocally": {
         "title": "Run it locally",

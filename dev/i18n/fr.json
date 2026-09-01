@@ -16,7 +16,7 @@
   },
   "nav": {
     "overview": "Vue d’ensemble",
-    "components": "Composants",
+    "components": "Système de langage de conception",
     "aiComponents": "Composants pour interface IA",
     "graph": "Graphe de connaissances",
     "dls": "Qu’est-ce qu’un DLS ?"
@@ -32,7 +32,7 @@
       "eyebrow": "Système de langage de conception · livré comme un produit",
       "titleLead": "Livrez des produits et du marketing fidèles à la marque,",
       "titleThin": "sans approximation.",
-      "body": "2one est un système de langage de conception pour le <b>développement produit et le marketing produit</b> — les composants, les tokens, la marque, et les règles qui les relient. Un <b>graphe de connaissances</b> rend le système opiniâtre et déterministe, pour que les humains <em>et</em> l’IA construisent des interfaces qui ressemblent déjà à 2one.",
+      "body": "Origin est un système de langage de conception pour le <b>développement produit et le marketing produit</b> — les composants, les tokens, la marque, et les règles qui les relient. Un <b>graphe de connaissances</b> rend le système opiniâtre et déterministe, pour que les humains et l’IA construisent des interfaces qui ressemblent déjà à 2one.",
       "exploreGraph": "Explorer le graphe de connaissances",
       "readGuide": "Lire le guide"
     },
@@ -90,6 +90,10 @@
       "prompt": {
         "title": "L’invite de construction",
         "desc": "Copiez-la, remplissez les [crochets], puis collez-la dans votre assistant IA."
+      },
+      "example": {
+        "title": "Exemple — l’invite, complétée",
+        "desc": "La même invite avec les [crochets] remplis, ici pour une petite application sociale — pour voir quoi écrire."
       },
       "runLocally": {
         "title": "Lancer en local",

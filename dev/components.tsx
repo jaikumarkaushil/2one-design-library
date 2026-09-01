@@ -54,7 +54,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Calendar } from '@/components/ui/calendar'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
 import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader,
+  Sidebar, SidebarClose, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader,
   SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem,
   SidebarProvider, SidebarTrigger, useSidebar,
 } from '@/components/ui/sidebar'
@@ -102,6 +102,13 @@ import { MarketingClientFaq } from '@/blocks/marketing/client-faq'
 import { MarketingCtaBanner } from '@/blocks/marketing/cta-banner'
 import { MarketingFooter } from '@/blocks/marketing/footer'
 import { MarketingPage } from '@/blocks/marketing/page'
+
+// Own scroll position — set BEFORE first paint so the browser never restores a
+// prior mid-page scroll (the page reopened at Overlays/Data). The component then
+// scrolls to the top (or a linked #section) on mount.
+if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
+  history.scrollRestoration = 'manual'
+}
 
 /* ---------- foundation data (from tokens/*.css) ---------- */
 // Foundation swatches derive colour + label from the live @theme tokens
@@ -236,10 +243,13 @@ function TopBarLogo() {
   const { state, isMobile } = useSidebar()
   if (state === 'expanded' && !isMobile) return null
   return (
-    <a href="/" className="flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('common.dashboardAria')}>
-      <Logo variant="black" width={46} className="dark:hidden" />
-      <Logo variant="white" width={46} className="hidden dark:block" />
-    </a>
+    <>
+      <a href="/" className="flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('common.dashboardAria')}>
+        <Logo variant="black" width={46} className="dark:hidden" />
+        <Logo variant="white" width={46} className="hidden dark:block" />
+      </a>
+      <Separator orientation="vertical" className="mx-1 !h-5" />
+    </>
   )
 }
 
@@ -253,15 +263,31 @@ export function Components() {
     { grp: t('components.sidebar.tier2'), items: [['color', t('components.sidebar.colour'), ''], ['type', t('components.sidebar.typography'), ''], ['radius', t('components.sidebar.radius'), '']] },
     { grp: t('components.sidebar.tier3'), items: [['blocks', t('components.sidebar.blocks'), String(COUNT.blocks)], ['marketing', t('components.sidebar.marketing'), String(COUNT.marketing)], ['charts', t('components.sidebar.charts'), String(COUNT.charts)]] },
     { grp: t('components.sidebar.twoOneComponents'), items: [['mobile', t('components.sidebar.mobile'), String(COUNT.twoOne)]] },
-    { grp: t('components.sidebar.shadcnComponents'), items: [['actions', t('components.sidebar.actions'), ''], ['forms', t('components.sidebar.forms'), ''], ['overlays', t('components.sidebar.overlays'), ''], ['more', t('components.sidebar.more'), ''], ['data', t('components.sidebar.data'), ''], ['feedback', t('components.sidebar.feedback'), ''], ['navigation', t('components.sidebar.navigation'), '']] },
     { grp: t('nav.aiComponents'), items: [['ai', t('ai.sidebar.reasoning'), String(AI_ITEMS.length)]] },
+    { grp: t('components.sidebar.shadcnComponents'), items: [['actions', t('components.sidebar.actions'), ''], ['forms', t('components.sidebar.forms'), ''], ['overlays', t('components.sidebar.overlays'), ''], ['data', t('components.sidebar.data'), ''], ['feedback', t('components.sidebar.feedback'), ''], ['navigation', t('components.sidebar.navigation'), ''], ['more', t('components.sidebar.more'), '']] },
   ]
 
   useEffect(() => {
+    // Load from the TOP (or a linked section), never a browser-restored scroll
+    // position, and never the spot a mounted widget scrolls itself to. The cmdk
+    // Command in the "more" section scrolls itself into view a tick after mount,
+    // which used to reopen the page mid-way (Overlays/More) — so re-assert the
+    // intended position instantly across the first frames until it settles.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+    const hash = decodeURIComponent(location.hash.slice(1))
+    const settle = () => {
+      const el = hash ? document.getElementById(hash) : null
+      if (el) el.scrollIntoView({ behavior: 'instant' as ScrollBehavior })
+      else window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+    }
+    settle()
+    const raf = requestAnimationFrame(settle)
+    const t1 = setTimeout(settle, 120)
+
     const secs = Array.from(document.querySelectorAll('.g-section[id]'))
     const obs = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) setActive(e.target.id) }), { rootMargin: '-45% 0px -50% 0px' })
     secs.forEach((s) => obs.observe(s))
-    return () => obs.disconnect()
+    return () => { cancelAnimationFrame(raf); clearTimeout(t1); obs.disconnect() }
   }, [])
 
   return (
@@ -270,10 +296,13 @@ export function Components() {
         {/* App shell — the library's own Sidebar, not bespoke chrome */}
         <Sidebar>
           <SidebarHeader>
-            <a href="/" className="flex items-center gap-2.5 px-2 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('common.dashboardAria')}>
-              <Logo variant="black" width={52} className="dark:hidden" />
-              <Logo variant="white" width={52} className="hidden dark:block" />
-            </a>
+            <div className="flex items-center justify-between gap-2">
+              <a href="/" className="flex items-center gap-2.5 px-2 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('common.dashboardAria')}>
+                <Logo variant="black" width={52} className="dark:hidden" />
+                <Logo variant="white" width={52} className="hidden dark:block" />
+              </a>
+              <SidebarClose />
+            </div>
           </SidebarHeader>
           <SidebarContent>
             {NAV.map((g, i) => (
@@ -298,7 +327,6 @@ export function Components() {
           <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur">
             <SidebarTrigger />
             <TopBarLogo />
-            <Separator orientation="vertical" className="mr-1 !h-5" />
             <TopNav current="/components.html" />
             <div className="ml-auto flex items-center gap-2">
               <LanguageToggle />
@@ -484,6 +512,43 @@ export function Components() {
               </div>
             </section>
 
+            {/* TIER 3 · COMPONENTS FOR AI INTERFACE */}
+            <section id="ai" className="g-section">
+              <div className="g-eyebrow">{t('ai.hero.eyebrow')}</div><h2>{t('ai.hero.title')}</h2>
+              <p className="g-lede">
+                <Trans i18nKey="ai.hero.lede" components={{ mono: <span className="mono">ai-component:&lt;id&gt;</span> }} />
+              </p>
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                {AI_ITEMS.map((item, i) => {
+                  const spec: any = AI_SPECS.get(item.id)
+                  const title = spec?.label ?? item.id
+                  const composes: string[] = spec?.composes?.components ?? []
+                  const governed: string[] = spec?.governed_by ?? []
+                  return (
+                    <Card key={item.id} className="min-w-0 gap-4">
+                      <CardHeader>
+                        <div className="flex items-baseline gap-2">
+                          <span className="mono text-xs tabular-nums text-muted-foreground">{String(i + 1).padStart(2, '0')}</span>
+                          <CardTitle className="text-base">{title}</CardTitle>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{t(item.blurbKey)}</p>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex min-h-32 items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 p-5">
+                          {item.render()}
+                        </div>
+                        <div className="space-y-1.5">
+                          <AIChipRow label={t('ai.composedOf')} items={composes} />
+                          <AIChipRow label={t('ai.governedBy')} items={governed} />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </div>
+            </section>
+
+
             {/* ACTIONS */}
             <section id="actions" className="g-section">
               <div className="g-eyebrow">{t('components.actions.eyebrow')}</div><h2>{t('components.actions.title')}</h2>
@@ -589,6 +654,73 @@ export function Components() {
               </Block>
             </section>
 
+            {/* DATA DISPLAY */}
+            <section id="data" className="g-section">
+              <div className="g-eyebrow">{t('components.data.eyebrow')}</div><h2>{t('components.data.title')}</h2>
+              <div className="g-grid2">
+                <Card>
+                  <CardHeader><CardTitle>{t('components.data.upgradeTitle')}</CardTitle><CardDescription>{t('components.data.upgradeDesc')}</CardDescription></CardHeader>
+                  <CardContent className="text-sm text-muted-foreground">{t('components.data.upgradeBody')}</CardContent>
+                  <CardFooter><Button>{t('components.data.continue')}</Button></CardFooter>
+                </Card>
+                <Block title="Tabs" className="col">
+                  <Tabs defaultValue="a" className="w-full"><TabsList><TabsTrigger value="a">{t('components.data.overview')}</TabsTrigger><TabsTrigger value="b">{t('components.data.details')}</TabsTrigger></TabsList><TabsContent value="a" className="text-sm text-muted-foreground pt-2">{t('components.data.overviewPanel')}</TabsContent><TabsContent value="b" className="text-sm text-muted-foreground pt-2">{t('components.data.detailsPanel')}</TabsContent></Tabs>
+                </Block>
+                <Block title="Accordion" className="col">
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="1"><AccordionTrigger>{t('components.data.accordionQ1')}</AccordionTrigger><AccordionContent>{t('components.data.accordionA1')}</AccordionContent></AccordionItem>
+                    <AccordionItem value="2"><AccordionTrigger>{t('components.data.accordionQ2')}</AccordionTrigger><AccordionContent>{t('components.data.accordionA2')}</AccordionContent></AccordionItem>
+                  </Accordion>
+                </Block>
+                <Block title="Table" className="col">
+                  <Table><TableHeader><TableRow><TableHead>{t('components.data.plan')}</TableHead><TableHead>{t('components.data.seats')}</TableHead><TableHead className="text-right">{t('components.data.price')}</TableHead></TableRow></TableHeader>
+                    <TableBody>
+                      <TableRow><TableCell>{t('components.data.starter')}</TableCell><TableCell>3</TableCell><TableCell className="text-right">$0</TableCell></TableRow>
+                      <TableRow><TableCell>{t('components.data.pro')}</TableCell><TableCell>10</TableCell><TableCell className="text-right">$49</TableCell></TableRow>
+                    </TableBody>
+                  </Table>
+                </Block>
+                <Block title="Badge · Avatar" className="col">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <Badge>{t('components.data.default')}</Badge><Badge variant="secondary">{t('components.data.secondary')}</Badge><Badge variant="outline">{t('components.data.outline')}</Badge><Badge variant="destructive">{t('components.data.error')}</Badge>
+                    <Avatar><AvatarFallback>YK</AvatarFallback></Avatar>
+                  </div>
+                </Block>
+                <Block title="Progress · Skeleton · Separator" className="col">
+                  <Progress value={62} className="w-64" />
+                  <div className="flex items-center gap-3 w-full"><Skeleton className="size-10 rounded-full" /><div className="flex-1 space-y-2"><Skeleton className="h-3 w-3/4" /><Skeleton className="h-3 w-1/2" /></div></div>
+                  <div className="flex items-center gap-2 text-sm">{t('components.data.home')} <Separator orientation="vertical" className="h-4" /> {t('components.data.docs')}</div>
+                </Block>
+              </div>
+            </section>
+
+            {/* FEEDBACK */}
+            <section id="feedback" className="g-section">
+              <div className="g-eyebrow">{t('components.feedback.eyebrow')}</div><h2>{t('components.feedback.title')}</h2>
+              <Block title={t('components.feedback.blockTitle')} className="col">
+                <Alert className="max-w-md"><Rocket /><AlertTitle>{t('components.feedback.headsUp')}</AlertTitle><AlertDescription>{t('components.feedback.alertBody')}</AlertDescription></Alert>
+                <div className="flex items-center gap-4">
+                  <Button variant="outline" onClick={() => toast(t('components.feedback.toastTitle'), { description: t('components.feedback.toastDesc') })}>{t('components.feedback.showToast')}</Button>
+                  <Spinner /> <Cap>{t('components.feedback.spinner')}</Cap>
+                </div>
+              </Block>
+            </section>
+
+            {/* NAVIGATION */}
+            <section id="navigation" className="g-section">
+              <div className="g-eyebrow">{t('components.navigation.eyebrow')}</div><h2>{t('components.navigation.title')}</h2>
+              <div className="g-grid2">
+                <Block title="Breadcrumb" className="col">
+                  <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbLink href="#">{t('components.navigation.home')}</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbLink href="#">{t('components.navigation.components')}</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbPage>{t('components.navigation.button')}</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>
+                </Block>
+                <Block title="Pagination" className="col">
+                  <div className="w-full overflow-x-auto">
+                    <Pagination><PaginationContent><PaginationItem><PaginationPrevious href="#" /></PaginationItem><PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem><PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem><PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem><PaginationItem><PaginationNext href="#" /></PaginationItem></PaginationContent></Pagination>
+                  </div>
+                </Block>
+              </div>
+            </section>
+
             {/* MORE COMPONENTS */}
             <section id="more" className="g-section">
               <div className="g-eyebrow">{t('components.more.eyebrow')}</div><h2>{t('components.more.title')}</h2>
@@ -678,110 +810,6 @@ export function Components() {
                 </Block>
               </div>
             </section>
-
-            {/* DATA DISPLAY */}
-            <section id="data" className="g-section">
-              <div className="g-eyebrow">{t('components.data.eyebrow')}</div><h2>{t('components.data.title')}</h2>
-              <div className="g-grid2">
-                <Card>
-                  <CardHeader><CardTitle>{t('components.data.upgradeTitle')}</CardTitle><CardDescription>{t('components.data.upgradeDesc')}</CardDescription></CardHeader>
-                  <CardContent className="text-sm text-muted-foreground">{t('components.data.upgradeBody')}</CardContent>
-                  <CardFooter><Button>{t('components.data.continue')}</Button></CardFooter>
-                </Card>
-                <Block title="Tabs" className="col">
-                  <Tabs defaultValue="a" className="w-full"><TabsList><TabsTrigger value="a">{t('components.data.overview')}</TabsTrigger><TabsTrigger value="b">{t('components.data.details')}</TabsTrigger></TabsList><TabsContent value="a" className="text-sm text-muted-foreground pt-2">{t('components.data.overviewPanel')}</TabsContent><TabsContent value="b" className="text-sm text-muted-foreground pt-2">{t('components.data.detailsPanel')}</TabsContent></Tabs>
-                </Block>
-                <Block title="Accordion" className="col">
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="1"><AccordionTrigger>{t('components.data.accordionQ1')}</AccordionTrigger><AccordionContent>{t('components.data.accordionA1')}</AccordionContent></AccordionItem>
-                    <AccordionItem value="2"><AccordionTrigger>{t('components.data.accordionQ2')}</AccordionTrigger><AccordionContent>{t('components.data.accordionA2')}</AccordionContent></AccordionItem>
-                  </Accordion>
-                </Block>
-                <Block title="Table" className="col">
-                  <Table><TableHeader><TableRow><TableHead>{t('components.data.plan')}</TableHead><TableHead>{t('components.data.seats')}</TableHead><TableHead className="text-right">{t('components.data.price')}</TableHead></TableRow></TableHeader>
-                    <TableBody>
-                      <TableRow><TableCell>{t('components.data.starter')}</TableCell><TableCell>3</TableCell><TableCell className="text-right">$0</TableCell></TableRow>
-                      <TableRow><TableCell>{t('components.data.pro')}</TableCell><TableCell>10</TableCell><TableCell className="text-right">$49</TableCell></TableRow>
-                    </TableBody>
-                  </Table>
-                </Block>
-                <Block title="Badge · Avatar" className="col">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <Badge>{t('components.data.default')}</Badge><Badge variant="secondary">{t('components.data.secondary')}</Badge><Badge variant="outline">{t('components.data.outline')}</Badge><Badge variant="destructive">{t('components.data.error')}</Badge>
-                    <Avatar><AvatarFallback>YK</AvatarFallback></Avatar>
-                  </div>
-                </Block>
-                <Block title="Progress · Skeleton · Separator" className="col">
-                  <Progress value={62} className="w-64" />
-                  <div className="flex items-center gap-3 w-full"><Skeleton className="size-10 rounded-full" /><div className="flex-1 space-y-2"><Skeleton className="h-3 w-3/4" /><Skeleton className="h-3 w-1/2" /></div></div>
-                  <div className="flex items-center gap-2 text-sm">{t('components.data.home')} <Separator orientation="vertical" className="h-4" /> {t('components.data.docs')}</div>
-                </Block>
-              </div>
-            </section>
-
-            {/* FEEDBACK */}
-            <section id="feedback" className="g-section">
-              <div className="g-eyebrow">{t('components.feedback.eyebrow')}</div><h2>{t('components.feedback.title')}</h2>
-              <Block title={t('components.feedback.blockTitle')} className="col">
-                <Alert className="max-w-md"><Rocket /><AlertTitle>{t('components.feedback.headsUp')}</AlertTitle><AlertDescription>{t('components.feedback.alertBody')}</AlertDescription></Alert>
-                <div className="flex items-center gap-4">
-                  <Button variant="outline" onClick={() => toast(t('components.feedback.toastTitle'), { description: t('components.feedback.toastDesc') })}>{t('components.feedback.showToast')}</Button>
-                  <Spinner /> <Cap>{t('components.feedback.spinner')}</Cap>
-                </div>
-              </Block>
-            </section>
-
-            {/* NAVIGATION */}
-            <section id="navigation" className="g-section">
-              <div className="g-eyebrow">{t('components.navigation.eyebrow')}</div><h2>{t('components.navigation.title')}</h2>
-              <div className="g-grid2">
-                <Block title="Breadcrumb" className="col">
-                  <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbLink href="#">{t('components.navigation.home')}</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbLink href="#">{t('components.navigation.components')}</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbPage>{t('components.navigation.button')}</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>
-                </Block>
-                <Block title="Pagination" className="col">
-                  <div className="w-full overflow-x-auto">
-                    <Pagination><PaginationContent><PaginationItem><PaginationPrevious href="#" /></PaginationItem><PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem><PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem><PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem><PaginationItem><PaginationNext href="#" /></PaginationItem></PaginationContent></Pagination>
-                  </div>
-                </Block>
-              </div>
-            </section>
-
-            {/* TIER 3 · COMPONENTS FOR AI INTERFACE */}
-            <section id="ai" className="g-section">
-              <div className="g-eyebrow">{t('ai.hero.eyebrow')}</div><h2>{t('ai.hero.title')}</h2>
-              <p className="g-lede">
-                <Trans i18nKey="ai.hero.lede" components={{ mono: <span className="mono">ai-component:&lt;id&gt;</span> }} />
-              </p>
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
-                {AI_ITEMS.map((item, i) => {
-                  const spec: any = AI_SPECS.get(item.id)
-                  const title = spec?.label ?? item.id
-                  const composes: string[] = spec?.composes?.components ?? []
-                  const governed: string[] = spec?.governed_by ?? []
-                  return (
-                    <Card key={item.id} className="min-w-0 gap-4">
-                      <CardHeader>
-                        <div className="flex items-baseline gap-2">
-                          <span className="mono text-xs tabular-nums text-muted-foreground">{String(i + 1).padStart(2, '0')}</span>
-                          <CardTitle className="text-base">{title}</CardTitle>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{t(item.blurbKey)}</p>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="flex min-h-32 items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 p-5">
-                          {item.render()}
-                        </div>
-                        <div className="space-y-1.5">
-                          <AIChipRow label={t('ai.composedOf')} items={composes} />
-                          <AIChipRow label={t('ai.governedBy')} items={governed} />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
-            </section>
-
 
             <footer className="mt-16 border-t pt-8 text-sm text-muted-foreground">{t('common.footerCatalog')}</footer>
           </div>

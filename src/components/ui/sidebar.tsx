@@ -259,9 +259,11 @@ function SidebarTrigger({
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { toggleSidebar, open, openMobile, isMobile } = useSidebar()
-  // Standard menu affordance: a hamburger to OPEN, an X to CLOSE — never the
-  // open icon while the menu is already open. Label + aria-expanded follow suit.
+  // A hamburger that OPENS the menu. While the menu is open it is closed from
+  // INSIDE it (SidebarClose, in the SidebarHeader), so the trigger hides —
+  // the close affordance is never a stray control sitting outside the open menu.
   const isOpen = isMobile ? openMobile : open
+  if (isOpen) return null
 
   return (
     <Button
@@ -270,15 +272,46 @@ function SidebarTrigger({
       variant="ghost"
       size="icon"
       className={cn("size-7", className)}
-      aria-expanded={isOpen}
+      aria-label="Open menu"
+      aria-expanded={false}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      {isOpen ? <X /> : <Menu />}
-      <span className="sr-only">{isOpen ? "Close menu" : "Open menu"}</span>
+      <Menu />
+      <span className="sr-only">Open menu</span>
+    </Button>
+  )
+}
+
+// The close (X) affordance that lives INSIDE the open menu — place it in the
+// SidebarHeader. It renders in both the desktop panel and the mobile Sheet
+// (both mount the header), giving one consistent in-menu close on every surface.
+function SidebarClose({
+  className,
+  onClick,
+  ...props
+}: React.ComponentProps<typeof Button>) {
+  const { toggleSidebar } = useSidebar()
+
+  return (
+    <Button
+      data-sidebar="close"
+      data-slot="sidebar-close"
+      variant="ghost"
+      size="icon"
+      className={cn("size-7", className)}
+      aria-label="Close menu"
+      onClick={(event) => {
+        onClick?.(event)
+        toggleSidebar()
+      }}
+      {...props}
+    >
+      <X />
+      <span className="sr-only">Close menu</span>
     </Button>
   )
 }
@@ -704,6 +737,7 @@ function SidebarMenuSubButton({
 
 export {
   Sidebar,
+  SidebarClose,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,

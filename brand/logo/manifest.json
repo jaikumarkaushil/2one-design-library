@@ -22,6 +22,12 @@
     "minWidthPx": 96,
     "clearSpace": "0.5x the logo height on all sides"
   },
+  "sizing": {
+    "note": "Two DIFFERENT floors — do not conflate them. standaloneMinPx (96) is the legibility floor for the mark on its own (a splash, a print piece, a logo tile). In embedded app chrome — a header, sidebar or footer — the mark sits beside text at a much smaller optical size; use appChromePx there, NOT 96. Set the size with the Logo `width` prop. These numbers are checked against the library's real usages by scripts/check-logo-sizing.mjs (a Logo width below appChromePx.min or a chrome usage at/above standaloneMinPx fails the check).",
+    "standaloneMinPx": 96,
+    "appChromePx": { "min": 46, "max": 64, "typical": 52 },
+    "showcaseMaxPx": 120
+  },
   "howToChoose": "On a light or white surface use variant 'black'. On a dark surface use variant 'white'. Never place black on dark or white on light.",
   "variants": [
     {

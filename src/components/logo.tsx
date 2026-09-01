@@ -4,22 +4,40 @@ import { cn } from '@/lib/utils'
 
 /*
   Logo — 2one brand wordmark (Figma 198:23). No shadcn equivalent.
-  Brand rule: two fills only, never recolored/rotated/distorted. black on
-  light surfaces, white on dark. Minimum width 96px; scale proportionally.
+  Brand rule: two fills only, never recoloured/rotated/distorted. Black on
+  light surfaces, white on dark.
+
+  Sizing — set it with the `width` prop (px); height tracks the intrinsic
+  109:33 ratio. Two different floors (brand/logo/manifest.json → sizing):
+    • App chrome (header / sidebar / footer): ~46–64px. NOT the 96 below.
+    • Standalone / print: 96px minimum — the legibility floor for the mark on
+      its own, not the in-chrome size.
+  Dimensions are applied as an inline `style` so an ancestor utility cannot crush
+  the mark: Button's `[&_svg:not([class*='size-'])]:size-4`, for instance, would
+  otherwise override the width/height ATTRIBUTES (CSS beats presentation attrs)
+  and render a 16px square, distorting the 109:33 wordmark. Inline style wins
+  over that injected utility, so <Logo> is safe inside a <Button>. The
+  `logo-in-button` check-usage detector still nudges callers to size it
+  explicitly (belt-and-suspenders for older versions / custom clickable wrappers).
 */
 export interface LogoProps extends React.SVGProps<SVGSVGElement> {
   variant?: 'black' | 'white'
+  /** Rendered width in px; height follows the 109:33 ratio. Default 108 (standalone). */
   width?: number
 }
 
-export function Logo({ variant = 'black', width = 108, className, ...props }: LogoProps) {
+export function Logo({ variant = 'black', width = 108, className, style, ...props }: LogoProps) {
   const fill = variant === 'white' ? '#ffffff' : '#000000'
+  const height = (width * 33) / 109
   return (
     <svg
       data-slot="logo"
       viewBox="0 0 109 33"
       width={width}
-      height={(width * 33) / 109}
+      height={height}
+      // Inline style beats an ancestor's injected sizing utility (e.g. Button's
+      // size-4), so the wordmark keeps its intrinsic width/height and ratio.
+      style={{ width, height, ...style }}
       fill="none"
       role="img"
       aria-label="2one"

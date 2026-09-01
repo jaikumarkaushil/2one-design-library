@@ -363,6 +363,42 @@ const RULES = [
     },
   },
   {
+    // The bug an app shipped: a clickable home mark, <Button><Logo/></Button>. The
+    // Button's base cva carries [&_svg:not([class*='size-'])]:size-4, which crushes
+    // an UNSIZED <Logo> svg to a 16px square — distorting the 109:33 wordmark. The
+    // library now defends (Logo sets inline width/height), but this still nudges the
+    // caller to size it explicitly: belt-and-suspenders for older library versions
+    // and for custom clickable wrappers that re-implement the same icon rule.
+    id: 'logo-in-button',
+    implements: 'logo-untouchable',
+    severity: 'warn',
+    why: "A Button's icon rule ([&_svg:not([class*='size-'])]:size-4) distorts an unsized <Logo> to a 16px square. Pass an explicit width= (or a size-/w-/h- class) to lock the 109:33 ratio.",
+    test: ({ src }) => {
+      const out = []
+      // <Button> itself, or an asChild Radix trigger that renders its child as the
+      // button (and so applies the same icon-sizing rule to a wrapped <Logo>).
+      const OPEN = /<(Button|(?:Tooltip|DropdownMenu|Popover|Dialog|AlertDialog|Sheet|Drawer|HoverCard|ContextMenu|Menubar|Collapsible)Trigger)\b([^>]*)>/g
+      let m
+      while ((m = OPEN.exec(src))) {
+        const tag = m[1]
+        if (tag !== 'Button' && !/\basChild\b/.test(m[2])) continue // a trigger only sizes its child when asChild
+        const end = src.indexOf(`</${tag}>`, m.index)
+        const inner = end === -1 ? src.slice(m.index) : src.slice(m.index, end)
+        const logo = /<Logo\b([^>]*?)\/?>/.exec(inner)
+        if (!logo) continue
+        const attrs = logo[1]
+        const sized = /\bwidth\s*=/.test(attrs) || /\b(?:size|w|h)-/.test(attrs) // width prop, or a sizing class
+        if (!sized) {
+          out.push({
+            line: src.slice(0, m.index + logo.index).split('\n').length,
+            detail: `<Logo> inside <${tag}> with no explicit width — the button icon rule can distort the wordmark to a 16px square`,
+          })
+        }
+      }
+      return out
+    },
+  },
+  {
     id: 'multiple-primary-buttons',
     implements: 'one-primary',
     severity: 'error',
@@ -850,6 +886,14 @@ if (asJson) {
     if (args.includes('--coverage')) for (const r of coverage.advisory) console.log(`    · ${r.id.padEnd(26)} ${r.severity.padEnd(9)} ${r.label}`)
     else console.log('  Re-run with --coverage to list them. A clean run does not mean these hold.\n')
   }
+  // The unmissable line. A clean run is a STATIC check of the rules it can
+  // mechanise — it says nothing about sizing, proportion, or visual consistency,
+  // and it never looked at a rendered pixel. The video-app defects (a crushed logo,
+  // pills that broke on asChild triggers) all passed this. Rule 16 / 24.
+  console.log(`  ${findings.length ? '—' : '✓'} check-usage is STATIC. A clean run does NOT cover sizing, proportion or
+    visual consistency, and it has not rendered anything. Before you call it done,
+    eyeball the page in BOTH themes at multiple widths (docs/building-with-the-dls.md
+    rule 16). "Passes the checks" is not "looks right".\n`)
 }
 
 process.exit(errors.length || (strict && warns.length) ? 1 : 0)

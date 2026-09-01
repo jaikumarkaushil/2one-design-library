@@ -93,7 +93,7 @@
       },
       "example": {
         "title": "Example — the prompt, filled in",
-        "desc": "The same prompt with the [brackets] filled in, here for a small social app — so you can see what to write."
+        "desc": "The same prompt with the [brackets] filled in, here for a videoconferencing app — so you can see what to write."
       },
       "runLocally": {
         "title": "Run it locally",

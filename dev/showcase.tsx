@@ -218,10 +218,34 @@ export function Showcase() {
   ]
 
   useEffect(() => {
+    // Honour an incoming section hash (e.g. /#faq, /#support arriving from the
+    // Help menu on another page). The browser's native anchor jump fires before
+    // React has rendered the section, so it lands at the top instead — land on
+    // the section ourselves after mount, re-asserting across the first frames as
+    // fonts/layout settle.
+    const hash = decodeURIComponent(location.hash.slice(1))
+    const timers: ReturnType<typeof setTimeout>[] = []
+    if (hash) {
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+      // Recompute the target each time (so a late web-font/logo/layout reflow
+      // can't leave us off the section), and clear the 56px sticky header.
+      const settle = () => {
+        const el = document.getElementById(hash)
+        if (!el) return
+        const y = window.scrollY + el.getBoundingClientRect().top - 64
+        window.scrollTo({ top: y, behavior: 'instant' as ScrollBehavior })
+      }
+      settle()
+      requestAnimationFrame(settle)
+      document.fonts?.ready.then(settle).catch(() => {})
+      // Re-assert across the first frames while fonts + footer assets settle.
+      for (const ms of [120, 300, 600]) timers.push(setTimeout(settle, ms))
+    }
+
     const secs = Array.from(document.querySelectorAll('.g-section[id]'))
     const obs = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) setActive(e.target.id) }), { rootMargin: '-45% 0px -50% 0px' })
     secs.forEach((s) => obs.observe(s))
-    return () => obs.disconnect()
+    return () => { obs.disconnect(); timers.forEach(clearTimeout) }
   }, [])
 
   return (
@@ -403,7 +427,12 @@ Run  npx 2one check <path>  and fix everything it reports (it exits non-zero on 
                 <CardContent className="min-w-0">
                   <CodeBlock code={`Prompt for Building with the 2one Design Library
 
-I want to build a social media application for me and my friends.
+I want to build a videoconferencing application for users to connect with each other for networking and business meetings.
+
+Core features / workflows:
+1. Should have all the features of a standard video conferencing application
+2. Should be accessible for older adults
+3. Should be user friendly
 
 Design system — read it first
 Use the 2one Design Library: https://github.com/yokesh-2one/2one-design-library

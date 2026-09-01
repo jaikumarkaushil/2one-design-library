@@ -93,7 +93,7 @@
       },
       "example": {
         "title": "Exemple — l’invite, complétée",
-        "desc": "La même invite avec les [crochets] remplis, ici pour une petite application sociale — pour voir quoi écrire."
+        "desc": "La même invite avec les [crochets] remplis, ici pour une application de visioconférence — pour voir quoi écrire."
       },
       "runLocally": {
         "title": "Lancer en local",

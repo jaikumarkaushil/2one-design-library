@@ -18,6 +18,21 @@ Vite + React + Tailwind v4 app. Following this verbatim yields a themed, pill-ra
 `next-themes` (for `<ThemeProvider>`) and every other runtime dep are **bundled** —
 you don't install them separately.
 
+### Compatibility (tested)
+
+The library rides the leading edge, so a too-old pin can fail `npm install` with
+`ERESOLVE`. These are the majors it is built and verified against — match them in your
+app (the starter from step 1 already does). Checked against `package.json` by
+`npm run check:docs`, so this table can't drift from the real toolchain.
+
+| Tool         | Major | Notes |
+|--------------|-------|-------|
+| React        | 19    | 18 also supported (peer dep `react >=18`). |
+| Vite         | 8     | `@vitejs/plugin-react` 6 **requires** Vite 8 — pinning Vite 7 fails `ERESOLVE`. |
+| Tailwind CSS | 4     | Peer dep `tailwindcss >=4`; v4 only (the `@source` model is v4-specific). |
+| TypeScript   | 6     | For consumers using TS. |
+| Node         | 18    | 18 or newer. |
+
 ## 1 · Get the package
 
 ### A · Install from the repo (the supported path)
@@ -154,4 +169,10 @@ path relative to *your* stylesheet rather than a guessed one. Then, by eye:
 - **Barrel drags in `recharts`** (via `Chart`) → all deps are declared; this is expected
   until per-component subpath exports land. Run `npm run what-uses recharts` in the DLS
   repo to see exactly which components pull it.
+- **`npx 2one …` fails with a registry 404 for a package named `2one`** → the CLI isn't
+  installed in this project yet (usually a failed `npm install`), so `npx` fell back to the
+  npm registry and looked for a package literally called `2one`. It's not "the CLI is
+  broken" — install the library first (step 1), then `npx 2one` resolves the local
+  `node_modules/.bin/2one`. (`npx` can't see the local bin until the install succeeds, so
+  the CLI itself can't intercept this — it hasn't run yet.)
 

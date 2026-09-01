@@ -18,6 +18,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { config as cfg } from './lib/config.mjs'
+import { extractVariants } from './lib/extract-variants.mjs'
 
 const root = cfg.root
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
@@ -43,6 +44,24 @@ const ownInUi = new Set(cfg.rules.ownComponentsInUi ?? [])
 const uiAll = ls(cfg.path('components'), tsx).map(base)
 const ui = uiAll.filter((n) => !ownInUi.has(n))
 const only = [...ls(cfg.path('ownComponents'), tsx).map(base), ...uiAll.filter((n) => ownInUi.has(n))].sort()
+
+/*
+  cva variant enums per component — the mechanical slice of a prop contract that
+  an agent most often opens source for (which `variant`/`size` exist + defaults).
+  Keyed by component slug, matching the graph's component:<slug> ids. Full prop
+  types stay a planned format; this covers the highest-frequency question now.
+*/
+const componentFiles = [
+  ...ls(cfg.path('components'), tsx).map((f) => [base(f), join(cfg.path('components'), f)]),
+  ...ls(cfg.path('ownComponents'), tsx).map((f) => [base(f), join(cfg.path('ownComponents'), f)]),
+]
+const variants = {}
+for (const [slug, abs] of componentFiles) {
+  try {
+    const v = extractVariants(readFileSync(abs, 'utf8'))
+    if (v) variants[slug] = v
+  } catch { /* unreadable file → skip */ }
+}
 
 /*
   The PUBLIC SYMBOLS a consumer may import, not the file names.
@@ -224,6 +243,9 @@ const manifest = {
       // Every symbol importable from the package barrel — the API surface, as
       // opposed to `primitives`/`own`, which are the files behind it.
       exports: exportedSymbols,
+      // The cva variant enums (+ defaults) per component slug — so an agent can
+      // pick a correct `variant`/`size` without opening the component source.
+      variants,
     },
     templates: {
       tier: 3,

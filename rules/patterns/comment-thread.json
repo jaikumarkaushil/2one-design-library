@@ -1,0 +1,43 @@
+{
+  "id": "pattern:comment-thread",
+  "label": "Comment thread",
+  "tier": 3,
+  "kind": "section-pattern",
+  "purpose": "Show a thread of comments and let the reader add one — a list of author + comment rows plus a single reply composer.",
+  "when_to_use": "Comments under a post, an issue, or an article; a discussion thread.",
+  "when_not_to_use": "A real-time chat transcript (use a dedicated messaging surface) or a single testimonial (use the marketing/testimonial block).",
+  "composition": [
+    "Thread — a list of Items, each with the commenter Avatar (leading), name + timestamp, and the comment body; nested replies indent one step",
+    "Composer — a Textarea for the reply and exactly one filled Button (Reply / Post), disabled until non-empty",
+    "Separators between the thread and the composer"
+  ],
+  "composes": {
+    "components": ["item", "avatar", "textarea", "button", "separator"]
+  },
+  "primary_action": "Exactly one filled Button — Post/Reply on the composer. Per-comment actions (reply, like) are ghost.",
+  "responsive": "Full-width in the reading column; nested replies indent by a fixed step and never force horizontal scroll.",
+  "accessibility": [
+    "the Textarea has a real Label (or aria-label)",
+    "per-comment actions are icon + text/sr-only, never colour alone",
+    "each comment's author name is its accessible heading"
+  ],
+  "content": "Ships realistic 2one placeholder comments — adapt the CONTENT, keep the STRUCTURE.",
+  "anti_patterns": [
+    "two primary Buttons (Post and Cancel both filled)",
+    "a submit control with no accessible label",
+    "signalling 'liked'/'resolved' by colour alone"
+  ],
+  "governed_by": ["one-primary", "no-color-alone", "tokens-only", "pill-buttons"],
+  "assumptions": [
+    "Comments, authors and timestamps are PLACEHOLDER 2one content — replace with real data.",
+    "The single primary action is Post/Reply on the composer.",
+    "Reply nesting is one level of indent; deepen only if the product needs it."
+  ],
+  "references": {
+    "shadcn_block": null,
+    "note": "shadcn ships no comments block (canonical blocks are dashboard, sidebar, login, signup — https://ui.shadcn.com/blocks). Composed from shadcn PRIMITIVES (Item, Avatar, Textarea, Button, Separator); every part a real, in-repo component.",
+    "shadcn_primitives": ["item", "avatar", "textarea", "button", "separator"],
+    "two_one_blocks": [],
+    "checked_against": "https://ui.shadcn.com/blocks"
+  }
+}

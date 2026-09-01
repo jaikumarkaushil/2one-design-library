@@ -819,10 +819,24 @@ const errors = findings.filter((f) => f.severity === 'error')
 const warns = findings.filter((f) => f.severity === 'warn')
 
 if (asJson) {
-  console.log(JSON.stringify({ scanned: files.length, errors: errors.length, warnings: warns.length, coverage, findings }, null, 2))
+  console.log(JSON.stringify({ scanned: files.length, errors: errors.length, warnings: warns.length, degraded: !coverage, coverage, findings }, null, 2))
 } else {
   const scope = coverage ? `${coverage.checked} of ${coverage.total} ${cfg.name} rules` : `the ${cfg.name} rules`
   console.log(`\n  check-usage — ${files.length} file(s) scanned against ${scope}\n`)
+  // Degraded mode: the payload's rules file couldn't be resolved from `root`, so
+  // only the built-in detectors ran — a REDUCED set. Say so loudly; a silent
+  // "the N rules" (with no count) reads like full coverage when it isn't.
+  if (!coverage) {
+    const rel = cfg.rel('rules')
+    console.log(
+      `  ⚠ Degraded coverage — no ${cfg.name} rules file resolved` +
+        (rel ? ` (looked for "${rel}" under ${root})` : '') + `.\n` +
+        `    Only the built-in detectors ran, not this system's full ruleset.\n` +
+        `    Run from a project with dls.config.json (or inside the DLS repo, passing\n` +
+        `    your app path as the target) for full coverage. A clean run here does\n` +
+        `    NOT mean the ${cfg.name} rules hold.\n`,
+    )
+  }
   if (!findings.length) {
     // Never "✓ no violations" unqualified — that is the sentence that made an
     // inert rule look like a passing one for weeks.

@@ -4,8 +4,8 @@
   "generated_for": "0.2.0",
   "ontology": "graph/ontology.json",
   "stats": {
-    "nodes": 314,
-    "edges": 920,
+    "nodes": 322,
+    "edges": 960,
     "by_node_type": {
       "a11y": 8,
       "ai-component": 7,
@@ -16,8 +16,8 @@
       "component": 55,
       "context": 4,
       "contrast": 9,
-      "intent": 19,
-      "pattern": 5,
+      "intent": 23,
+      "pattern": 9,
       "package": 13,
       "token-radius": 7,
       "ramp": 21,
@@ -29,12 +29,12 @@
     },
     "by_class": {
       "AccessibilityRequirement": 8,
-      "Pattern": 63,
+      "Pattern": 67,
       "Brand": 8,
       "Component": 64,
       "Context": 4,
       "Evidence": 9,
-      "Intent": 19,
+      "Intent": 23,
       "Package": 13,
       "Foundation": 74,
       "Rule": 42,
@@ -50,15 +50,15 @@
       "derived_from": 26,
       "embodies": 6,
       "forbidden_with": 1,
-      "governed_by": 157,
+      "governed_by": 171,
       "has_contrast": 18,
       "inappropriate_for": 4,
       "overrides": 1,
-      "preferred_composition": 25,
+      "preferred_composition": 46,
       "preferred_for": 6,
       "preferred_over": 2,
-      "realized_by": 16,
-      "requires": 14,
+      "realized_by": 20,
+      "requires": 15,
       "serves": 5,
       "specializes": 6,
       "supports_state": 12,
@@ -66,11 +66,11 @@
     },
     "by_provenance": {
       "nodes": {
-        "explicit": 109,
+        "explicit": 117,
         "derived": 205
       },
       "edges": {
-        "explicit": 267,
+        "explicit": 307,
         "derived": 653
       }
     },
@@ -1245,6 +1245,15 @@
       "source": "docs/building-with-the-dls.md"
     },
     {
+      "id": "intent:post-to-feed",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Post to a feed",
+      "description": "Show one item in a social/activity feed — author, body, optional media, low-emphasis reactions.",
+      "source": "rules/patterns/feed-item.json"
+    },
+    {
       "id": "intent:present-pricing",
       "type": "intent",
       "class": "Intent",
@@ -1297,6 +1306,33 @@
       "label": "Select an option",
       "description": "Choose one or more values from a set.",
       "source": "graph/decisions.json"
+    },
+    {
+      "id": "intent:show-comments",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Show a comment thread",
+      "description": "Show a thread of comments and let the reader add one.",
+      "source": "rules/patterns/comment-thread.json"
+    },
+    {
+      "id": "intent:show-media-gallery",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Show a media gallery",
+      "description": "Show a set of images/videos as a browsable grid or carousel, with a lightbox.",
+      "source": "rules/patterns/media-gallery.json"
+    },
+    {
+      "id": "intent:show-profile",
+      "type": "intent",
+      "class": "Intent",
+      "prov": "explicit",
+      "label": "Show a profile",
+      "description": "Introduce a person/account at the top of a profile — avatar, name, bio, stats, one primary relationship action.",
+      "source": "rules/patterns/profile-header.json"
     },
     {
       "id": "intent:show-reasoning",
@@ -1362,6 +1398,15 @@
       "source": "src/blocks/login-01.tsx"
     },
     {
+      "id": "pattern:comment-thread",
+      "type": "pattern",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Comment thread",
+      "description": "A list of comment Items (Avatar + body) plus a single Textarea composer with one primary Post button.",
+      "source": "rules/patterns/comment-thread.json"
+    },
+    {
       "id": "pattern:destructive-confirmation",
       "type": "pattern",
       "class": "Pattern",
@@ -1371,6 +1416,15 @@
       "source": "graph/decisions.json"
     },
     {
+      "id": "pattern:feed-item",
+      "type": "pattern",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Feed item",
+      "description": "One feed post: a Card with an author Item (Avatar), body, optional media placeholder, and a row of ghost reaction Buttons. No primary — reactions are low-emphasis.",
+      "source": "rules/patterns/feed-item.json"
+    },
+    {
       "id": "pattern:form-submission",
       "type": "pattern",
       "class": "Pattern",
@@ -1378,6 +1432,15 @@
       "label": "Form submission",
       "description": "Label + Input + validation message, one primary submit.",
       "source": "recipes/build-an-app.md"
+    },
+    {
+      "id": "pattern:media-gallery",
+      "type": "pattern",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Media gallery",
+      "description": "Media as a grid/Carousel of Cards with a Dialog lightbox; Empty when there are none. Text over media sits on a scrim.",
+      "source": "rules/patterns/media-gallery.json"
     },
     {
       "id": "pattern:mobile-side-panel",
@@ -1396,6 +1459,15 @@
       "label": "Pricing page",
       "description": "Complete pricing-page composition: plans (Card + billing toggle + recommended) then comparison Table, FAQ and CTA. One primary action; included/excluded shown by icon + text.",
       "source": "src/patterns/pricing-page.tsx"
+    },
+    {
+      "id": "pattern:profile-header",
+      "type": "pattern",
+      "class": "Pattern",
+      "prov": "explicit",
+      "label": "Profile header",
+      "description": "Profile top: large Avatar, name/handle, bio, a stats row, and exactly one primary relationship Button (Follow / Edit).",
+      "source": "rules/patterns/profile-header.json"
     },
     {
       "id": "persona:fintech",
@@ -6845,6 +6917,76 @@
       "prov": "explicit"
     },
     {
+      "source": "pattern:comment-thread",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/comment-thread.json"
+    },
+    {
+      "source": "pattern:comment-thread",
+      "target": "rule:one-primary",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/comment-thread.json"
+    },
+    {
+      "source": "pattern:comment-thread",
+      "target": "rule:pill-buttons",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/comment-thread.json"
+    },
+    {
+      "source": "pattern:comment-thread",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/comment-thread.json"
+    },
+    {
+      "source": "pattern:feed-item",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/feed-item.json"
+    },
+    {
+      "source": "pattern:feed-item",
+      "target": "rule:pill-buttons",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/feed-item.json"
+    },
+    {
+      "source": "pattern:feed-item",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/feed-item.json"
+    },
+    {
+      "source": "pattern:media-gallery",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/media-gallery.json"
+    },
+    {
+      "source": "pattern:media-gallery",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/media-gallery.json"
+    },
+    {
+      "source": "pattern:media-gallery",
+      "target": "rule:width-by-content",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/media-gallery.json"
+    },
+    {
       "source": "pattern:pricing-page",
       "target": "rule:no-color-alone",
       "type": "governed_by",
@@ -6878,6 +7020,34 @@
       "type": "governed_by",
       "prov": "explicit",
       "evidence": "rules/patterns/pricing-page.json"
+    },
+    {
+      "source": "pattern:profile-header",
+      "target": "rule:no-color-alone",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/profile-header.json"
+    },
+    {
+      "source": "pattern:profile-header",
+      "target": "rule:one-primary",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/profile-header.json"
+    },
+    {
+      "source": "pattern:profile-header",
+      "target": "rule:pill-buttons",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/profile-header.json"
+    },
+    {
+      "source": "pattern:profile-header",
+      "target": "rule:tokens-only",
+      "type": "governed_by",
+      "prov": "explicit",
+      "evidence": "rules/patterns/profile-header.json"
     },
     {
       "source": "radius:full",
@@ -7298,6 +7468,41 @@
       "evidence": "src/blocks/login-01.tsx"
     },
     {
+      "source": "pattern:comment-thread",
+      "target": "component:avatar",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/comment-thread.json"
+    },
+    {
+      "source": "pattern:comment-thread",
+      "target": "component:button",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/comment-thread.json"
+    },
+    {
+      "source": "pattern:comment-thread",
+      "target": "component:item",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/comment-thread.json"
+    },
+    {
+      "source": "pattern:comment-thread",
+      "target": "component:separator",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/comment-thread.json"
+    },
+    {
+      "source": "pattern:comment-thread",
+      "target": "component:textarea",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/comment-thread.json"
+    },
+    {
       "source": "pattern:destructive-confirmation",
       "target": "component:alert-dialog",
       "type": "preferred_composition",
@@ -7310,6 +7515,48 @@
       "type": "preferred_composition",
       "prov": "explicit",
       "evidence": "src/components/ui/button.tsx"
+    },
+    {
+      "source": "pattern:feed-item",
+      "target": "component:avatar",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/feed-item.json"
+    },
+    {
+      "source": "pattern:feed-item",
+      "target": "component:badge",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/feed-item.json"
+    },
+    {
+      "source": "pattern:feed-item",
+      "target": "component:button",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/feed-item.json"
+    },
+    {
+      "source": "pattern:feed-item",
+      "target": "component:card",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/feed-item.json"
+    },
+    {
+      "source": "pattern:feed-item",
+      "target": "component:item",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/feed-item.json"
+    },
+    {
+      "source": "pattern:feed-item",
+      "target": "component:separator",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/feed-item.json"
     },
     {
       "source": "pattern:form-submission",
@@ -7338,6 +7585,41 @@
       "type": "preferred_composition",
       "prov": "explicit",
       "evidence": "recipes/build-an-app.md"
+    },
+    {
+      "source": "pattern:media-gallery",
+      "target": "component:button",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/media-gallery.json"
+    },
+    {
+      "source": "pattern:media-gallery",
+      "target": "component:card",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/media-gallery.json"
+    },
+    {
+      "source": "pattern:media-gallery",
+      "target": "component:carousel",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/media-gallery.json"
+    },
+    {
+      "source": "pattern:media-gallery",
+      "target": "component:dialog",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/media-gallery.json"
+    },
+    {
+      "source": "pattern:media-gallery",
+      "target": "component:empty",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/media-gallery.json"
     },
     {
       "source": "pattern:mobile-side-panel",
@@ -7380,6 +7662,41 @@
       "type": "preferred_composition",
       "prov": "explicit",
       "evidence": "src/patterns/pricing-page.tsx"
+    },
+    {
+      "source": "pattern:profile-header",
+      "target": "component:avatar",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/profile-header.json"
+    },
+    {
+      "source": "pattern:profile-header",
+      "target": "component:badge",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/profile-header.json"
+    },
+    {
+      "source": "pattern:profile-header",
+      "target": "component:button",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/profile-header.json"
+    },
+    {
+      "source": "pattern:profile-header",
+      "target": "component:card",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/profile-header.json"
+    },
+    {
+      "source": "pattern:profile-header",
+      "target": "component:separator",
+      "type": "preferred_composition",
+      "prov": "explicit",
+      "evidence": "rules/patterns/profile-header.json"
     },
     {
       "source": "component:alert-dialog",
@@ -7488,6 +7805,14 @@
       "evidence": "src/components/ui/button.tsx"
     },
     {
+      "source": "intent:post-to-feed",
+      "target": "pattern:feed-item",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "rules/patterns/feed-item.json"
+    },
+    {
       "source": "intent:present-pricing",
       "target": "pattern:pricing-page",
       "type": "realized_by",
@@ -7526,6 +7851,30 @@
       "prov": "explicit",
       "priority": "PREFERRED",
       "evidence": "src/components/ui/select.tsx"
+    },
+    {
+      "source": "intent:show-comments",
+      "target": "pattern:comment-thread",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "rules/patterns/comment-thread.json"
+    },
+    {
+      "source": "intent:show-media-gallery",
+      "target": "pattern:media-gallery",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "rules/patterns/media-gallery.json"
+    },
+    {
+      "source": "intent:show-profile",
+      "target": "pattern:profile-header",
+      "type": "realized_by",
+      "prov": "explicit",
+      "priority": "PREFERRED",
+      "evidence": "rules/patterns/profile-header.json"
     },
     {
       "source": "intent:show-reasoning",
@@ -7672,6 +8021,13 @@
       "type": "requires",
       "prov": "explicit",
       "evidence": "graph/decisions.json"
+    },
+    {
+      "source": "pattern:media-gallery",
+      "target": "a11y:scrim-over-media",
+      "type": "requires",
+      "prov": "explicit",
+      "evidence": "rules/patterns/media-gallery.json"
     },
     {
       "source": "brand:mission",

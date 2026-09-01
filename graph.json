@@ -4,15 +4,15 @@
   "generated_for": "0.2.0",
   "ontology": "graph/ontology.json",
   "stats": {
-    "nodes": 322,
-    "edges": 960,
+    "nodes": 323,
+    "edges": 967,
     "by_node_type": {
       "a11y": 8,
       "ai-component": 7,
       "template-block": 20,
       "brand": 8,
       "template-chart": 31,
-      "component-2one": 3,
+      "component-2one": 4,
       "component": 55,
       "context": 4,
       "contrast": 9,
@@ -31,7 +31,7 @@
       "AccessibilityRequirement": 8,
       "Pattern": 67,
       "Brand": 8,
-      "Component": 64,
+      "Component": 65,
       "Context": 4,
       "Evidence": 9,
       "Intent": 23,
@@ -44,9 +44,9 @@
       "alternative_to": 2,
       "applies_when": 1,
       "appropriate_for": 4,
-      "composed_of": 407,
+      "composed_of": 413,
       "demonstrates": 5,
-      "depends_on": 78,
+      "depends_on": 79,
       "derived_from": 26,
       "embodies": 6,
       "forbidden_with": 1,
@@ -67,11 +67,11 @@
     "by_provenance": {
       "nodes": {
         "explicit": 117,
-        "derived": 205
+        "derived": 206
       },
       "edges": {
         "explicit": 307,
-        "derived": 653
+        "derived": 660
       }
     },
     "ontology_violations": 0
@@ -614,6 +614,14 @@
       "prov": "derived",
       "label": "Logo",
       "path": "src/components/logo.tsx"
+    },
+    {
+      "id": "component-2one:media-placeholder",
+      "type": "component-2one",
+      "class": "Component",
+      "prov": "derived",
+      "label": "MediaPlaceholder",
+      "path": "src/components/media-placeholder.tsx"
     },
     {
       "id": "component:accordion",
@@ -3069,6 +3077,42 @@
       "prov": "derived"
     },
     {
+      "source": "component-2one:media-placeholder",
+      "target": "component:aspect-ratio",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component-2one:media-placeholder",
+      "target": "radius:lg",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component-2one:media-placeholder",
+      "target": "token:border",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component-2one:media-placeholder",
+      "target": "token:muted",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component-2one:media-placeholder",
+      "target": "token:muted-foreground",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
+      "source": "component-2one:media-placeholder",
+      "target": "type:xs",
+      "type": "composed_of",
+      "prov": "derived"
+    },
+    {
       "source": "component:accordion",
       "target": "radius:md",
       "type": "composed_of",
@@ -5493,6 +5537,12 @@
     },
     {
       "source": "component-2one:app-bar",
+      "target": "pkg:lucide-react",
+      "type": "depends_on",
+      "prov": "derived"
+    },
+    {
+      "source": "component-2one:media-placeholder",
       "target": "pkg:lucide-react",
       "type": "depends_on",
       "prov": "derived"

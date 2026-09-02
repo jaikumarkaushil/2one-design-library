@@ -26,6 +26,7 @@ export const HELP_NAV: [string, string][] = [
   ['/dls.html', 'nav.dls'],
   ['/#faq', 'overview.sidebar.faq'],
   ['/#support', 'overview.sidebar.support'],
+  ['/changelog.html', 'nav.changelog'],
 ]
 
 const linkClass = (active: boolean) =>

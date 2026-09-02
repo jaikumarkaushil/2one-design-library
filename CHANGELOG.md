@@ -21,6 +21,27 @@ uses [Semantic Versioning](https://semver.org/).
   the active `Tabs` (line variant) underline, and the active `Sidebar` item's
   left-bar now render the brand accent. Added `--brand-foreground` (the tick/knob on
   a brand fill) with its own audited pair.
+- **New components — `MediaPlaceholder` and the `AppShell` pattern.** `MediaPlaceholder`
+  is the sanctioned, on-brand "no image yet" surface (a muted, aspect-ratio-held panel
+  with a lucide glyph), so image-first apps stop hand-rolling one. `AppShell`
+  ([`src/patterns/app-shell.tsx`](src/patterns/app-shell.tsx)) is a responsive product
+  frame — a desktop `Sidebar` and a mobile branded `AppBar` + bottom nav driven by the
+  same destinations. Component count is now 59.
+- **`AppBar` gains a `brand` slot** — a first-class home for the wordmark in product chrome.
+- **`SidebarClose`** — an in-menu close (X); `SidebarTrigger` hides while the menu is open,
+  so the close control lives inside the panel.
+- **Domain page patterns** — `feed-item`, `profile-header`, `comment-thread` and
+  `media-gallery` ([`rules/patterns/`](rules/patterns)), so `graph-decide` answers
+  social/product intents, not only canonical ones.
+- **Per-component variant metadata in the manifest** — the cva `variant` / `size` enums
+  are emitted, so an agent can pick a variant without opening the source.
+- **A Changelog page** in the showcase, rendered live from this file.
+- **Consumer on-ramp** — [`docs/consuming.md`](docs/consuming.md) (install + the Tailwind
+  `@source` wiring) is surfaced from the manifest-first entry points, with a tested
+  compatibility matrix.
+- **New audit coverage** — mechanised detectors `fixed-vs-theme-color` and `logo-in-button`,
+  new guards `check:pill` / `check:logo-sizing` / `check:docs`, and a `--draft` review
+  checklist for the "must" rules a static run can't judge.
 
 ### Changed
 - **Colour foundation is now three explicit levels: Primary (neutral) · Accent
@@ -40,6 +61,23 @@ uses [Semantic Versioning](https://semver.org/).
   solid fill, so `--brand` renders APCA-accessible steps of the identity hue
   (`brand-700 #1670c9` on light, `brand-300 #7cc4ff` on dark). The `npm run a11y`
   matrix gains brand-accent-text pairs, audited in both themes.
+- **Crush-proof `Logo`.** The wordmark's dimensions are applied inline, so an ancestor
+  utility (e.g. a `Button`'s icon-sizing rule) can't distort the 109:33 mark. The pill
+  signature is also re-asserted on Radix `asChild` triggers, so a `Button` used as a
+  trigger stays a pill.
+- **Showcase.** A single global Help menu, "Components for AI Interface" folded into the
+  Components page as a section, a responsive mobile nav, and a knowledge graph that works
+  on touch — all bilingual (EN + FR).
+
+### Fixed
+- **`login-05` logo invisible in dark.** The block shipped a single black `Logo` on the
+  theme surface; it is now theme-adaptive (a `.dark` variant swap). The new
+  `fixed-vs-theme-color` detector guards against the regression.
+- **Docs imported the wrong package name.** [`docs/building-with-the-dls.md`](docs/building-with-the-dls.md)
+  imported `@yokesh-2one/design-library` while the package is `@2one/design-library` — the
+  documented example would have failed `npx 2one check`. Corrected and guarded by `check:docs`.
+- **Knowledge graph unusable on mobile.** The floating panels covered the canvas and it was
+  mouse-only; panels now dock as sheets and the canvas supports touch pan / pinch-zoom.
 
 ## [0.2.0] - 2026-08-24
 

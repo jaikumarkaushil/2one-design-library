@@ -19,7 +19,17 @@
     "components": "Design language system",
     "aiComponents": "Components for AI Interface",
     "graph": "Knowledge graph",
-    "dls": "What is a DLS?"
+    "dls": "What is a DLS?",
+    "changelog": "Changelog"
+  },
+  "changelog": {
+    "eyebrow": "Release notes",
+    "title": "Changelog",
+    "lede": "Every notable change to @2one/design-library, newest first — rendered live from the repository's CHANGELOG.md. Follows Keep a Changelog and Semantic Versioning.",
+    "releases": "Releases",
+    "unreleased": "Unreleased",
+    "inProgress": "In progress",
+    "footer": "The full history lives in"
   },
   "overview": {
     "sidebar": {

@@ -452,7 +452,7 @@ function translateStatic() {
   const ph = (sel: string, text: string) => { const e = document.querySelector(sel) as HTMLInputElement | null; if (e) e.placeholder = text }
   // Global nav (mirrors dev/global-nav.tsx). `.topnav a` order: the flat
   // destinations, then the three links inside the Help menu.
-  const navKeys = ['nav.overview', 'nav.components', 'nav.graph', 'nav.dls', 'overview.sidebar.faq', 'overview.sidebar.support']
+  const navKeys = ['nav.overview', 'nav.components', 'nav.graph', 'nav.dls', 'overview.sidebar.faq', 'overview.sidebar.support', 'nav.changelog']
   document.querySelectorAll('.topnav-flat a').forEach((a, i) => { if (navKeys[i]) a.textContent = gt(navKeys[i]) })
   set('.nav-help summary span', gt('common.help'))
   // Mobile menu (same order as navKeys): label its links + the current-page trigger.

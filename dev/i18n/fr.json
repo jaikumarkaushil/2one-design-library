@@ -19,7 +19,17 @@
     "components": "Système de langage de conception",
     "aiComponents": "Composants pour interface IA",
     "graph": "Graphe de connaissances",
-    "dls": "Qu’est-ce qu’un DLS ?"
+    "dls": "Qu’est-ce qu’un DLS ?",
+    "changelog": "Journal des modifications"
+  },
+  "changelog": {
+    "eyebrow": "Notes de version",
+    "title": "Journal des modifications",
+    "lede": "Chaque changement notable de @2one/design-library, du plus récent au plus ancien — rendu en direct depuis le CHANGELOG.md du dépôt. Suit Keep a Changelog et le versionnage sémantique.",
+    "releases": "Versions",
+    "unreleased": "Non publié",
+    "inProgress": "En cours",
+    "footer": "L’historique complet se trouve dans"
   },
   "overview": {
     "sidebar": {

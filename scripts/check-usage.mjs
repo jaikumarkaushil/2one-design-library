@@ -784,6 +784,35 @@ const RULES = [
       )
     },
   },
+  {
+    // The AI-hero cliché: a pill Badge stacked directly above the H1. The SHAPE,
+    // not any single class, is the tell, so this flags a <Badge>…</Badge> whose
+    // next element is an <h1> (only whitespace between).
+    id: 'badge-above-h1',
+    implements: 'hero-badge-cliche',
+    severity: 'warn',
+    why: 'A pill badge immediately above the hero H1 is the signature AI-generated landing shape. Integrate the eyebrow, drop it, or use a left-aligned / asymmetric hero.',
+    test: ({ src }) => {
+      const s = stripComments(src)
+      return [...s.matchAll(/<Badge\b[^>]*>[\s\S]*?<\/Badge>\s*<h1\b/g)].map((m) => ({
+        line: s.slice(0, m.index).split('\n').length,
+        detail: 'a <Badge> sits directly above an <h1>, the AI-hero cliché',
+      }))
+    },
+  },
+  {
+    // Em-dash DENSITY — the clearest tell of AI-written copy. Counts em-dashes in
+    // the comment-stripped source (code comments do not count) and warns once a
+    // single view leans on them (four or more).
+    id: 'em-dash-overuse',
+    implements: 'copy-em-dash',
+    severity: 'warn',
+    why: 'The copy leans on the em-dash, the clearest tell of AI-written prose. Vary the punctuation (commas, colons, periods, parentheses) and keep em-dashes occasional.',
+    test: ({ src }) => {
+      const n = (stripComments(src).match(/—/g) || []).length
+      return n >= 4 ? [{ line: 1, detail: `${n} em-dashes in one view; vary the punctuation` }] : []
+    },
+  },
 ]
 
 /*

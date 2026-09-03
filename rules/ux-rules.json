@@ -1,6 +1,6 @@
 {
   "name": "2one UX Rules — the machine-readable design-decision contract",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "purpose": "The single source of truth for 2one's opinionated UX decisions, structured so AI agents and validators consume them deterministically. Prose lives in docs/building-with-the-dls.md and AGENTS.md; this file is the machine contract the knowledge graph and checks are built from (scripts/build-graph.mjs turns each rule into a `rule:` node with `governed_by` edges; scripts/check-rules.mjs validates it).",
   "severity_levels": {
     "forbidden": "Never do this — a violation is a defect. No escape hatch.",
@@ -564,6 +564,26 @@
         "token:chart-1"
       ],
       "since": "1.1.0"
+    },
+    {
+      "id": "hero-badge-cliche",
+      "category": "layout",
+      "severity": "should",
+      "label": "No badge stacked directly above a centred hero H1",
+      "statement": "Do not open a hero with a pill Badge placed immediately above the H1 in a centred column. That stack is the single most recognisable AI-generated landing-page shape. Integrate the eyebrow into the layout, drop it, or use a left-aligned / asymmetric hero instead.",
+      "rationale": "The tells of AI-built design are not ugly, they are generic: the centred hero with a badge on top is the median every model reproduces, and generic is what makes a product forgettable. A design system should read as composed, not defaulted.",
+      "applies_to": [],
+      "since": "1.3.0"
+    },
+    {
+      "id": "copy-em-dash",
+      "category": "consistency",
+      "severity": "should",
+      "label": "Copy shouldn't lean on the em-dash",
+      "statement": "Vary punctuation in visible copy. A view whose sentences repeatedly reach for the em-dash reads as machine-written; prefer commas, colons, periods or parentheses, and keep em-dashes occasional (this rule flags four or more in one view).",
+      "rationale": "Em-dash density is the clearest tell of AI-generated prose: models overuse it to an almost comical degree. The fix is a copy pass, not a token, so this rule keeps the voice from drifting back to the default.",
+      "applies_to": [],
+      "since": "1.3.0"
     }
   ],
   "deprecations": []
